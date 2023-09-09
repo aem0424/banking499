@@ -38,4 +38,10 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+app.get('\login', (req, res) => {
+  res.sendFile(__dirname + '/login.html')
+});
+
+
+
 module.exports = app;
