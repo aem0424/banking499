@@ -6,15 +6,19 @@ class BankAccount {
     this.balance = balance;
   }
   accountType = "DefaultType"; // this should always be replaced
-  history = null; // will turn this into a list
+  history = []; // will turn this into a list
   transferable = false;
+
+  addToHistory(input) {
+    this.history.push(input);
+  }
 
   // GET FUNCTIONS
   getAccountName() {
     return this.accountName;
   }
 
-  getAccountType() { // This is defined in each subclass; should not be used with BankAccount class
+  getAccountType() { // This is defined in each subclass
     return this.accountType;
   }
 
@@ -30,14 +34,15 @@ class BankAccount {
     return this.balance;
   }
 
-  getHistory() {
-    return this.history;
+  getHistory(input) { // Get a transaction record from this input
+    return this.history[input];
   }
 }
 
 class CheckingAccount extends BankAccount {
   accountType = "Checking";
   transferable = true;
+  history = [];
 }
 
 class SavingsAccount extends BankAccount  {
@@ -59,8 +64,3 @@ class CreditCardAccount extends BankAccount {
   accountType = "CreditCard";
   transferable = false;
 }
-
-const obj = new CheckingAccount("My Checking Account", 12345678, 5418, 255.68);
-let thing = obj.getBalance();
-const aweTe = document.querySelector("h2"); // replace whatever's in h2
-aweTe.textContent = "The " + obj.getAccountType() + " account with account #" + obj.getAccountNumber() + " has $" + thing + " in their account.";

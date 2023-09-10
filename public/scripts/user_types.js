@@ -1,5 +1,5 @@
 class UserAccount {
-  constructor(firstName, lastName, username, password, address, phoneNumber, cellNumber, socialSecurity, accounts) {
+  constructor(firstName, lastName, username, password, address, phoneNumber, cellNumber, socialSecurity) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.username = username;
@@ -8,9 +8,12 @@ class UserAccount {
     this.phoneNumber = phoneNumber;
     this.cellNUmber = cellNumber;
     this.socialSecurity = socialSecurity;
-    this.accounts = accounts; // This will probably be a list or something
   }
+  accounts = []; // This will probably be a list or something
 
+  addAccount(input) {
+    this.accounts.push(input);
+  }
   // Method
   getFirstName() {
     return this.firstName;
