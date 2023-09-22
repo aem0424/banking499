@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import Axios from 'axios';
+import { fetchLoginInformation } from "./supaService";
 import './App.css';
 
 function App() {
@@ -34,6 +35,8 @@ function App() {
       }
       console.log(response.data);
     })
+
+
   }
 
   return (
@@ -54,9 +57,16 @@ function App() {
         <input type ="password" placeholder="Password"onChange={(e)=> {setPass(e.target.value);}}/>
         <button onClick={login}>Login</button>
       </div>
+
+      <div className="Checker">
+        <h1>Check</h1>
+        <button onClick={fetchLoginInformation}>Check</button>
+      </div>
       <h1>{loginStatus}</h1>
     </div>
+    
   );
 }
 
 export default App;
+
