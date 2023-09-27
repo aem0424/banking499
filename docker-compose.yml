@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  api:
+    build: ./server
+    container_name: server_backend
+    ports:
+      - '4000:4000'
+    volumes:
+      - ./server:/server
+
+
+  client:
+    build: ./client
+    container_name: client_frontend
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./client:/app
+      - /node_modules
+    links:
+      - api
+    command: npm start
+
+    stdin_open: true
+    tty: true
