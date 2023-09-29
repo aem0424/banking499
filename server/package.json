@@ -2,10 +2,10 @@
   "name": "summitfincorp",
   "version": "1.0.0",
   "description": "",
-  "main": "server.mjs",
+  "main": "server.js",
   "scripts": {
-    "start": "node server.mjs",
-    "dev": "nodemon -L server.mjs"
+    "start": "node server.js",
+    "dev": "nodemon -L server.js"
   },
   "keywords": [],
   "author": "",

@@ -1,11 +1,10 @@
-import express from 'express';
-import { createClient } from '@supabase/supabase-js';
-import dotenv from 'dotenv';
+const express = require('express');
+const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 const PORT = 4000;
 
-dotenv.config(); // Load environment variables from .env file
+require('dotenv').config(); // Load environment variables from .env file
 
 const dbUrl = process.env.SUPABASE_PROJECT_URL; // Setting db URL
 const dbKey = process.env.SUPABASE_PUBLIC_API_KEY; // Setting db API key
@@ -35,6 +34,43 @@ app.get('/data', async (req, res) => {
 app.get('/api', (req, res) => {
   res.json({ message: 'Hello from the server! Test of backend hotloading (refresh)' });
 });
+
+app.get('/customer', async (req, res) => {
+  const { data, error } = await supabase
+    .from('User')
+    .select('Role, FirstName, LastName, Address, PhoneNumber, SSN, DOB')
+    .eq('Email', req.query["email"])  
+    
+  res.json(data)
+});
+
+
+
+// Get the user's account
+app.get('/accounts', async (req, res) => {
+  let userID = req.query["userID"]
+
+  let { data: Account, error } = await supabase
+  .from('Account')
+  .select(`
+    AccountType (AccountName)`)
+  .eq('UserID', userID)
+
+
+  if (error) {
+    console.error('Error fetching users:', error.message); // Log the error to the console
+    return res.status(500).json({ error: 'Error fetching users' });
+  }
+
+  res.json(Account)
+});
+
+
+
+
+
+
+
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
