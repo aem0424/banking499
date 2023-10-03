@@ -1,73 +1,63 @@
 const express = require('express');
-const { createClient } = require('@supabase/supabase-js');
+const database = require('./database.js');
 
 const app = express();
 const PORT = 4000;
 
-require('dotenv').config(); // Load environment variables from .env file
+app.use(express.json());
 
-const dbUrl = process.env.SUPABASE_PROJECT_URL; // Setting db URL
-const dbKey = process.env.SUPABASE_PUBLIC_API_KEY; // Setting db API key
-
-// Create a single Supabase client for interacting with your database
-const supabase = createClient(dbUrl, dbKey);
 
 app.get('/', (req, res) => {
   res.send('Home Route');
-});
-
-app.get('/data', async (req, res) => {
-  try {
-    const { data, error } = await supabase.from('User').select('*');
-    if (error) {
-      console.error('Error fetching users:', error.message); // Log the error to the console
-      return res.status(500).json({ error: 'Error fetching users' });
-    }
-    console.log(JSON.stringify(data, null, 2)); // Log the data to the console
-    res.json(data);
-  } catch (err) {
-    console.error('An unexpected error occurred:', err); // Log any unexpected errors to the console
-    res.status(500).json({ error: 'An unexpected error occurred' });
-  }
 });
 
 app.get('/api', (req, res) => {
   res.json({ message: 'Hello from the server! Test of backend hotloading (refresh)' });
 });
 
+// ------------------ Database -------------------------
+
+// Get User Account Information
+// Params: Email
+// Return: User { * }
 app.get('/customer', async (req, res) => {
-  const { data, error } = await supabase
-    .from('User')
-    .select('Role, FirstName, LastName, Address, PhoneNumber, SSN, DOB')
-    .eq('Email', req.query["email"])  
-    
-  res.json(data)
+  const { data, error } = await database.getUserInformation(req.query["email"]);
+      
+  res.json(data);
 });
 
-
-
-// Get the user's account
+// Get User Account Information
+// Params: UserID
+// Return: Account { * }
 app.get('/accounts', async (req, res) => {
-  let userID = req.query["userID"]
-
-  let { data: Account, error } = await supabase
-  .from('Account')
-  .select(`
-    AccountType (AccountName)`)
-  .eq('UserID', userID)
-
+  let { data, error } = await database.getAccountInformation(req.query["userID"]);
 
   if (error) {
-    console.error('Error fetching users:', error.message); // Log the error to the console
-    return res.status(500).json({ error: 'Error fetching users' });
+      console.error('Error fetching users:', error.message); // Log the error to the console
+      return res.status(500).json({ error: 'Error fetching users' });
   }
 
-  res.json(Account)
+  res.json(data);
+});
+
+app.get('/accounts/name', async (req, res) => {
+  let { data, error } = await database.getAccountNames(req.query["userID"]);
+
+  if (error) {
+      console.error('Error fetching users:', error.message); // Log the error to the console
+      return res.status(500).json({ error: 'Error fetching users' });
+  }
+
+  res.json(data);
+});
+
+app.get('/log', async (req, res) => {
+  let data = await database.addLog("4", "Create User", "User <4> Created");
+  res.json(data);
 });
 
 
-
-
+// ------------------------------------------------------
 
 
 

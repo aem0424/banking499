@@ -1,10 +1,10 @@
-FROM node:18-alpine
+FROM node:lts-alpine
 
 RUN npm install -g nodemon
 
-WORKDIR /server
+WORKDIR /usr/src/app
 
-COPY package.json .
+COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
 
 RUN npm install
 
