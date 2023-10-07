@@ -66,6 +66,14 @@ async function addLog(userID, activityType, activityDetail) {
   
     return data;
   }
+
+//---------------------------------Set---------------------------------
+async function regUser() {
+    const { data, error } = await supabase.from('User').insert({Email:setUsernameReg,Password:setPasswordReg});
+
+    return { data, error };
+
+};
   
 
 module.exports = {
