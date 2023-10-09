@@ -199,6 +199,14 @@ async function logActivity(refTable, refID, activityType, activityDetail, succes
     }
     return data;
   }
+
+//---------------------------------Set---------------------------------
+async function regUser() {
+    const { data, error } = await supabase.from('User').insert({Email:setUsernameReg,Password:setPasswordReg});
+
+    return { data, error };
+
+};
   
 
 module.exports = {
