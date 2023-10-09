@@ -110,7 +110,7 @@ app.get('/user', async (req, res) => {
 // ------------------ Account -----------------------
 
 // Get Customer Accounts
-app.get('/customer/accounts/list', async (req, res) => {
+app.get('/customer/accounts', async (req, res) => {
   console.log(`Getting Bank Accounts List for User ${req.session.userID}`);
   if(!req.session.userID) {
     return res.status(401).json({ error: "Unauthorized User Access"});
@@ -119,7 +119,7 @@ app.get('/customer/accounts/list', async (req, res) => {
   res.status(200).json(accountList);
 });
 
-// Get Customer Account
+// Get Customer Account Information
 app.get('/customer/accounts/account', async (req, res) => {
   if(!req.session.userID) {
     return res.status(401).json({ error: "Unauthorized User Access"});
