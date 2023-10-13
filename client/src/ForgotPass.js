@@ -11,6 +11,7 @@ function ForgotPass(){
                 <br />
                 <a href="/Login">Login</a>
             </div>
+
         </div>
     )
 }
