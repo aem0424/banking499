@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Login.css';
+import { getUserLogin } from '../server/database';
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -15,12 +16,24 @@ function Login() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const { username, password } = formData;
     // You can perform your login logic here, such as sending a request to a server.
-    console.log('Username:', username);
-    console.log('Password:', password);
+    try {
+      const user = await getUserLogin(username, password);
+
+      if (user) {
+        // Login successful, you can redirect the user or perform other actions here.
+        console.log('Login successful:', user);
+      } else {
+        // Handle the case where login is unsuccessful (e.g., display an error message).
+        console.error('Login failed');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      // Handle any unexpected errors.
+    }
   };
 
   return (
