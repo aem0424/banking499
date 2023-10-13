@@ -1,6 +1,5 @@
 import React from "react"
 import './App.css';
-import Home from './Home'
 import ForgotPass from './ForgotPass'
 import Login from './Login'
 import Register from './Register'
@@ -13,7 +12,7 @@ function App() {
   return (
    <div className="App" >
     <Routes>
-      <Route exact path="/" element ={<Home/>}/>
+      <Route exact path="/" element ={<Login/>}/>
       <Route exact path="/DataDisplay" element ={<DataDisplay/>}/>
       <Route exact path="/reactdemo" element ={<ReactDemo/>}/>
       <Route exact path="/ForgotPass" element ={<ForgotPass/>}/>

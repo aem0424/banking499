@@ -1,11 +1,7 @@
 import React from 'react';
-<<<<<<< HEAD
-
-=======
->>>>>>> 5eb8fe5aa6669f0f0fac23609280ba73c82d2964
 function Register(){
     return(
-        <div className='registration'>
+        <div className='container'>
             <h1> Register for an account.</h1>
             <label>Username</label>
             <input type='text' />
@@ -14,6 +10,11 @@ function Register(){
             <input type='text' />
             <br />
             <button> Register </button>
+        <div className="form-links">
+            <a href="/Login">Login</a>
+            <br />
+            <a href="/ForgotPass">Forgot Password</a>
+        </div>
         </div>
     )
 }
