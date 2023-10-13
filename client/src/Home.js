@@ -1,9 +1,5 @@
 import React from 'react'
-<<<<<<< HEAD
 import { Link } from 'react-router-dom';
-=======
-import {Link} from 'react-router-dom';
->>>>>>> 5eb8fe5aa6669f0f0fac23609280ba73c82d2964
 
 function Home(){
     return(
