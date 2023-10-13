@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { regUser } from '../server/database'; // Adjust the path as needed
+//import axios from 'axios';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -17,23 +16,9 @@ function Register() {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      // Call your registration function (regUser) with the form data
-      const registrationResult = await regUser(formData);
-
-      if (registrationResult) {
-        // Registration successful, you can redirect the user or display a success message
-        console.log('Registration successful:', registrationResult);
-      } else {
-        // Handle the case where registration fails (e.g., display an error message).
-        console.error('Registration failed');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      // Handle any unexpected errors.
-    }
+    console.log('Form Data:', formData);
   };
 
   return (

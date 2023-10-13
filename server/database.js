@@ -26,7 +26,7 @@ async function getUserID(email, password) {
     return data;
 }
 
-export async function getUserLogin(userID) {
+async function getUserLogin(userID) {
     const { data, error } = await supabase
     .from('User')
     .select('Email, Password')
@@ -201,7 +201,7 @@ async function logActivity(refTable, refID, activityType, activityDetail, succes
   }
 
 //---------------------------------Set---------------------------------
-export async function regUser(username, password) {
+async function regUser(username, password) {
     const { data, error } = await supabase.from('User').upsert([{
         Email:username,
         Password:password,

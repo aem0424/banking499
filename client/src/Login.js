@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import './Login.css';
-import { getUserLogin } from '../server/database';
+import axios from 'axios';
 
 function Login() {
   const [formData, setFormData] = useState({
-    username: '',
+    email: '',
     password: '',
   });
 
@@ -18,14 +18,14 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { username, password } = formData;
-    // You can perform your login logic here, such as sending a request to a server.
+    const { email, password } = formData;
+    
     try {
-      const user = await getUserLogin(username, password);
+      const response = await axios.post('/user/login', { "email":email, "password" : password });
 
-      if (user) {
+      if (response.data.user) {
         // Login successful, you can redirect the user or perform other actions here.
-        console.log('Login successful:', user);
+        console.log('Login successful:', response.data.user);
       } else {
         // Handle the case where login is unsuccessful (e.g., display an error message).
         console.error('Login failed');
@@ -42,12 +42,12 @@ function Login() {
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="username">Username:</label>
+          <label htmlFor="email">Email:</label>
           <input
             type="text"
-            id="username"
-            name="username"
-            value={formData.username}
+            id="email"
+            name="email"
+            value={formData.email}
             onChange={handleInputChange}
             required
           />
