@@ -31,7 +31,6 @@ app.get('/', (req, res) => {
 });
 
 // -------------------- User ----------------------------
-
 // Log in
 // params: JSON{ "email": "<email>", "password": "<password>"}
 // returns JSON{ "UserID":"<userID>"}
@@ -99,10 +98,14 @@ app.post('/user/logout', async (req, res) => {
 app.get('/user', async (req, res) => {
   console.log(`Getting User ${req.session.userID}'s Information`);
   if(!req.session.userID) {
-    return res.status(401).json({ error: "Unauthorized User Access"});
+    return res.status(401).json({ error: "User Not Logged In"});
   }
-  let data = await database.getUserInformation(req.session.userID);
-  res.status(200).json(data);
+  let userInfo = await database.getUserInformation(req.session.userID);
+
+  if(!userInfo) {
+    return res.status(404).json({ error: `User ${req.session.userID} Not Found`});
+    }
+  res.status(200).json(userInfo);
 });
 
 
@@ -110,10 +113,11 @@ app.get('/user', async (req, res) => {
 // ------------------ Account -----------------------
 
 // Get Customer Accounts
+
 app.get('/customer/accounts', async (req, res) => {
   console.log(`Getting Bank Accounts List for User ${req.session.userID}`);
   if(!req.session.userID) {
-    return res.status(401).json({ error: "Unauthorized User Access"});
+    return res.status(401).json({ error: "User Not Logged In"});
   }
   let accountList = await database.getAccountsList(req.session.userID);
   res.status(200).json(accountList);
@@ -122,19 +126,25 @@ app.get('/customer/accounts', async (req, res) => {
 // Get Customer Account Information
 app.get('/customer/accounts/account', async (req, res) => {
   if(!req.session.userID) {
-    return res.status(401).json({ error: "Unauthorized User Access"});
+    return res.status(401).json({ error: "User Not Logged In"});
   }
   let accountID = req.body.accountID;
   console.log(`Getting Account ${accountID} Information for User ${req.session.userID}`);
   let accountInfo = await database.getAccountInformation(req.session.userID, accountID);
+  if (!accountInfo) {
+    return res.status(402).json({ error: `Invalid accountID for User ${req.session.userID}`})
+  }
   res.status(200).json(accountInfo);
 });
 
 // ------------------------ Admininstrator -------------------------------
 // Get Teller List
 app.get('/admin/tellers', async (req, res) => {
-  if(!req.session.userID || req.session.userID != adminID) {
-    return res.status(401).json({ error: "Unauthorized User Access"});
+  if(!req.session.userID) {
+    return res.status(401).json({ error: "User Not Logged In"});
+  }
+  if(req.session.userID != adminID) {
+    return res.status(401).json({ error: "Unauthorized User Access. Admin Access Required"});
   }
   console.log("Getting a Tellers List");
   let tellersList = await database.getTellersList();
