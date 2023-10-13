@@ -18,7 +18,7 @@ function Register(){
             <br />
             <a href="/ForgotPass">Forgot Password</a>
         </div>
-
+        </div>
     )
 }
 
