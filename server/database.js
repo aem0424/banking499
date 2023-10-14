@@ -10,6 +10,7 @@ const supabase = createClient(dbUrl, dbKey);
 
 const debugging = true;
 
+
 async function getUserTable() {
     const { data, error } = await supabase
     .from('User')
