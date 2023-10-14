@@ -10,7 +10,7 @@ const supabase = createClient(dbUrl, dbKey);
 
 const debugging = true;
 
-// ---------------- User Login -------------
+// ---------------- User Table -------------
 // request for UserID
 async function getUserID(email, password) {
     const { data, error } = await supabase
@@ -56,7 +56,17 @@ async function getUserInformation(userID) {
     return data;
 }
 
+module.exports = async function insertCustomer(user) {
+    const { data, error } = await supabase
+        .from('User')
+        .insert('Customer', )
+        .select('UserID, Role, FirstName, LastName, Address, PhoneNumber, SSN, DOB')
 
+    return { data, error };
+}
+
+
+// --------------------------- Account Table -----------------------
 // Get Accounts List
 // Params: UserID
 // Return: list of all accounts the customer has 
@@ -199,15 +209,6 @@ async function logActivity(refTable, refID, activityType, activityDetail, succes
     }
     return data;
   }
-
-//---------------------------------Set---------------------------------
-async function regUser() {
-    const { data, error } = await supabase.from('User').insert({Email:setUsernameReg,Password:setPasswordReg});
-
-    return { data, error };
-
-};
-  
 
 module.exports = {
     getUserID,

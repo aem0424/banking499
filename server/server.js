@@ -31,6 +31,22 @@ app.get('/', (req, res) => {
 });
 
 // -------------------- User ----------------------------
+// Get User Information
+app.get('/user', async (req, res) => {
+  console.log(`Getting User ${req.session.userID}'s Information`);
+  if(!req.session.userID) {
+    return res.status(401).json({ error: "User Is Not Logged In"});
+  }
+  // Query User Information
+  let userInfo = await database.getUserInformation(req.session.userID);
+
+  if(!userInfo) {
+    return res.status(404).json({ error: `User ${req.session.userID} Not Found`});
+  }
+  else {
+    return res.status(200).json(userInfo);
+  }
+});
 
 // Log in
 // params: JSON{ "email": "<email>", "password": "<password>"}
@@ -40,101 +56,105 @@ app.post('/user/login', async (req, res) => {
   let email = req.body.email;
   let password = req.body.password;
   if(!email || !password) {
-    return res.status(401).json({ error: "Empty values passed in for email or password" });
+    return res.status(401).json({ error: "Empty values passed in for email or password"});
   }
 
   // Query UserID
   let queriedUserID = await database.getUserID(email, password);
   let userID = queriedUserID[0].UserID.toString();
+  
+  
+  // Set authentication
   if (!userID) {
     return res.status(404).json({ error: "No UserID found for the email and password"})
   }
-
-  // Set authentication
-  if(req.session.userID == userID) {
+  else if(req.session.userID == userID) {
     return res.status(200).json({message: `The User ${userID} was already logged in`})
   }
-
-  req.session.userID = userID;
-  res.status(200).json({message: `Login successful as UserID: ${userID}`});
+  else {
+    req.session.userID = userID;
+    return res.status(200).json({message: `Login successful as UserID: ${userID}`});
+  }
 });
 
 // Log out
 app.post('/user/logout', async (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      res.status(500).json({ error: 'Logout failed'});
+      return res.status(500).json({ error: 'Logout failed'});
     } else {
-      res.status(200).json({ message: 'Logout successful'});
+      return res.status(200).json({ message: 'Logout successful'});
     }
   });
 });
 
-// // Register a Customer
-// app.post('/user/register', async (req, res) => {
-//   let user = req.body;
+// Register a Customer
+// params: user:{'Role: <role>,FirstName: <firstName>, LastName: <lastName>, Address: <address>, PhoneNumber: <phoneNumber>, SSN: <ssn>, DOB: <dob>'}
+// return: { message: <message> }
+app.post('/user/register', async (req, res) => {
+  let user = req.body;
 
-//   // Check if the parameters are empty
-//   if(!user) {
-//     return res.status(401).json({ error: "Empty values passed in as a parameter" });
-//   }
-
-//   // Query UserID
-//   let queriedUserID = await database.getUserID(user.email, user.password);
-//   let userID = queriedUserID[0].UserID.toString();
-//   if (userID) {
-//     return res.status(401).json({ error: "The email is already in use"})
-//   }
-
-//   // Set authentication
-//   if(req.session.userID == userID) {
-//     return res.status(200).json({message: `The User ${userID} was already logged in`})
-//   }
-
-//   req.session.userID = userID;
-//   res.status(200).json({message: `Login successful as UserID: ${userID}`});
-// });
-
-// Get User Information
-app.get('/user', async (req, res) => {
-  console.log(`Getting User ${req.session.userID}'s Information`);
-  if(!req.session.userID) {
-    return res.status(401).json({ error: "Unauthorized User Access"});
+  // Check the user body
+  if(!user) {
+    return res.status(401).json({ error: "Empty json passed in body" });
   }
-  let data = await database.getUserInformation(req.session.userID);
-  res.status(200).json(data);
+
+  // Insert user information
+  let {userID, error} = await database.insertCustomer(user.email, user.password);
+
+  if (error) {
+    return res.status(401).json({ error: "Database Insertion Failed", message: error.message});
+  }
+  else if (userID) {
+    return res.status(401).json({ error: "The email is already in use"});
+  }
+  else {
+    res.status(200).json({message: `Registration successful as UserID: ${userID}`});
+  }
 });
+
+
 
 
 
 // ------------------ Account -----------------------
 
 // Get Customer Accounts
+
 app.get('/customer/accounts', async (req, res) => {
   console.log(`Getting Bank Accounts List for User ${req.session.userID}`);
   if(!req.session.userID) {
-    return res.status(401).json({ error: "Unauthorized User Access"});
+    return res.status(401).json({ error: "User Not Logged In"});
   }
   let accountList = await database.getAccountsList(req.session.userID);
+  if(!accountList) {
+    return res.status(404).json({ error: `User`})
+  }
   res.status(200).json(accountList);
 });
 
 // Get Customer Account Information
 app.get('/customer/accounts/account', async (req, res) => {
   if(!req.session.userID) {
-    return res.status(401).json({ error: "Unauthorized User Access"});
+    return res.status(401).json({ error: "User Not Logged In"});
   }
   let accountID = req.body.accountID;
   console.log(`Getting Account ${accountID} Information for User ${req.session.userID}`);
   let accountInfo = await database.getAccountInformation(req.session.userID, accountID);
+  if (!accountInfo) {
+    return res.status(402).json({ error: `Invalid accountID for User ${req.session.userID}`})
+  }
   res.status(200).json(accountInfo);
 });
 
 // ------------------------ Admininstrator -------------------------------
 // Get Teller List
 app.get('/admin/tellers', async (req, res) => {
-  if(!req.session.userID || req.session.userID != adminID) {
-    return res.status(401).json({ error: "Unauthorized User Access"});
+  if(!req.session.userID) {
+    return res.status(401).json({ error: "User Not Logged In"});
+  }
+  if(req.session.userID != adminID) {
+    return res.status(403).json({ error: "Unauthorized User Access. Admin Access Required"});
   }
   console.log("Getting a Tellers List");
   let tellersList = await database.getTellersList();
@@ -144,7 +164,7 @@ app.get('/admin/tellers', async (req, res) => {
 // Add a Teller
 app.put('/admin/tellers/teller', async (req, res) => {
   if(!req.session.userID || req.session.userID != adminID) {
-    return res.status(401).json({ error: "Unauthorized User Access"});
+    return res.status(403).json({ error: "Unauthorized User Access"});
   }
   console.log("Adding a new Teller");
   let tellerInfo = req.body;
@@ -155,7 +175,7 @@ app.put('/admin/tellers/teller', async (req, res) => {
 // Update a Teller's Information
 app.post('/admin/tellers/teller', async (req, res) => {
   if(!req.session.userID || req.session.userID != adminID) {
-    return res.status(401).json({ error: "Unauthorized User Access"});
+    return res.status(403).json({ error: "Unauthorized User Access"});
   }
   console.log("Adding a new Teller");
   let tellerInfo = req.body;
@@ -166,7 +186,7 @@ app.post('/admin/tellers/teller', async (req, res) => {
 // Delete a Teller
 app.delete('/admin/tellers/teller', async (req, res) => {
   if(!req.session.userID || req.session.userID != adminID) {
-    return res.status(401).json({ error: "Unauthorized User Access"});
+    return res.status(403).json({ error: "Unauthorized User Access"});
   }
   console.log("Adding a new Teller");
   let tellerInfo = req.body;
