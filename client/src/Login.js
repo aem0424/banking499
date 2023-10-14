@@ -21,7 +21,7 @@ function Login() {
     const { email, password } = formData;
     
     try {
-      const response = await axios.post('/user/login', { "email":email, "password" : password });
+      const response = await axios.post(' https://localhost:4000/user/login', { "email":email, "password" : password });
 
       if (response.data.user) {
         // Login successful, you can redirect the user or perform other actions here.
