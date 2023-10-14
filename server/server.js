@@ -20,6 +20,28 @@ app.use(session({
 }));
 
 
+app.get('/test-get', (req, res) => {
+  try {
+    return res.status(200).json({ message: "test successful"});
+  }
+  catch(e) {
+    return res.status(500).json( { error: e, message: "test failed"})
+  }
+});
+
+app.get('/users', async (req, res) => {
+  console.log(`Getting User ${req.session.userID}'s Information`);
+  // Query User Information
+  let users = await database.getUserTable();
+
+  if(!users) {
+    return res.status(404).json({ error: `User Table Not Found`});
+  }
+  else {
+    return res.status(200).json(users);
+  }
+});
+
 app.get('/check-auth', (req, res) => {
   res.json({ isAuthenticated: req.isAuthenticated });
 });

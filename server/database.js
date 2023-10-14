@@ -10,6 +10,20 @@ const supabase = createClient(dbUrl, dbKey);
 
 const debugging = true;
 
+
+async function getUserTable() {
+    const { data, error } = await supabase
+    .from('User')
+    .select('*')
+    if (error) {
+        throw error;
+    }
+
+    // logActivity("User", "NULL", "GET UserID", "", true)
+    return data;
+}
+
+
 // ---------------- User Table -------------
 // request for UserID
 async function getUserID(email, password) {
@@ -211,6 +225,7 @@ async function logActivity(refTable, refID, activityType, activityDetail, succes
   }
 
 module.exports = {
+    getUserTable,
     getUserID,
     getUserInformation,
     deleteUser,
