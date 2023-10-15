@@ -1,6 +1,6 @@
 import React from 'react'
 
-function AdminTellerManage() {
+function AdminTellerList() {
     return (
         <div>
             <h1>This is a placeholder for the admin teller management system.</h1>
@@ -9,4 +9,4 @@ function AdminTellerManage() {
         </div>
     )
 }
-export default AdminTellerManage;
+export default AdminTellerList;
