@@ -34,11 +34,30 @@ function Login() {
     }
   };
 
+  const handleSubmit2 = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.get(' https://localhost:4000/check-auth');
+
+      if (response.data.user) {
+        // Login successful, you can redirect the user or perform other actions here.
+        console.log('Check successful:', response.data.user);
+      } else {
+        // Handle the case where login is unsuccessful (e.g., display an error message).
+        console.error('Check failed');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      // Handle any unexpected errors.
+    }
+  };
+
+
   return (
     <div className='container'>
       <h1>Welcome to Summit Financial</h1>
       <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit2}>
         <div>
           <label htmlFor="email">Email:</label>
           <input
