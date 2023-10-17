@@ -8,16 +8,56 @@ const dbKey = process.env.SUPABASE_PUBLIC_API_KEY; // Setting db API key
 const supabase = createClient(dbUrl, dbKey);
 
 
-// ---------------- Get ---------------------
-// 
-async function getData() {
-    const { data, error } = await supabase.from('User').select('*');
+const debugging = true;
 
-    return { data, error };
 
-};
+async function getUserTable() {
+    const { data, error } = await supabase
+    .from('User')
+    .select('*')
+    if (error) {
+        throw error;
+    }
 
-async function getUserInformation(email) {
+    // logActivity("User", "NULL", "GET UserID", "", true)
+    return data;
+}
+
+
+// ---------------- User Table -------------
+// request for UserID
+async function getUserID(email, password) {
+    const { data, error } = await supabase
+    .from('User')
+    .select('UserID')
+    .eq('Email', email)
+    .eq('Password', password);
+    if (error) {
+        throw error;
+    }
+
+    // logActivity("User", "NULL", "GET UserID", "", true)
+    return data;
+}
+
+async function getUserLogin(userID) {
+    const { data, error } = await supabase
+    .from('User')
+    .select('Email, Password')
+    .eq('UserID', userID);
+
+    if (error) {
+        throw error;
+    }
+
+    // logActivity("User", "NULL", "GET UserID", "", true)
+    return data;
+}
+
+// Get User Information
+// Params: UserID
+// Return: the user's personal information
+async function getUserInformation(userID) {
     const { data, error } = await supabase
         .from('User')
         .select('Role, FirstName, LastName, Address, PhoneNumber, SSN, DOB')
@@ -35,7 +75,18 @@ async function getAccountInformation(userID) {
     return { data, error };
 }
 
-// Get Customer Account Types
+module.exports = async function insertCustomer(user) {
+    const { data, error } = await supabase
+        .from('User')
+        .insert('Customer', )
+        .select('UserID, Role, FirstName, LastName, Address, PhoneNumber, SSN, DOB')
+
+    return { data, error };
+}
+
+
+// --------------------------- Account Table -----------------------
+// Get Accounts List
 // Params: UserID
 // Return: { AccountType: "Checking" | "Savings" | "Money Market" | "Home Mortgage Loan" | "Credit Card" } 
 async function getAccountNames(userID) {
@@ -67,17 +118,9 @@ async function addLog(userID, activityType, activityDetail) {
     return data;
   }
 
-//---------------------------------Set---------------------------------
-async function regUser() {
-    const { data, error } = await supabase.from('User').insert({Email:setUsernameReg,Password:setPasswordReg});
-
-    return { data, error };
-
-};
-  
-
 module.exports = {
-    getData,
+    getUserTable,
+    getUserID,
     getUserInformation,
     getAccountInformation,
     getAccountNames,
