@@ -19,13 +19,11 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = formData;
-    
     try {
-      const response = await axios.post(' https://localhost:4000/user/login', { "email":email, "password" : password });
-
-      if (response.data.user) {
+      const response = await axios.post(' http://localhost:4000/user/login', { "email":email, "password" : password });
+      if (response.data) {
         // Login successful, you can redirect the user or perform other actions here.
-        console.log('Login successful:', response.data.user);
+        console.log('Login successful:', response.data);
       } else {
         // Handle the case where login is unsuccessful (e.g., display an error message).
         console.error('Login failed');

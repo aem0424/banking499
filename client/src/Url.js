@@ -29,7 +29,3 @@ function Url() {
 
 }
 export default Url;
-
-/*
-    remaining to-do links go here
-*/
