@@ -1,5 +1,6 @@
 const express = require('express');
 const session = require('express-session');
+const cors = require('cors');
 const database = require('./database.js');
 
 const app = express();
@@ -10,7 +11,7 @@ const adminID = 0;
 
 // ----------------------- Middleware ---------------------------
 app.use(express.json());
-
+app.use(cors());
 
 // Authentication
 app.use(session({
