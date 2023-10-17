@@ -1,8 +1,8 @@
 import React from "react"
 import './App.css';
-import ForgotPass from './ForgotPass'
-import Login from './Login'
-import Register from './Register'
+import ForgotPass from './/pre/ForgotPass'
+import Login from './/pre/Login'
+import Register from './/pre/Register'
 import ReactDemo from './ReactDemo'
 import DataDisplay from './DataDisplay'
 import {Route, Routes} from 'react-router-dom';
