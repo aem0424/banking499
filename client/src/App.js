@@ -41,7 +41,6 @@ function App() {
    <div className="App" >
     <Routes>
       <Route exact path="/" element ={<Login/>}/>
-      <Route exact path={H_HOME} element = {<Login/>}/>
       <Route exact path="/DataDisplay" element ={<DataDisplay/>}/>
       <Route exact path="/reactdemo" element ={<ReactDemo/>}/>
       <Route exact path="/ForgotPass" element ={<ForgotPass/>}/>
