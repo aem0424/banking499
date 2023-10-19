@@ -1,5 +1,7 @@
 // NOTE: this entire file is experimental for a possible method in which we can ensure that we get the right link when typing
 // in redirects; it is currently a WIP and i will want to test this further to make sure everything works OK
+
+let H_HOME = "/";
 function Url() {
     const H_HOME ="/";
     const H_REGISTER = "/register"
@@ -26,6 +28,5 @@ function Url() {
     const A_MAIN = "/admin";
     const A_C_MAIN = "/admin/customer";
     const A_T_MAIN = "/admin/teller";
-
 }
 export default Url;

@@ -8,6 +8,9 @@ function AdminCustomerInfo() {
             <p>Phone Number:</p>
             <p>SSN:</p>
             <p>Date of Birth:</p>
+            <a href="Admin/Customer/Info/Edit">             
+                <button>Edit Customer Info</button>
+            </a>   
         </div>
     )
 }

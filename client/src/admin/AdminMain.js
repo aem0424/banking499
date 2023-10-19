@@ -5,8 +5,12 @@ function AdminMain() {
         <div>
             <h1>This is a placeholder for the main admin page.</h1>
             <button>Show Transactions</button><br/>
-            <button>Manage Tellers</button>
-            <button>Manage Customers</button>
+            <a href="/Admin/Teller">
+                <button>Manage Tellers</button>
+            </a>
+            <a href="/Admin/Customer">
+                <button>Manage Customers</button>
+            </a>
         </div>
     )
 }
