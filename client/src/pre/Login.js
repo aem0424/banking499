@@ -27,6 +27,7 @@ function Login() {
       if (response.data) {
         // Login successful, you can redirect the user or perform other actions here.
         console.log('Login successful:', response.data);
+        //history.push('/Customer'); // Change the path to match your route configuration
       } else {
         // Handle the case where login is unsuccessful (e.g., display an error message).
         setError('Login failed. Please check your email and password.');
