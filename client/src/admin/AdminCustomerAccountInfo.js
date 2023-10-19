@@ -3,7 +3,10 @@ import React from 'react'
 function AdminCustomerAccountInfo() {
     return (
         <div>
-            <h1>placeholder</h1>
+            <p>Account Name:</p>
+            <p>Account Type:</p>
+            <p>Account Owner:</p>
+            <p>Interest Rate:</p>
         </div>
     )
 }

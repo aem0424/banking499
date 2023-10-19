@@ -3,7 +3,9 @@ import React from 'react'
 function CustomerViewAccountInformation() {
     return (
         <div>
-            <h1>placeholder</h1>
+            <p>Account Name:</p>
+            <p>Account Type:</p>
+            <p>Interest Rate:</p>
         </div>
     )
 }

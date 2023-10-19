@@ -3,7 +3,8 @@ import React from 'react'
 function TellerTransfer() {
     return (
         <div>
-            <h1>placeholder</h1>
+            <form>Amount to Transfer</form>
+            <button>Transfer Funds</button>
         </div>
     )
 }

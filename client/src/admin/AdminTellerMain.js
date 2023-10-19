@@ -3,7 +3,8 @@ import React from 'react'
 function AdminTellerMain() {
     return (
         <div>
-            <h1>placeholder</h1>
+            <button>Create Teller</button>
+            <button>Manage Tellers</button>
         </div>
     )
 }
