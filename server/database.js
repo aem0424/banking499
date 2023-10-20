@@ -64,13 +64,18 @@ async function getUserInformation(userID) {
     const { data, error } = await supabase
         .from('User')
         .select('Role, FirstName, LastName, Address, PhoneNumber, SSN, DOB')
-        .eq('UserID', userID);
-    
-    if (error) {
-        throw error;
-    }
+        .eq('Email', email);
+        
+    return { data, error };
+}
 
-    return data;
+// Get User Account Information
+// Params: UserID
+// Return: Account
+async function getAccountInformation(userID) {
+    let { data, error } = await supabase.from('Account').select('*').eq("UserID", userID);
+
+    return { data, error };
 }
 
 async function insertCustomer(user) {
@@ -89,144 +94,33 @@ async function insertCustomer(user) {
 // --------------------------- Account Table -----------------------
 // Get Accounts List
 // Params: UserID
-// Return: list of all accounts the customer has 
-async function getAccountsList(userID) {
+// Return: { AccountType: "Checking" | "Savings" | "Money Market" | "Home Mortgage Loan" | "Credit Card" } 
+async function getAccountNames(userID) {
     let { data, error } = await supabase
     .from('Account')
     .select('AccountType, AccountName')
     .eq('UserID', userID);
 
-    if (error) {
-        throw error;
-    }
-
-    return data;
+    return { data, error };
 }
-
-// Get User Account Information
-// Params: UserID, AccountID
-// Return: the account's information
-async function getAccountInformation(userID, accountID) {
-    let { data, error } = await supabase
-    .from('Account')
-    .select('*')
-    .eq('UserID', userID)
-    .eq('AccountID', accountID);
-
-    if (error) {
-        throw error;
-    }
-
-    return data;
-}
-
-
-
-// -------------------------------- Administrator ----------------------------
-
-// Get Tellers List
-// params: None
-// return: a list of tellers {Email, FirstName, LastName}
-async function getTellersList() {
-    const { data, error } = await supabase
-    .from('User')
-    .select('Email, FirstName, LastName')
-    .eq('Role', 'Teller');
-
-    if (error) {
-        throw error;
-    }
-
-    return data;
-}
-
-// Get Teller Information
-async function getTellerInformation(userID) {
-    const { data, error } = await supabase
-    .from('User')
-    .select('Email, FirstName, LastName')
-    .eq('UserID', userID);
-
-    if (error) {
-        throw error;
-    }
-
-    return data;
-}
-
-// Add a Teller
-// params: email, password, firstName, lastName
-// return: a list of tellers {Email, FirstName, LastName}
-async function addTeller(email, password, firstName, lastName) {
-    const { data, error } = await supabase
-    .from('User')
-    .insert([
-        { 'Role': "Teller", 'Email': email, 'Password': password, 'FirstName': firstName, 'LastName': lastName
-     }
-    ])
-    .select();
-    
-    if (error) {
-        console.log(error);
-        throw error;
-    }
-    
-    return data;
-}
-
-async function updateTeller(email, password, firstName, lastName) {
-    const { data, error } = await supabase
-    .from('User')
-    .update([
-        { 'Role': "Teller", 'Email': email, 'Password': password, 'FirstName': firstName, 'LastName': lastName
-     }
-    ])
-    .select();
-    
-    if (error) {
-        console.log(error);
-        throw error;
-    }
-    
-    return data;
-}
-
-async function deleteUser(userID) {
-    const { data, error } = await supabase
-    .from('User')
-    .delete()
-    .eq('UserID', userID);
-    
-    if (error) {
-        console.log(error);
-        throw error;
-    }
-    
-    return data;
-}
-
 
 // --------------------------------- Log -----------------------------------
-async function logActivity(refTable, refID, activityType, activityDetail, successful) {
-    if (debugging) {
-        return
-    }
-
+async function addLog(userID, activityType, activityDetail) {
     const { data, error } = await supabase
         .from('Log')
         .insert([
         {
-            "ReferenceTable": refTable,
-            "ReferenceID": refID,
-            "ActivityType": activityType,
-            "ActivityDetail": activityDetail,
-            "Timestamp": new Date().toISOString(), // Use 'created_at' for the timestamp
-            "IsSuccessful": successful
+            UserID: userID,
+            ActivityType: activityType,
+            ActivityDetail: activityDetail,
+            Timestamp: new Date().toISOString(), // Use 'created_at' for the timestamp
         },
     ]);
+    
     if (error) {
       throw error;
     }
+  
     return data;
   }
 
@@ -235,12 +129,13 @@ module.exports = {
     getUserID,
     getUserLogin,
     getUserInformation,
+<<<<<<< HEAD
     deleteUser,
     insertCustomer,
     getAccountsList,
+=======
+>>>>>>> d9a0fd419cfbbcc2beb615c6b2f543f893d3f8e7
     getAccountInformation,
-    getTellersList,
-    addTeller,
-    updateTeller,
-    logActivity
+    getAccountNames,
+    addLog
 }

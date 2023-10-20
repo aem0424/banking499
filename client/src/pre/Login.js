@@ -7,6 +7,7 @@ function Login() {
     email: '',
     password: '',
   });
+  const [error, setError] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -19,45 +20,31 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = formData;
+    setError(null); // Clear any previous error messages
+
     try {
-      const response = await axios.post(' http://localhost:4000/user/login', { "email":email, "password" : password });
+      const response = await axios.post(' http://localhost:4000/user/login', { "email" : email, "password" : password });
       if (response.data) {
         // Login successful, you can redirect the user or perform other actions here.
         console.log('Login successful:', response.data);
+        //history.push('/Customer'); // Change the path to match your route configuration
       } else {
         // Handle the case where login is unsuccessful (e.g., display an error message).
-        console.error('Login failed');
+        setError('Login failed. Please check your email and password.');
       }
     } catch (error) {
-      console.error('Error:', error);
+      setError('An unexpected error occurred. Please try again later.');
       // Handle any unexpected errors.
     }
   };
 
-  const handleSubmit2 = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.get(' https://localhost:4000/check-auth');
-
-      if (response.data.user) {
-        // Login successful, you can redirect the user or perform other actions here.
-        console.log('Check successful:', response.data.user);
-      } else {
-        // Handle the case where login is unsuccessful (e.g., display an error message).
-        console.error('Check failed');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      // Handle any unexpected errors.
-    }
-  };
 
 
   return (
     <div className='container'>
       <h1>Welcome to Summit Financial</h1>
       <h2>Login</h2>
-      <form onSubmit={handleSubmit2}>
+      <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="email">Email:</label>
           <input
@@ -87,6 +74,7 @@ function Login() {
         <br />
         <a href="/ForgotPass">Forgot Password</a>
       </div>
+      {error && <div className="error-message">{error}</div>}
     </div>
   );
 }
