@@ -40,6 +40,9 @@ async function getUserID(email, password) {
     return data;
 }
 
+// Get User Login
+// Params: UserID
+// Return: Email and Password
 async function getUserLogin(userID) {
     const { data, error } = await supabase
     .from('User')
@@ -70,10 +73,13 @@ async function getUserInformation(userID) {
     return data;
 }
 
-module.exports = async function insertCustomer(user) {
+async function insertCustomer(user) {
     const { data, error } = await supabase
         .from('User')
-        .insert('Customer', )
+        .insert([{Role: 'Customer', Email: user.email, Password: user.password,
+                    FirstName: user.firstName, LastName: user.lastName, PhoneNumber: user.phoneNumber,
+                    Street: user.street, City: user.city, State: user.state, ZIP: user.zip,
+                    SSN: user.ssn, DOB: user.dob}])
         .select('UserID, Role, FirstName, LastName, Address, PhoneNumber, SSN, DOB')
 
     return { data, error };
@@ -227,8 +233,10 @@ async function logActivity(refTable, refID, activityType, activityDetail, succes
 module.exports = {
     getUserTable,
     getUserID,
+    getUserLogin,
     getUserInformation,
     deleteUser,
+    insertCustomer,
     getAccountsList,
     getAccountInformation,
     getTellersList,
