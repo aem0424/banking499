@@ -88,27 +88,31 @@ app.post('/user/logout', async (req, res) => {
 });
 
 // Register a Customer
-// params: user:{'Role: <role>,FirstName: <firstName>, LastName: <lastName>, Address: <address>, PhoneNumber: <phoneNumber>, SSN: <ssn>, DOB: <dob>'}
+// params: user:{FirstName: <firstName>, LastName: <lastName>, Street: <street>, "City": <city>, "State": <state>, "ZIP": <zip>, PhoneNumber: <phoneNumber>, SSN: <ssn>, DOB: <dob>'}
 // return: { message: <message> }
 app.post('/user/register', async (req, res) => {
   let user = req.body;
+  console.log(user);
 
   // Check the user body
   if(!user) {
     return res.status(401).json({ error: "Empty json passed in body" });
   }
 
+  // Check if the email already exists in the database
+  let name = await database.getUserNameFromEmail(user.Email);
+  if (name) {
+    return res.status(401).json({ error: `The email is already in use by ${name.FirstName} ${name.LastName}`});
+  }
+
   // Insert user information
-  let {userID, error} = await database.insertCustomer(user.email, user.password);
+  let {userData, error} = await database.insertCustomer(user);
 
   if (error) {
     return res.status(401).json({ error: "Database Insertion Failed", message: error.message});
   }
-  else if (userID) {
-    return res.status(401).json({ error: "The email is already in use"});
-  }
   else {
-    res.status(200).json({message: `Registration successful as UserID: ${userID}`});
+    res.status(200).json({message: `Registration successful as UserID: ${userData.UserID}`});
   }
 });
 
@@ -119,7 +123,6 @@ app.post('/user/register', async (req, res) => {
 // ------------------ Account -----------------------
 
 // Get Customer Accounts
-
 app.get('/customer/accounts', async (req, res) => {
   console.log(`Getting Bank Accounts List for User ${req.session.userID}`);
   if(!req.session.userID && !debugging) {
