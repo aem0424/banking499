@@ -2,12 +2,14 @@ const express = require('express');
 const session = require('express-session');
 const cors = require('cors');
 const database = require('./database.js');
+const encryption = require('./encryption.js');
 
 const app = express();
 const PORT = 4000;
 
 const adminID = 0;
 
+const debugging = true;
 
 // ----------------------- Middleware ---------------------------
 app.use(express.json());
@@ -21,34 +23,6 @@ app.use(session({
 }));
 
 
-app.get('/test-get', (req, res) => {
-  try {
-    return res.status(200).json({ message: "test successful"});
-  }
-  catch(e) {
-    return res.status(500).json( { error: e, message: "test failed"})
-  }
-});
-
-app.get('/users', async (req, res) => {
-  console.log(`Getting User ${req.session.userID}'s Information`);
-  // Query User Information
-  let users = await database.getUserTable();
-
-  if(!users) {
-    return res.status(404).json({ error: `User Table Not Found`});
-  }
-  else {
-    return res.status(200).json(users);
-  }
-});
-
-app.get('/check-auth', (req, res) => {
-  res.json({ isAuthenticated: req.isAuthenticated });
-});
-
-
-
 app.get('/', (req, res) => {
   res.send('Home Route');
 });
@@ -57,9 +31,10 @@ app.get('/', (req, res) => {
 // Get User Information
 app.get('/user', async (req, res) => {
   console.log(`Getting User ${req.session.userID}'s Information`);
-  if(!req.session.userID) {
+  if(!req.session.userID && !debugging) {
     return res.status(401).json({ error: "User Is Not Logged In"});
   }
+
   // Query User Information
   let userInfo = await database.getUserInformation(req.session.userID);
 
@@ -78,6 +53,7 @@ app.post('/user/login', async (req, res) => {
   // Check parameters
   let email = req.body.email;
   let password = req.body.password;
+
   if(!email || !password) {
     return res.status(401).json({ error: "Empty values passed in for email or password"});
   }
@@ -146,7 +122,7 @@ app.post('/user/register', async (req, res) => {
 
 app.get('/customer/accounts', async (req, res) => {
   console.log(`Getting Bank Accounts List for User ${req.session.userID}`);
-  if(!req.session.userID) {
+  if(!req.session.userID && !debugging) {
     return res.status(401).json({ error: "User Not Logged In"});
   }
   let accountList = await database.getAccountsList(req.session.userID);
@@ -158,7 +134,7 @@ app.get('/customer/accounts', async (req, res) => {
 
 // Get Customer Account Information
 app.get('/customer/accounts/account', async (req, res) => {
-  if(!req.session.userID) {
+  if(!req.session.userID && !debugging) {
     return res.status(401).json({ error: "User Not Logged In"});
   }
   let accountID = req.body.accountID;
@@ -173,7 +149,7 @@ app.get('/customer/accounts/account', async (req, res) => {
 // ------------------------ Admininstrator -------------------------------
 // Get Teller List
 app.get('/admin/tellers', async (req, res) => {
-  if(!req.session.userID) {
+  if(!req.session.userID && !debugging) {
     return res.status(401).json({ error: "User Not Logged In"});
   }
   if(req.session.userID != adminID) {
@@ -186,7 +162,7 @@ app.get('/admin/tellers', async (req, res) => {
 
 // Add a Teller
 app.put('/admin/tellers/teller', async (req, res) => {
-  if(!req.session.userID || req.session.userID != adminID) {
+  if(!req.session.userID || req.session.userID != adminID && !debugging) {
     return res.status(403).json({ error: "Unauthorized User Access"});
   }
   console.log("Adding a new Teller");
@@ -197,7 +173,7 @@ app.put('/admin/tellers/teller', async (req, res) => {
 
 // Update a Teller's Information
 app.post('/admin/tellers/teller', async (req, res) => {
-  if(!req.session.userID || req.session.userID != adminID) {
+  if(!req.session.userID || req.session.userID != adminID && !debugging) {
     return res.status(403).json({ error: "Unauthorized User Access"});
   }
   console.log("Adding a new Teller");
@@ -208,7 +184,7 @@ app.post('/admin/tellers/teller', async (req, res) => {
 
 // Delete a Teller
 app.delete('/admin/tellers/teller', async (req, res) => {
-  if(!req.session.userID || req.session.userID != adminID) {
+  if(!req.session.userID || req.session.userID != adminID && !debugging) {
     return res.status(403).json({ error: "Unauthorized User Access"});
   }
   console.log("Adding a new Teller");
