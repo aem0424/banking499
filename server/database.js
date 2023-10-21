@@ -25,6 +25,19 @@ async function getUserTable() {
 
 
 // ---------------- User Table -------------
+async function getUserNameFromEmail(email) {
+    const { data, error } = await supabase
+    .from('User')
+    .select('FirstName, LastName')
+    .eq('Email', email)
+    if (error) {
+        throw error;
+    }
+
+    // logActivity("User", "NULL", "GET UserID", "", true)
+    return data[0];
+}
+
 // request for UserID
 async function getUserID(email, password) {
     const { data, error } = await supabase
@@ -32,12 +45,13 @@ async function getUserID(email, password) {
     .select('UserID')
     .eq('Email', email)
     .eq('Password', password);
+
     if (error) {
         throw error;
     }
 
     // logActivity("User", "NULL", "GET UserID", "", true)
-    return data;
+    return data[0].UserID;
 }
 
 // Get User Login
@@ -54,7 +68,7 @@ async function getUserLogin(userID) {
     }
 
     // logActivity("User", "NULL", "GET UserID", "", true)
-    return data;
+    return data[0];
 }
 
 // Get User Information
@@ -80,13 +94,14 @@ async function getAccountInformation(userID) {
 
 async function insertCustomer(user) {
     const { data, error } = await supabase
-        .from('User')
-        .insert([{Role: 'Customer', Email: user.email, Password: user.password,
-                    FirstName: user.firstName, LastName: user.lastName, PhoneNumber: user.phoneNumber,
-                    Street: user.street, City: user.city, State: user.state, ZIP: user.zip,
-                    SSN: user.ssn, DOB: user.dob}])
-        .select('UserID, Role, FirstName, LastName, Address, PhoneNumber, SSN, DOB')
-
+    .from('User')
+    .insert([{"Role": 'Customer', "Email": user.Email, "Password": user.Password,
+    "FirstName": user.FirstName, "LastName": user.LastName, "PhoneNumber": user.PhoneNumber,
+    "Street": user.Street, "City": user.City, "State": user.State, "ZIP": user.ZIP,
+    "SSN": user.SSN, "DOB": user.DOB}])
+    .select()
+    
+    console.log(data);
     return { data, error };
 }
 
@@ -129,6 +144,8 @@ module.exports = {
     getUserID,
     getUserLogin,
     getUserInformation,
+    getUserNameFromEmail,
+    insertCustomer,
     getAccountInformation,
     getAccountNames,
     addLog
