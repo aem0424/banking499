@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './Login.css';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -17,6 +18,7 @@ function Login() {
     });
   };
 
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = formData;
@@ -27,6 +29,7 @@ function Login() {
       if (response.data) {
         // Login successful, you can redirect the user or perform other actions here.
         console.log('Login successful:', response.data);
+        navigate('/Customer');
         //history.push('/Customer'); // Change the path to match your route configuration
       } else {
         // Handle the case where login is unsuccessful (e.g., display an error message).

@@ -129,12 +129,6 @@ module.exports = {
     getUserID,
     getUserLogin,
     getUserInformation,
-<<<<<<< HEAD
-    deleteUser,
-    insertCustomer,
-    getAccountsList,
-=======
->>>>>>> d9a0fd419cfbbcc2beb615c6b2f543f893d3f8e7
     getAccountInformation,
     getAccountNames,
     addLog
