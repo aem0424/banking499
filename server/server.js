@@ -97,7 +97,7 @@ app.post('/user/logout', async (req, res) => {
 // return: { message: <message> }
 app.put('/user/customer/register', async (req, res) => {
   let user = req.body;
-  console.log(`Registering ${user}`);
+  console.log(`Registering ${user.FirstName}`);
 
   // Check the user body
   if(!user) {
@@ -119,14 +119,14 @@ app.put('/user/customer/register', async (req, res) => {
   if (err_userData) {
     return res.status(401).json({ error: "Database Insertion Failed", message: err_userData.message});
   }
-
+  userData = userData[0];
   return res.status(200).json({message: `Registration successful as UserID: ${userData.UserID}`});
 });
 
 // DELETE: Delete a Customer
 // params: UserID
 // return: { message: <message> }
-app.delete('/user/delete', async (req, res) => {
+app.delete('/user/customer/delete', async (req, res) => {
   let userID = req.body.UserID;
 
   // Check the user body
@@ -316,7 +316,7 @@ app.put('/customer/accounts/create', async (req, res) => {
 app.put('/customer/accounts/delete', async (req, res) => {
   // Check If a session exsits for the user
   let userID = req.session.UserID;
-  console.log(`Creating a new Account for Customer ${userID}`);
+  console.log(`Deleting an Account for Customer ${userID}`);
   if(!userID) {
     return res.status(401).json({ error: "User Not Logged In"});
   }
@@ -324,18 +324,18 @@ app.put('/customer/accounts/delete', async (req, res) => {
   // Check if the Account Already Exists
   let accountID = req.body.AccountID;
   let [ account, err_account ] = await database.getAccount(accountID);
-  if (err_account) return res.status(404).json({ error: `Failed to query all Accounts for User ${userID}`, message: err_account.message});
+  if (err_account) return res.status(404).json({ error: `Failed to query the Account ${accountID} for Customer ${userID}`, message: err_account.message});
   // Parse Data
   account = account[0];
   if (!account) return res.status(404).json({error: `An Account with the AccountID ${accountID} does not exist`});
 
 
   // Insert the Account
-  let [ accountData, err_accountData ] = await database.deleteAccount(userID, accountID);
+  let [ accountData, err_accountData ] = await database.deleteAccount(accountID);
   if (err_accountData) return res.status(402).json({ error: `Invalid request`, message: err_accountData.message});
 
   // TODO: Flag the Teller for the request to activate the Account
-  return res.status(200).json({ message: "Account Creation Request Submitted Successfully", data: accountData});
+  return res.status(200).json({ message: "Account Deletion Request Submitted Successfully", data: accountData});
 });
 
 

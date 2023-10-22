@@ -210,6 +210,7 @@ async function deleteTeller(userID) {
 // Params: AccountID
 // Return: Entire Account data
 async function getAccount(accountID) {
+    console.log(accountID);
     let { data, error } = await supabase
     .from('Account')
     .select('*')
@@ -217,7 +218,7 @@ async function getAccount(accountID) {
 
     return [ data, error ];
 }
-async function getAccount(userID, accountID) {
+async function getAccountAsCustomer(userID, accountID) {
     let { data, error } = await supabase
     .from('Account')
     .select('*')
@@ -271,12 +272,12 @@ async function getAccountIDFromUserID(userID) {
 async function insertAccount(userID, account) {
     const { data, error } = await supabase
     .from('Account')
-    .insert([{"UserID": userID,
+    .insert({"UserID": userID,
             "AccountName": account.AccountName,
             "AccountType": account.AccountType,
             "Balance": account.Balance,
             "InterestRate": account.InterestRate,
-            "Activated": false}])
+            "Activated": false})
     .select();
 
     return [ data, error ];
@@ -286,12 +287,19 @@ async function insertAccount(userID, account) {
 // Params: AccountID
 // Return: Account { UserID, AccountName, AccountType, Balance, InterestRate } (Confirmation)
 async function deleteAccount(accountID) {
+    // const { data, error } = await supabase
+    // .from('Account')
+    // .delete()
+    // .eq("UserID", accountID)
+    // .select();
+
     const { data, error } = await supabase
     .from('Account')
-    .delete()
-    .eq("UserID", accountID)
+    .update({Activated: false, Deleted: true})
+    .eq("AccountID", accountID)
     .select();
-
+    console.log(accountID);
+    console.log(data);
     return [ data, error ];
 }
 
@@ -423,6 +431,7 @@ module.exports = {
     deleteTeller,
 
     getAccount,
+    getAccountAsCustomer,
     getAccountsFromUserID,
     getAccountSummaryFromUserID,
     getAccountIDFromUserID,
