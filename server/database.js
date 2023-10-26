@@ -60,6 +60,31 @@ async function getUserLoginFromUserID(userID) {
     return [ data, error ];
 }
 
+// Get Users
+// Params: None
+// Return: All Customers
+async function getUsers(role) {
+    const { data, error } = await supabase
+        .from('User')
+        .select('*')
+        .eq('Role', role);
+        
+    return [ data, error ];
+}
+
+// Get User Role
+// Params: UserID
+// Return: All Customers
+async function getUserRole(userID) {
+    const { data, error } = await supabase
+        .from('User')
+        .select('Role')
+        .eq('UserID', userID);
+        
+    return [ data, error ];
+}
+
+
 // Get Customers
 // Params: None
 // Return: All Customers
@@ -413,6 +438,8 @@ async function insertTransaction(account) {
 
 module.exports = {
     getUser,
+    getUsers,
+    getUserRole,
     getUserIDFromLogin,
     getUserLoginFromUserID,
     getUserNameFromEmail,
