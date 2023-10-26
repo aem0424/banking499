@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
 
 function CustomerViewUserInformation() {
     return (
@@ -8,6 +10,7 @@ function CustomerViewUserInformation() {
             <p>Phone Number:</p>
             <p>SSN:</p>
             <p>Date of Birth:</p>
+            <button></button>
         </div>
     )
 }

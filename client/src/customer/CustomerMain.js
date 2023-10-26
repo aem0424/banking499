@@ -1,19 +1,14 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-
 function CustomerMain() {
     return (
         <div className='container'>
-            <h1>This is a placeholder for the main customer page; when finished, it will show all their bank accounts.</h1>
-            <a href="/customer/paybill">
-                <button>Pay Bill</button>
+            <h1>Welcome!</h1>
+            <a href="/Customer/PayBill">
+                <button>Pay Bill</button><br/>
             </a>
-            <a href="/customer/settings">
-                <button>Account Settings</button>
+            <a href="/Customer/UserInfo">
+                <button>User Information</button><br/>
             </a>
-            <a href="/customer/transaction">
-                <button>Transfer/Deposit</button>
-            </a>
+            <button html="/Customer/Transaction">Transfer/Deposit</button>
         </div>
     )
 }
