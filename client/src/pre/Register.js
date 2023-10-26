@@ -37,9 +37,9 @@ function Register() {
       <h1>Welcome to Summit Financial</h1>
       <h2>Register</h2>
       <form onSubmit={handleSubmit} className="register-form">
-        <div className="form-column">
-          <div>
-            <label htmlFor="username">Username:</label>
+        <div className="form-columns">
+          <div className='form-group'>
+            <label htmlFor="username" className='form-label'>Username:</label>
             <input
               type="text"
               id="username"
@@ -47,10 +47,11 @@ function Register() {
               value={formData.username}
               onChange={handleInputChange}
               required
+              className='form-input'
             />
           </div>
-          <div>
-            <label htmlFor="password">Password:</label>
+          <div className='form-group'>
+            <label htmlFor="password" className='form-label'>Password:</label>
             <input
               type="password"
               id="password"
@@ -58,10 +59,11 @@ function Register() {
               value={formData.password}
               onChange={handleInputChange}
               required
+              className='form-input'
             />
           </div>
-          <div>
-            <label htmlFor="firstName">First Name:</label>
+          <div className='form-group'>
+            <label htmlFor="firstName" className='form-label'>First Name:</label>
             <input
               type="text"
               id="firstName"
@@ -69,10 +71,11 @@ function Register() {
               value={formData.firstName}
               onChange={handleInputChange}
               required
+              className='form-input'
             />
           </div>
-          <div>
-            <label htmlFor="lastName">Last Name:</label>
+          <div className='form-group'>
+            <label htmlFor="lastName" className='form-label'>Last Name:</label>
             <input
               type="text"
               id="lastName"
@@ -80,10 +83,11 @@ function Register() {
               value={formData.lastName}
               onChange={handleInputChange}
               required
+              className='form-input'
             />
           </div>
-          <div>
-            <label htmlFor="ssn">SSN:</label>
+          <div className='form-group'>
+            <label htmlFor="ssn" className='form-label'>SSN:</label>
             <input
               type="text"
               id="ssn"
@@ -91,10 +95,11 @@ function Register() {
               value={formData.ssn}
               onChange={handleInputChange}
               required
+              className='form-input'
             />
           </div>
-          <div>
-            <label htmlFor="phoneNumber">Phone Number:</label>
+          <div className='form-group'>
+            <label htmlFor="phoneNumber" className='form-label'>Phone Number:</label>
             <input
               type="tel"
               id="phoneNumber"
@@ -102,10 +107,13 @@ function Register() {
               value={formData.phoneNumber}
               onChange={handleInputChange}
               required
+              className='form-input'
             />
           </div>
-          <div>
-            <label htmlFor="dateOfBirth">Date of Birth:</label>
+        </div>
+        <div className="form-columns">
+          <div className='form-group'>
+            <label htmlFor="dateOfBirth" className='form-label'>Date of Birth:</label>
             <input
               type="date"
               id="dateOfBirth"
@@ -115,10 +123,8 @@ function Register() {
               required
             />
           </div>
-        </div>
-        <div className="form-column">
-          <div>
-            <label htmlFor="addressLine1">Address Line 1:</label>
+          <div className='form-group'>
+            <label htmlFor="addressLine1" className='form-label'>Address Line 1:</label>
             <input
               type="text"
               id="addressLine1"
@@ -126,20 +132,22 @@ function Register() {
               value={formData.addressLine1}
               onChange={handleInputChange}
               required
+              className='form-input'
             />
           </div>
-          <div>
-            <label htmlFor="addressLine2">Address Line 2:</label>
+          <div className='form-group'>
+            <label htmlFor="addressLine2" className='form-label'>Address Line 2:</label>
             <input
               type="text"
               id="addressLine2"
               name="addressLine2"
               value={formData.addressLine2}
               onChange={handleInputChange}
+              className='form-input'
             />
           </div>
-          <div>
-            <label htmlFor="city">City:</label>
+          <div className='form-group'>
+            <label htmlFor="city" className='form-label'>City:</label>
             <input
               type="text"
               id="city"
@@ -147,10 +155,11 @@ function Register() {
               value={formData.city}
               onChange={handleInputChange}
               required
+              className='form-input'
             />
           </div>
-          <div>
-            <label htmlFor="state">State:</label>
+          <div className='form-group'>
+            <label htmlFor="state" className='form-label'>State:</label>
             <select
               id="state"
               name="state"
@@ -210,8 +219,8 @@ function Register() {
                   <option value="Wyoming">Wyoming</option>
             </select>
           </div>
-          <div>
-            <label htmlFor="zipcode">Zipcode:</label>
+          <div className='form-group'>
+            <label htmlFor="zipcode" className='form-label'>Zipcode:</label>
             <input
               type="text"
               id="zipcode"
@@ -219,10 +228,11 @@ function Register() {
               value={formData.zipcode}
               onChange={handleInputChange}
               required
+              className='form-input'
             />
           </div>
-        </div>
-        <button type="submit">Register</button>
+          </div>
+        <button type="submit" className='form-button'>Register</button>
       </form>
       <div className="form-links">
         <a href="/Login">Login</a>

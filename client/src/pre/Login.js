@@ -25,22 +25,41 @@ function Login() {
     setError(null); // Clear any previous error messages
 
     try {
-      const response = await axios.post(' http://localhost:4000/user/login', { "email" : email, "password" : password });
+      // Your login logic here
+      const response = await axios.post('http://localhost:4000/user/login', {
+        email,
+        password,
+      });
+
       if (response.data) {
-        // Login successful, you can redirect the user or perform other actions here.
-        console.log('Login successful:', response.data);
-        navigate('/Customer');
-        //history.push('/Customer'); // Change the path to match your route configuration
+        const userID = response.data.UserID;
+
+        // Use Axios to fetch the user's data
+        const userResponse = await axios.get(`http://localhost:4000/user/${userID}`);
+
+        if (userResponse.data) {
+          const userRole = userResponse.data.Role;
+
+          // Navigate based on the user's role
+          if (userRole === 'Admin') {
+            navigate('/Admin');
+          } else if (userRole === 'Teller') {
+            navigate('/Teller');
+          } else if (userRole === 'Customer') {
+            navigate('/Customer');
+          } else {
+            setError('Invalid Role');
+          }
+        } else {
+          setError('User data not found');
+        }
       } else {
-        // Handle the case where login is unsuccessful (e.g., display an error message).
         setError('Login failed. Please check your email and password.');
       }
     } catch (error) {
       setError('An unexpected error occurred. Please try again later.');
-      // Handle any unexpected errors.
     }
   };
-
 
 
   return (

@@ -1,10 +1,75 @@
-.register-form {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .form-column {
-    width: 48%; /* Adjust as needed to control the column width */
-    padding: 10px;
-    box-sizing: border-box;
-  }
+/* Overall form container */
+.form-container {
+  max-width: 800px; /* Adjust the width as needed */
+  margin: 0 auto; /* Center the form horizontally */
+  padding: 20px;
+  background-color: #f7f7f7;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+/* Two-column layout */
+.form-columns {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Each form column */
+.form-column {
+  width: 48%; /* Adjust the width as needed */
+}
+
+/* Form elements */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-weight: bold;
+}
+
+.form-input {
+  width: 70%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.form-select {
+  width: 70%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.form-textarea {
+  width: 70%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.form-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* Add any other styles for specific form elements like checkboxes, radios, etc. */
+
+/* Style for error messages, if needed */
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}
