@@ -3,7 +3,8 @@ const session = require('express-session');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const database = require('./database.js');
-const encryption = require('./encryption.js');
+const encryption = require('../encryption.js');
+const customerRoute = require('./customer.js');
 
 const app = express();
 const PORT = 4000;
@@ -15,10 +16,10 @@ const debugging = true;
 // ----------------------- Middleware ---------------------------
 app.use(express.json());
 app.use(cors());
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+
+app.use(customerRoute);
 
 // Authentication
 app.use(session({
@@ -329,6 +330,7 @@ app.post('/user/teller/update', async (req, res) => {
   if(!adminID || adminID != ADMIN_ID) {
     return res.status(401).json({ error: "Invalid Access Level to perfom the task: Creating a Teller account"});
   }
+
   
   // Check the user body
   let teller = req.body;
@@ -384,6 +386,26 @@ app.get('/user/role', async (req, res) => {
 });
 
 // ------------------ Customer -----------------------
+
+// GET: Get Customer Information (Login Required)
+// Params: None
+// Return: User{UserID, Email, Password, FirstName, LastName, Street, Street2, City, State, ZIP, PhoneNumber, SSN, DOB}
+app.get('/customer', async (req, res) => {
+  let userID = req.session.UserID;
+  let userRole = req.session.UserRole;
+  console.log(`Getting User ${userID}'s Information`);
+  if(!userID || userRole != "Customer") return res.status(401).json({ error: "User Is Not Logged In As Customer"});
+
+  // Query User Information
+  let [ userData, err_userData ] = await database.getUser(userID);
+  if(err_userData) {
+    return res.status(404).json({ error: `User ${userID} Not Found`, message: err_userData.message});
+  }
+  // Parse Data
+  userData = userData[0];
+  return res.status(200).json(userData);
+
+});
 
 // GET: Get a List of Customer Accounts (Login Required)
 // Params: None
