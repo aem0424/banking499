@@ -260,7 +260,8 @@ async function insertTeller(teller) {
 async function updateTeller(teller) {
     const { data, error } = await supabase
     .from('User')
-    .insert([teller])
+    .update([teller])
+    .eq("UserID", teller.UserID)
     .select();
 
     return [ data, error ];
