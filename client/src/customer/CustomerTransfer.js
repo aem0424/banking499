@@ -19,10 +19,28 @@ function CustomerTransfer() {
     };
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const {amount, to, from} = formData;
         setError(null);
+
+        try {
+            const response = await axios.post('http://localhost:4000/user', {
+                amount,
+                to,
+                from
+            });
+
+            if (response.data) {
+                console.log("successful response");
+                // to do...
+            } else {
+                setError('user ID error');
+            }
+
+        } catch (error) {
+            setError('error');
+        }
     };
 
     return (

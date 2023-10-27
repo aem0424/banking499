@@ -18,7 +18,7 @@ function CustomerBillPay() {
     };
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const {payto, paymount} = formData;
         setError(null);

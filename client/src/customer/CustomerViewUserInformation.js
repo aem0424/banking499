@@ -3,6 +3,10 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 
 function CustomerViewUserInformation() {
+    const navigate = useNavigate();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+    }
     return (
         <div>
             <p>Name:</p>

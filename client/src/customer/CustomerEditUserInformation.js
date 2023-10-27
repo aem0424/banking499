@@ -18,10 +18,18 @@ function CustomerEditUserInformation() {
     };
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const {payto, paymount} = formData;
         setError(null);
+    
+        try {
+            const response = await axios.post('http://localhost:4000/user/${userID)');
+        }
+        catch (error) {
+            setError('An uxexpected error occured. Please try again later.');
+        }
+        
     };    
     return (
         <div>
