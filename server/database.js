@@ -24,6 +24,30 @@ async function getUser(userID) {
     return [ data, error ];
 }
 
+// Get User Information Summary (For Teller)
+// Params: UserID
+// Return: User {UserID, Role, Email, FirstName, LastName, PhoneNumber}
+async function getUserShorthand(userID) {
+    const { data, error } = await supabase
+        .from('User')
+        .select('UserID, Role, Email, FirstName, LastName, PhoneNumber')
+        .eq('UserID', userID);
+        
+    return [ data, error ];
+}
+
+// Get User Information Using Email
+// Params: Email
+// Return: Entire User row data
+async function getUserFromEmail(email) {
+    const { data, error } = await supabase
+        .from('User')
+        .select('*')
+        .eq('Email', email);
+        
+    return [ data, error ];
+}
+
 // Get User Name From Email
 // Params: Email
 // Return: User's First Name and Last Name
@@ -38,11 +62,11 @@ async function getUserNameFromEmail(email) {
 
 // Get UserID From Login
 // Params: Email, Password
-// Return: User's UserID
+// Return: User{UserID, Role}
 async function getUserIDFromLogin(email, password) {
     const { data, error } = await supabase
     .from('User')
-    .select('UserID')
+    .select('UserID, Role')
     .eq('Email', email)
     .eq('Password', password);
     return [ data, error ];
@@ -84,6 +108,18 @@ async function getUserRole(userID) {
     return [ data, error ];
 }
 
+// Get User Address
+// Params: UserID
+// Return: All Customers
+async function getUserAddress(userID) {
+    const { data, error } = await supabase
+        .from('User')
+        .select('Street, Street2, City, State, ZIP')
+        .eq('UserID', userID);
+        
+    return [ data, error ];
+}
+
 
 // Get Customers
 // Params: None
@@ -92,7 +128,8 @@ async function getCustomers() {
     const { data, error } = await supabase
         .from('User')
         .select('*')
-        .eq('Role', "Customer");
+        .eq('Role', "Customer")
+        .order('FirstName');
         
     return [ data, error ];
 }
@@ -111,14 +148,14 @@ async function getCustomer(userID) {
 }
  
 // Get Customer
-// Params: UserID
+// Params: firstName, lastName
 // Return: Entire Customer row data
 async function searchCustomerUsingNames(firstName, lastName) {
     const { data, error } = await supabase
         .from('User')
         .select('*')
         .eq('Role', "Customer")
-        .textSearch('F')
+        .textSearch('F');
         
     return [ data, error ];
 }
@@ -149,8 +186,8 @@ async function getTeller(userID) {
 }
 
 // Insert Customer
-// Params: User{Email, Password, FirstName, LastName, PhoneNumber, Street, City, State, ZIP, SSN, DOB}
-// Return: User{Email, Password, FirstName, LastName, PhoneNumber, Street, City, State, ZIP, SSN, DOB} (Confirmation)
+// Params: User{ Email, Password, FirstName, LastName, PhoneNumber, Street, Street2, City, State, ZIP, SSN, DOB }
+// Return: User{ Email, Password, FirstName, LastName, PhoneNumber, Street, Street2, City, State, ZIP, SSN, DOB } (Confirmation)
 async function insertCustomer(customer) {
     const { data, error } = await supabase
     .from('User')
@@ -164,14 +201,17 @@ async function insertCustomer(customer) {
 }
 
 // Update Customer
-// Params: User{Email, Password, FirstName, LastName, PhoneNumber, Street, City, State, ZIP, SSN, DOB}
-// Return: User{Email, Password, FirstName, LastName, PhoneNumber, Street, City, State, ZIP, SSN, DOB} (Confirmation)
-async function updateCustomer(customer) {
+// Params: UserID, User{Password, FirstName, LastName, PhoneNumber, Street, Street2, City, State, ZIP,DOB}
+// Return: User{Email, Password, FirstName, LastName, PhoneNumber, Street, Street2, City, State, ZIP, SSN, DOB} (Confirmation)
+async function updateCustomer(userID, customer) {
+    console.log(customer);
     const { data, error } = await supabase
     .from('User')
-    .update([customer])
+    .update(customer)
+    .eq('UserID', userID)
     .select();
 
+    console.log(data);
     return [ data, error ];
 }
 
@@ -183,6 +223,19 @@ async function deleteCustomer(userID) {
     .from('User')
     .delete()
     .eq('UserID', userID)
+    .select();
+
+    return [ data, error ];
+}
+
+// Delete Customer By Email
+// Params: Email
+// Return: message
+async function deleteCustomerByEmail(email) {
+    const { data, error } = await supabase
+    .from('User')
+    .delete()
+    .eq('Email', email)
     .select();
 
     return [ data, error ];
@@ -230,35 +283,92 @@ async function deleteTeller(userID) {
 // -------------------- Account Table -----------------------
 // AccountTypes = { "Checking", "Savings", "Money Market", "Home Mortgage Loan", "Credit Card" } 
 
-
 // Get User Account
 // Params: AccountID
 // Return: Entire Account data
-async function getAccount(accountID) {
+async function getAccount_(accountID) {
     console.log(accountID);
     let { data, error } = await supabase
     .from('Account')
     .select('*')
-    .eq("AccountID", accountID);
+    .eq("AccountID", accountID)
+    .eq("Activated", true);
 
     return [ data, error ];
 }
-async function getAccountAsCustomer(userID, accountID) {
+
+// Get Account From Account As Customer
+// Params: AccountName
+// Return: Entire Account data
+async function getAccount(userID, accountID) {
     let { data, error } = await supabase
     .from('Account')
     .select('*')
     .eq("UserID", userID)
-    .eq("AccountID", accountID);
+    .eq("AccountID", accountID)
+    .eq("Activated", true);
+
+    return [ data, error ];
+}
+
+
+// Get Account From Account Name
+// Params: UserID, AccountName
+// Return: Entire Account data
+async function getAccountFromAccountName(userID, accountName) {
+    console.log(accountID);
+    let { data, error } = await supabase
+    .from('Account')
+    .select('*')
+    .eq("UserID", userID)
+    .eq("AccountName", accountName);
+    
 
     return [ data, error ];
 }
 
 
 
-// Get User Account From UserID
+// Get Entire Activated Account Table
+// Params: UserID
+// Return: List of Account data
+async function getAccounts() {
+    let { data, error } = await supabase
+    .from('Account')
+    .select('*')
+    .eq("Activated", true);
+    
+    return [ data, error ];
+}
+
+// Get Entire Account Table Deactivated Ones
 // Params: UserID
 // Return: Entire Account data
-async function getAccountsFromUserID(userID) {
+async function getAllAccounts() {
+    let { data, error } = await supabase
+    .from('Account')
+    .select('*');
+    
+    return [ data, error ];
+}
+
+// Get User Account From UserID
+// Params: UserID
+// Return: List of Account data
+async function getUserAccounts(userID) {
+    let { data, error } = await supabase
+    .from('Account')
+    .select('*')
+    .eq("UserID", userID)
+    .eq("Activated", true);
+    
+    return [ data, error ];
+}
+
+// Get All User Accounts Even the Deactivated Ones
+// Params: UserID
+// Return: Entire Account data
+async function getAllUserAccounts(userID) {
     let { data, error } = await supabase
     .from('Account')
     .select('*')
@@ -292,7 +402,7 @@ async function getAccountIDFromUserID(userID) {
 }
 
 // Insert Account
-// Params: Account { UserID, AccountName, AccountType, Balance, InterestRate }
+// Params: UserID, Account { UserID, AccountName, AccountType, Balance, InterestRate }
 // Return: Account { UserID, AccountName, AccountType, Balance, InterestRate } (Confirmation)
 async function insertAccount(userID, account) {
     const { data, error } = await supabase
@@ -323,36 +433,73 @@ async function deleteAccount(accountID) {
     .update({Activated: false, Deleted: true})
     .eq("AccountID", accountID)
     .select();
-    console.log(accountID);
-    console.log(data);
     return [ data, error ];
 }
 
 // Activate Account
 // Params: {Activated: true}
 // Return: Account { UserID, AccountName, AccountType, Balance, InterestRate } (Confirmation)
-async function activateAccount(accountID) {
+async function updateAccountActivated(accountID, isActivated) {
     const { data, error } = await supabase
     .from('Account')
-    .update([{"Activated": true}])
+    .update([{"Activated": isActivated}])
     .eq("AccountID", accountID)
     .select();
 
     return [ data, error ];
 }
 
-// Deactivate Account
-// Params: {Activated: false}
-// Return: Account { UserID, AccountName, AccountType, Balance, InterestRate } (Confirmation)
-async function deactivateAccount(accountID) {
-    const { data, error } = await supabase
-    .from('Account')
-    .update([{"Activated": true}])
-    .eq("AccountID", accountID)
+// -------------------------- TellerInbox Table -------------------------------
+async function getNotification() {
+    let { data, error } = await supabase
+    .from('TellerInbox')
+    .select("Type, Message, User!TellerInbox_CustomerID_fkey(FirstName, LastName), Account!TellerInbox_AccountID_fkey(AccountName), TimeStamp")
+    .eq("Resolved", false);
+
+    return [ data, error ];
+}
+
+async function getNotifications() {
+    let { data, error } = await supabase
+    .from('TellerInbox')
+    .select("InboxID, Type, Message, User!TellerInbox_CustomerID_fkey(FirstName, LastName), Account!TellerInbox_AccountID_fkey(AccountName), TimeStamp")
+    .eq("Resolved", false);
+
+    return [ data, error ];
+}
+
+async function getNotificationsAll() {
+    let { data, error } = await supabase
+    .from('TellerInbox')
+    .select("InboxID, Type, Message, User!TellerInbox_CustomerID_fkey(FirstName, LastName), Account!TellerInbox_AccountID_fkey(AccountName), TimeStamp");
+
+    return [ data, error ];
+}
+
+async function updateNotificationResolved(isResolved) {
+    let { data, error } = await supabase
+    .from('TellerInbox')
+    .update({"Resolved": true})
     .select();
 
     return [ data, error ];
 }
+
+async function insertNotification(userID, accountID, transactionID, type, message) {
+    let { data, error } = await supabase
+    .from('TellerInbox')
+    .insert({
+        "CustomerID": userID,
+        "AccountID": accountID,
+        "TransactionID": transactionID,
+        "Type": type,
+        "Message": message,
+        "Resolved": false})
+    .select();
+
+    return [ data, error ];
+}
+
 
 
 // --------------------------- Transaction Table -----------------------
@@ -438,8 +585,11 @@ async function insertTransaction(account) {
 
 module.exports = {
     getUser,
+    getUserShorthand,
     getUsers,
+    getUserFromEmail,
     getUserRole,
+    getUserAddress,
     getUserIDFromLogin,
     getUserLoginFromUserID,
     getUserNameFromEmail,
@@ -450,6 +600,7 @@ module.exports = {
     insertCustomer,
     updateCustomer,
     deleteCustomer,
+    deleteCustomerByEmail,
 
     getTellers,
     getTeller,
@@ -457,15 +608,24 @@ module.exports = {
     updateTeller,
     deleteTeller,
 
+    getAccount_,
     getAccount,
-    getAccountAsCustomer,
-    getAccountsFromUserID,
+    getAccounts,
+    getAllAccounts,
+    getUserAccounts,
+    getAllUserAccounts,
+    getAccountFromAccountName,
     getAccountSummaryFromUserID,
     getAccountIDFromUserID,
     insertAccount,
     deleteAccount,
-    activateAccount,
-    deactivateAccount,
+    updateAccountActivated,
+
+    getNotification,
+    getNotifications,
+    getNotificationsAll,
+    updateNotificationResolved,
+    insertNotification,
 
     getTransaction,
     getTransactionFromAccountID,
