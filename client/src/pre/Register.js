@@ -112,8 +112,9 @@ function Register() {
           </div>
         </div>
         <div className="form-columns">
+          
           <div className='form-group'>
-            <label htmlFor="dateOfBirth" className='form-label'>Date of Birth:</label>
+            <label htmlFor="dateOfBirth" className='form-label'>Date of Birth: Change input format</label>
             <input
               type="date"
               id="dateOfBirth"
