@@ -2,7 +2,8 @@ import React from 'react'
 
 function AdminTellerMain() {
     return (
-        <div>
+        <div className='container'>
+            <h1>Teller Management</h1>
             <a href="/Admin/Teller/CreateTeller">
                 <button>Create Teller</button>
             </a>

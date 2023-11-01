@@ -65,9 +65,7 @@
   cursor: pointer;
 }
 
-/* Add any other styles for specific form elements like checkboxes, radios, etc. */
-
-/* Style for error messages, if needed */
+/* Style for error messages */
 .error-message {
   color: red;
   font-size: 14px;

@@ -2,7 +2,7 @@ import React from 'react'
 
 function AdminCustomerInfoEdit() {
     return (
-        <div>
+        <div className='container'>
             <h1>placeholder</h1>
         </div>
     )

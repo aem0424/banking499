@@ -33,6 +33,7 @@ import AdminMain from ".//admin/AdminMain";
 import AdminTellerEdit from ".//admin/AdminTellerEdit";
 import AdminTellerList from ".//admin/AdminTellerList";
 import AdminTellerMain from ".//admin/AdminTellerMain";
+import UserList from ".//pre/UserList";
 import {Route, Routes} from 'react-router-dom';
 
 
@@ -67,13 +68,14 @@ function App() {
       <Route exact path="/Admin" element = {<AdminMain/>}/>
       <Route exact path="/Admin/Teller" element = {<AdminTellerMain/>}/>
       <Route exact path="/Admin/Teller/CreateTeller" element = {<AdminCreateTeller/>}/>
-      <Route exact path="/Admin/Teller/EditTeller" element = {<AdminTellerEdit/>}/>
+      <Route path="/Admin/Teller/EditTeller/:id" element={<AdminTellerEdit />} />
       <Route exact path="/Admin/Teller/TellerList" element = {<AdminTellerList/>}/>
       <Route exact path="/Admin/Customer" element = {<AdminCustomerList/>}/>
       <Route exact path="/Admin/Customer/Account" element = {<AdminCustomerAccountList/>}/>
       <Route exact path="/Admin/Customer/Account/Info" element = {<AdminCustomerAccountInfo/>}/>
       <Route exact path="/Admin/Customer/Info" element = {<AdminCustomerInfo/>}/>
       <Route exact path="/Admin/Customer/Info/Edit" element = {<AdminCustomerInfoEdit/>}/>
+      <Route exact path="/UserList" element = {<UserList/>}/>
      </Routes>
     </div>
   );

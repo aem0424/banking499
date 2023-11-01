@@ -2,7 +2,7 @@ import React from 'react'
 
 function AdminCustomerInfo() {
     return (
-        <div>
+        <div className='container'>
             <p>Name:</p>
             <p>Address:</p>
             <p>Phone Number:</p>

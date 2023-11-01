@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
 import './Register.css';
-//import axios from 'axios';
+import axios from 'axios';
 
 function Register() {
   const [formData, setFormData] = useState({
     username: '',
+    email: '',
     password: '',
-    firstName: '',
-    lastName: '',
-    ssn: '',
-    phoneNumber: '',
-    dateOfBirth: '',
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    state: '',
-    zipcode: '',
+    FirstName: '',
+    LastName: '',
+    SSN: '',
+    PhoneNumber: '',
+    DOB: '',
+    Street: '',
+    Street2: '',
+    City: '',
+    State: '',
+    ZIP: '',
     // Add more fields as needed for registration (e.g., name, email, etc.)
   });
 
@@ -27,9 +28,21 @@ function Register() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Form Data:', formData);
+
+    try {
+      const response = await axios.put('/customer/register', formData);
+  
+      if (response.status === 200) {
+        console.log('Customer registered successfully:', response.data);
+      } else {
+        console.error('Error registering customer:', response.statusText);
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
   };
 
   return (
@@ -51,6 +64,18 @@ function Register() {
             />
           </div>
           <div className='form-group'>
+            <label htmlFor="email" className='form-label'>Email:</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              required
+              className='form-input'
+            />
+          </div>
+          <div className='form-group'>
             <label htmlFor="password" className='form-label'>Password:</label>
             <input
               type="password"
@@ -63,48 +88,48 @@ function Register() {
             />
           </div>
           <div className='form-group'>
-            <label htmlFor="firstName" className='form-label'>First Name:</label>
+            <label htmlFor="FirstName" className='form-label'>First Name:</label>
             <input
               type="text"
-              id="firstName"
-              name="firstName"
-              value={formData.firstName}
+              id="FirstName"
+              name="FirstName"
+              value={formData.FirstName}
               onChange={handleInputChange}
               required
               className='form-input'
             />
           </div>
           <div className='form-group'>
-            <label htmlFor="lastName" className='form-label'>Last Name:</label>
+            <label htmlFor="LastName" className='form-label'>Last Name:</label>
             <input
               type="text"
-              id="lastName"
-              name="lastName"
-              value={formData.lastName}
+              id="LastName"
+              name="LastName"
+              value={formData.LastName}
               onChange={handleInputChange}
               required
               className='form-input'
             />
           </div>
           <div className='form-group'>
-            <label htmlFor="ssn" className='form-label'>SSN:</label>
+            <label htmlFor="SSN" className='form-label'>SSN:</label>
             <input
               type="text"
-              id="ssn"
-              name="ssn"
-              value={formData.ssn}
+              id="SSN"
+              name="SSN"
+              value={formData.SSN}
               onChange={handleInputChange}
               required
               className='form-input'
             />
           </div>
           <div className='form-group'>
-            <label htmlFor="phoneNumber" className='form-label'>Phone Number:</label>
+            <label htmlFor="PhoneNumber" className='form-label'>Phone Number:</label>
             <input
               type="tel"
-              id="phoneNumber"
-              name="phoneNumber"
-              value={formData.phoneNumber}
+              id="PhoneNumber"
+              name="PhoneNumber"
+              value={formData.PhoneNumber}
               onChange={handleInputChange}
               required
               className='form-input'
@@ -114,57 +139,57 @@ function Register() {
         <div className="form-columns">
           
           <div className='form-group'>
-            <label htmlFor="dateOfBirth" className='form-label'>Date of Birth: Change input format</label>
+            <label htmlFor="DOB" className='form-label'>Date of Birth:</label>
             <input
               type="date"
-              id="dateOfBirth"
-              name="dateOfBirth"
-              value={formData.dateOfBirth}
+              id="DOB"
+              name="DOB"
+              value={formData.DOB}
               onChange={handleInputChange}
               required
             />
           </div>
           <div className='form-group'>
-            <label htmlFor="addressLine1" className='form-label'>Address Line 1:</label>
+            <label htmlFor="Street" className='form-label'>Address Line 1:</label>
             <input
               type="text"
-              id="addressLine1"
-              name="addressLine1"
-              value={formData.addressLine1}
-              onChange={handleInputChange}
-              required
-              className='form-input'
-            />
-          </div>
-          <div className='form-group'>
-            <label htmlFor="addressLine2" className='form-label'>Address Line 2:</label>
-            <input
-              type="text"
-              id="addressLine2"
-              name="addressLine2"
-              value={formData.addressLine2}
-              onChange={handleInputChange}
-              className='form-input'
-            />
-          </div>
-          <div className='form-group'>
-            <label htmlFor="city" className='form-label'>City:</label>
-            <input
-              type="text"
-              id="city"
-              name="city"
-              value={formData.city}
+              id="Street"
+              name="Street"
+              value={formData.Street}
               onChange={handleInputChange}
               required
               className='form-input'
             />
           </div>
           <div className='form-group'>
-            <label htmlFor="state" className='form-label'>State:</label>
+            <label htmlFor="Street2" className='form-label'>Address Line 2:</label>
+            <input
+              type="text"
+              id="Street2"
+              name="Street2"
+              value={formData.Street2}
+              onChange={handleInputChange}
+              className='form-input'
+            />
+          </div>
+          <div className='form-group'>
+            <label htmlFor="City" className='form-label'>City:</label>
+            <input
+              type="text"
+              id="City"
+              name="City"
+              value={formData.City}
+              onChange={handleInputChange}
+              required
+              className='form-input'
+            />
+          </div>
+          <div className='form-group'>
+            <label htmlFor="State" className='form-label'>State:</label>
             <select
-              id="state"
-              name="state"
-              value={formData.state}
+              id="State"
+              name="State"
+              value={formData.State}
               onChange={handleInputChange}
               required
             >
@@ -221,12 +246,12 @@ function Register() {
             </select>
           </div>
           <div className='form-group'>
-            <label htmlFor="zipcode" className='form-label'>Zipcode:</label>
+            <label htmlFor="ZIP" className='form-label'>Zipcode:</label>
             <input
               type="text"
-              id="zipcode"
-              name="zipcode"
-              value={formData.zipcode}
+              id="ZIP"
+              name="ZIP"
+              value={formData.ZIP}
               onChange={handleInputChange}
               required
               className='form-input'

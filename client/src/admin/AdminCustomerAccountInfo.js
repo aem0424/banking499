@@ -2,7 +2,7 @@ import React from 'react'
 
 function AdminCustomerAccountInfo() {
     return (
-        <div>
+        <div className='container'>
             <p>Account Name:</p>
             <p>Account Type:</p>
             <p>Account Owner:</p>
