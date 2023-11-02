@@ -27,7 +27,22 @@ function Register() {
       [name]: value,
     });
   };
-
+  const isFormValid = () => {
+    return (
+      formData.username &&
+      formData.email &&
+      formData.password &&
+      formData.FirstName &&
+      formData.LastName &&
+      formData.SSN &&
+      formData.PhoneNumber &&
+      formData.DOB &&
+      formData.Street &&
+      formData.City &&
+      formData.State &&
+      formData.ZIP
+    );
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Form Data:', formData);
@@ -96,6 +111,7 @@ function Register() {
               value={formData.FirstName}
               onChange={handleInputChange}
               required
+              pattern="[A-Za-z]+"
               className='form-input'
             />
           </div>
@@ -108,6 +124,7 @@ function Register() {
               value={formData.LastName}
               onChange={handleInputChange}
               required
+              pattern="[A-Za-z]+"
               className='form-input'
             />
           </div>
@@ -120,6 +137,7 @@ function Register() {
               value={formData.SSN}
               onChange={handleInputChange}
               required
+              pattern="\d{3}-\d{2}-\d{4}|\d{9}"
               className='form-input'
             />
           </div>
@@ -132,6 +150,7 @@ function Register() {
               value={formData.PhoneNumber}
               onChange={handleInputChange}
               required
+              pattern="[0-9]{10}"
               className='form-input'
             />
           </div>
@@ -158,6 +177,7 @@ function Register() {
               value={formData.Street}
               onChange={handleInputChange}
               required
+              pattern="^[A-Za-z0-9\s]+$"
               className='form-input'
             />
           </div>
@@ -169,6 +189,7 @@ function Register() {
               name="Street2"
               value={formData.Street2}
               onChange={handleInputChange}
+              pattern="^[A-Za-z0-9\s]+$"
               className='form-input'
             />
           </div>
@@ -181,6 +202,7 @@ function Register() {
               value={formData.City}
               onChange={handleInputChange}
               required
+              pattern="[A-Za-z]+"
               className='form-input'
             />
           </div>
@@ -254,11 +276,12 @@ function Register() {
               value={formData.ZIP}
               onChange={handleInputChange}
               required
+              pattern="[0-9]{5}"
               className='form-input'
             />
           </div>
           </div>
-        <button type="submit" className='form-button'>Register</button>
+        <button type="submit" className='form-button' disabled={!isFormValid()}>Register</button>
       </form>
       <div className="form-links">
         <a href="/Login">Login</a>

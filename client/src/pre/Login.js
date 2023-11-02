@@ -9,6 +9,7 @@ function Login() {
     password: '',
   });
   const [error, setError] = useState(null);
+  const [user, setUser] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -28,49 +29,16 @@ function Login() {
       const response = await axios.post('http://localhost:4000/user/login', { "email" : email, "password" : password });;
 
       if (response.data) {
-        // Login successful, you can redirect the user or perform other actions here.
         console.log('Login successful:', response.data);
-        navigate('/Customer');
-        //history.push('/Customer'); // Change the path to match your route configuration
+        setUser(response.data);
+        navigate('/Admin', {state:{user:response.data}});
       } else {
-        // Handle the case where login is unsuccessful (e.g., display an error message).
         setError('Login failed. Please check your email and password.');
       }
     } catch (error) {
       setError('An unexpected error occurred. Please try again later.');
-      // Handle any unexpected errors.
     }
   };
-      /*if (response.data) {
-        const userID = response.data.UserID;
-
-        // Use Axios to fetch the user's data
-        const userResponse = await axios.get('http://localhost:4000/user/role');
-
-        if (userResponse.data) {
-          const userRole = userResponse.data.role;
-
-          // Navigate based on the user's role
-          if (userRole === 'Admin') {
-            navigate('/Admin');
-          } else if (userRole === 'Teller') {
-            navigate('/Teller');
-          } else if (userRole === 'Customer') {
-            navigate('/Customer');
-          } else {
-            setError('Invalid Role');
-          }
-        } else {
-          setError('User data not found');
-        }
-      } else {
-        setError('Login failed. Please check your email and password.');
-      }
-    } catch (error) {
-      setError('An unexpected error occurred. Please try again later.');
-    }
-  };*/
-
 
   return (
     <div className='container'>

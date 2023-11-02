@@ -38,6 +38,7 @@ import {Route, Routes} from 'react-router-dom';
 
 
 function App() {
+  const [user, setUser] = React.useState(null);
   return (
    <div className="App" >
     <Routes>
@@ -45,7 +46,7 @@ function App() {
       <Route exact path="/DataDisplay" element ={<DataDisplay/>}/>
       <Route exact path="/reactdemo" element ={<ReactDemo/>}/>
       <Route exact path="/ForgotPass" element ={<ForgotPass/>}/>
-      <Route exact path="/Login" element ={<Login/>}/>
+      <Route exact path="/Login" element ={<Login setUser={setUser}/>}/>
       <Route exact path="/Register" element ={<Register/>}/>
       <Route exact path="/Customer" element ={<CustomerMain/>}/>
       <Route exact path="/Customer/Transaction" element ={<CustomerTransaction/>}/>
@@ -65,7 +66,7 @@ function App() {
       <Route exact path="/Teller/Transaction/Transfer" element = {<TellerTransfer/>}/>
       <Route exact path="/Teller/CreateAccount" element = {<TellerCreateAccount/>}/>
       <Route exact path="/Teller/Customer" element = {<TellerCustomerManage/>}/>
-      <Route exact path="/Admin" element = {<AdminMain/>}/>
+      <Route exact path="/Admin" element = {<AdminMain user={user}/>}/>
       <Route exact path="/Admin/Teller" element = {<AdminTellerMain/>}/>
       <Route exact path="/Admin/Teller/CreateTeller" element = {<AdminCreateTeller/>}/>
       <Route path="/Admin/Teller/EditTeller/:id" element={<AdminTellerEdit />} />

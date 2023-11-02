@@ -1,20 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 
 function AdminMain() {
-    const [user, setUser] = useState(null);
+    /*const [user, setUser] = useState(null);*/
+    const location = useLocation();
+    const user = location.state.user;
 
     useEffect(() => {
-        axios.get('/user')
+      if (user) {
+        axios.get('/user', {
+          params: {
+            UserID: user.id,
+          }
+        })
           .then((response) => {
             if (response.status === 200) {
-              setUser(response.data);
+              console.log('User data:', response.data);
             }
           })
           .catch((error) => {
             console.error('Error fetching user data:', error);
+            console.log('Response data:', error.response.data);
+            console.log('Response headers:', error.response.headers);
           });
-      }, []);
+      }
+    }, [user]);
 
 
     return (
