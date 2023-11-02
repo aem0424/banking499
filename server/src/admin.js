@@ -84,6 +84,22 @@ router.get('/admin/tellers', async (req, res) => {
     return res.status(200).json({ message: "Successfully Deleted the Teller Information", data: tellerData });
   });
 
+  // GET: Search Customers
+  // Params: { Text String } (First Name and/or Last Name)
+  // Return: Users:[User1{...}, User2{...}, ...]
+  router.get('/admin/teller/search', async (req, res) => {
+    if (!req.session.UserID || req.session.UserID != ADMIN_ID) {
+      return res.status(403).json({ error: "Unauthorized User Access" });
+    }
+    let userText = req.body.Text
+
+    console.log("Searching for User");
+    let [userData, err_userData] = await database.searchTeller(userText);
+    
+    if (err_userData) return res.status(401).json({ error: "Failed to delete this teller", message: err_userData });
+    
+    return res.status(200).json(userData);
+  });
 
 //export this router to use in our index.js
 module.exports = router;

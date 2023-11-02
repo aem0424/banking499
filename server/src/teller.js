@@ -104,6 +104,24 @@ router.get('/teller/customers', async (req, res) => {
     return res.status(200).json(userData);
 });
 
+// GET: Search Customers
+// Params: { Text String } (First Name and/or Last Name)
+// Return: Users:[User1{...}, User2{...}, ...]
+router.get('/teller/customer/search', async (req, res) => {
+    let tellerID = req.session.UserID;
+    let tellerRole = req.session.UserRole;
+    if (!tellerID || tellerRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As Teller" });
+
+    let userText = user.body.Text
+
+    console.log("Searching for Customer");
+    let [userData, err_userData] = await database.searchCustomer(userText);
+
+    if (err_userData) return res.status(401).json({ error: "Failed to search customers with the name", message: err_userData });
+
+    return res.status(200).json(userData);
+});
+
 // GET: Get Teller Information (Login Required)
 // Params: {UserID} (CustomerID)
 // Return: Customer:{ UserID, Email, Password, FirstName, LastName, Street, Street2, City, State, ZIP, PhoneNumber, SSN, DOB } ***

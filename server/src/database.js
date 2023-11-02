@@ -147,15 +147,15 @@ async function getCustomer(userID) {
     return [ data, error ];
 }
  
-// Get Customer
-// Params: firstName, lastName
-// Return: Entire Customer row data
-async function searchCustomerUsingNames(firstName, lastName) {
+// Search Customers
+// Params: text (first and last name)
+// Return: Found User data
+async function searchCustomers(text) {
     const { data, error } = await supabase
         .from('User')
         .select('*')
         .eq('Role', "Customer")
-        .textSearch('F');
+        .textSearch('Full Name');
         
     return [ data, error ];
 }
@@ -280,6 +280,17 @@ async function deleteTeller(userID) {
     return [ data, error ];
 }
 
+// Search Teller
+// Params: Text
+// Return: Users:[User{Email, Password, FirstName, LastName, PhoneNumber}, User2{}, ...]
+async function searchTellers(text) {
+    const { data, error } = await supabase
+    .from('User')
+    .select()
+    .textSearch('Full Name', text);
+
+    return [ data, error ];
+}
 
 // -------------------- Account Table -----------------------
 // AccountTypes = { "Checking", "Savings", "Money Market", "Home Mortgage Loan", "Credit Card" } 
@@ -597,17 +608,18 @@ module.exports = {
 
     getCustomers,
     getCustomer,
-    searchCustomerUsingNames,
     insertCustomer,
     updateCustomer,
     deleteCustomer,
     deleteCustomerByEmail,
+    searchCustomers,
 
     getTellers,
     getTeller,
     insertTeller,
     updateTeller,
     deleteTeller,
+    searchTellers,
 
     getAccount_,
     getAccount,
