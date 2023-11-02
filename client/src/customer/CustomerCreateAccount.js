@@ -4,7 +4,10 @@ import { useNavigate } from 'react-router-dom';
 
 function CustomerCreateAccount() {
     const [formData, setFormData] = useState({
-        accountname: '',
+        AccountName: '',
+        AccountType:'',
+        Balance:'',
+        InterestRate:'',
       });
     const [error, setError] = useState(null);
     
@@ -19,24 +22,68 @@ function CustomerCreateAccount() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const { accountname } = formData;
-        setError(null); // Clear any previous error messages       
+        try {
+          const response = await axios.put('/customer/account/create', formData)
+          if (response.status === 200) {
+            console.log('Account creation requested successful:', response.data)
+          }
+          else {
+            console.error('Error requesting account creation:', response.statusText)
+          }
+        } catch (error) {
+          console.error('An error has occured:', error)
+        }
       };
 
     return (
-        <div>
+        <div className='container'>
             <form onSubmit={handleSubmit}>
                 <div>
-                 <label htmlFor="accountname">Account Name:</label>
+                 <label htmlFor="AccountName">Account Name:</label>
                     <input
                         type="text"
-                        id="accountname"
-                        name="accountname"
-                        value={formData.accountname}
+                        id="AccountName"
+                        name="AccountName"
+                        value={formData.AccountName}
                         onChange={handleInputChange}
                         required
                     />
                 </div>
+                <div>
+                 <label htmlFor="AccountType">Account Type:</label>
+                    <select
+                        type="text"
+                        id="AccountType"
+                        name="AccountType"
+                        value={formData.AccountType}
+                        onChange={handleInputChange}
+                        required
+                    >
+                      <option value="Checking">Checking</option>
+                    </select>
+                </div>
+                <div>
+                 <label htmlFor="Balance">Balance:</label>
+                    <input
+                        type="text"
+                        id="Balance"
+                        name="Balance"
+                        value={formData.Balance}
+                        onChange={handleInputChange}
+                        required
+                    />
+                </div>
+                <div>
+                 <label htmlFor="InterestRate">Interest Rate:</label>
+                    <input
+                        type="text"
+                        id="InterestRate"
+                        name="InterestRate"
+                        value={formData.InterestRate}
+                        onChange={handleInputChange}
+                        required
+                    />
+                </div>                                                
             </form>
             <p>Account Type:</p>
             {error && <div className="error-message">{error}</div>}
