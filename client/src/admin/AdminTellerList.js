@@ -29,7 +29,7 @@ function AdminTellerList() {
           <ul>
             {tellers.map((teller, index) => (
               <li key={index}>
-                <Link to={`/Admin/Teller/EditTeller/${teller.id}`} state={{ tellerData: teller }}>Edit {teller.name}</Link>
+                <Link to={`/Admin/Teller/EditTeller/${teller.id}`} state={{ tellerData: teller }}>Edit {teller.FirstName} {teller.LastName}</Link>
               </li>
             ))}
           </ul>

@@ -7,18 +7,21 @@ function AdminTellerEdit() {
   const { id } = useParams();
   const location = useLocation();
   const tellerData = location.state.tellerData;
+  const user = location.state.user;
+  
 
   const [formData, setFormData] = useState({
-    FirstName: tellerData.FirstName,
-    LastName: tellerData.LastName,
-    DOB: tellerData.DOB,
-    SSN: tellerData.SSN,
-    Street: tellerData.Street,
-    Street2: tellerData.Street2,
-    State: tellerData.State,
-    ZIP: tellerData.ZIP,
-    PhoneNumber: tellerData.PhoneNumber,
-    password: tellerData.password,
+    Email: tellerData?.Email || " ",
+    FirstName: tellerData?.FirstName || "",
+    LastName: tellerData?.LastName || "",
+    DOB: tellerData?.DOB || "",
+    SSN: tellerData?.SSN || "",
+    Street: tellerData?.Street || "",
+    Street2: tellerData?.Street2 || "",
+    State: tellerData?.State || "",
+    City: tellerData?.City || "",
+    ZIP: tellerData?.ZIP || "",
+    PhoneNumber: tellerData?.PhoneNumber || "",
   });
 
   const handleInputChange = (e) => {
@@ -32,10 +35,10 @@ function AdminTellerEdit() {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    axios.post('/admin/teller/update', formData)
+    axios.post('http://localhost:4000/admin/teller/update', formData)
       .then((response) => {
         if (response.status === 200) {
-          navigate('/Admin/Teller')
+          navigate('/Admin/Teller', {state:{user}});
         } else {
           console.error('Error updating teller data:', response.data.message);
         }
@@ -47,40 +50,16 @@ function AdminTellerEdit() {
   return (
     <div className='container'>
       <h1>Edit Teller</h1>
-      <p>Name: {tellerData.name}</p>
+      <p>Name: {tellerData.FirstName} {tellerData.LastName}</p>
       <form onSubmit={handleSubmit} className="register-form">
           <div className="form-columns">
             <div className='form-group'>
-              <label htmlFor="username" className='form-label'>Username:</label>
+              <label htmlFor="Email" className='form-label'>Email:</label>
               <input
-                type="text"
-                id="username"
-                name="username"
-                value={formData.username}
-                onChange={handleInputChange}
-                required
-                className='form-input'
-              />
-            </div>
-            <div className='form-group'>
-              <label htmlFor="email" className='form-label'>Email:</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-                className='form-input'
-              />
-            </div>
-            <div className='form-group'>
-              <label htmlFor="password" className='form-label'>Password:</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
+                type="Email"
+                id="Email"
+                name="Email"
+                value={formData.Email}
                 onChange={handleInputChange}
                 required
                 className='form-input'
