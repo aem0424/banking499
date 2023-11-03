@@ -24,7 +24,7 @@ router.get('/admin/tellers', async (req, res) => {
     return res.status(200).json(tellerList);
   });
   
-  // PUT: Register a new Teller
+  // PUT: Register a new Teller (include {withCredentials:true})
   // Params: Teller
   // Return: Confirmation Message
   router.put('/admin/teller/register', async (req, res) => {
@@ -48,7 +48,7 @@ router.get('/admin/tellers', async (req, res) => {
     return res.status(200).json({ message: "Successfully Created a new Teller Account", data: tellerData });
   });
   
-  // POST: Update a Teller's Information
+  // POST: Update a Teller's Information (include {withCredentials:true})
   // Params: Teller{}
   // Return: Confirmation Message
   router.post('/admin/teller/update', async (req, res) => {
@@ -64,7 +64,7 @@ router.get('/admin/tellers', async (req, res) => {
     return res.status(200).json({ message: "Successfully Updated the Teller Information", data: tellerData });
   });
   
-  // DELETE: Delete a Teller
+  // DELETE: Delete a Teller (include {withCredentials:true})
   // Params: UserID
   // Return: Confirmation Message
   router.delete('/admin/teller/delete', async (req, res) => {
