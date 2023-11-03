@@ -94,7 +94,7 @@ router.get('/admin/tellers', async (req, res) => {
     let userText = req.body.Text
 
     console.log("Searching for User");
-    let [userData, err_userData] = await database.searchTeller(userText);
+    let [userData, err_userData] = await database.searchTellers(userText);
     
     if (err_userData) return res.status(401).json({ error: "Failed to delete this teller", message: err_userData });
     
