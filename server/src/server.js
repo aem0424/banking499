@@ -44,7 +44,7 @@ app.get('/', (req, res) => {
 // Return: User{ UserID, Role, Email, Password, FirstName, LastName, Phone Number, SSN, DOB, Street, Street2, City, State, ZIP }
 app.get('/user', async (req, res) => {
   let userID = req.body.UserID
-  console.log(`Getting User ${req.session.UserID}'s Information`);
+  console.log(`Getting User ${req.body.UserID}'s Information`);
 
   // Query User Information
   let [userData, err_userData] = await database.getUser(userID);
@@ -144,8 +144,8 @@ app.get('/user/address', async (req, res) => {
 // Return: Confirmation Message
 app.post('/user/login', async (req, res) => {
   // Check parameters
-  let email = req.body.email;
-  let password = req.body.password;
+  let email = req.body.Email;
+  let password = req.body.Password;
 
   if (!email || !password) {
     return res.status(401).json({ error: "Empty values passed in for email or password" });
