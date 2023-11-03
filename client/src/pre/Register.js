@@ -4,9 +4,8 @@ import axios from 'axios';
 
 function Register() {
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
+    Email: '',
+    Password: '',
     FirstName: '',
     LastName: '',
     SSN: '',
@@ -20,8 +19,32 @@ function Register() {
     // Add more fields as needed for registration (e.g., name, email, etc.)
   });
 
+  const [formErrors, setFormErrors] = useState({
+    Email: '',
+    Password: '',
+    FirstName: '',
+    LastName: '',
+    SSN: '',
+    PhoneNumber: '',
+    DOB: '',
+    Street: '',
+    Street2: '',
+    City: '',
+    State: '',
+    ZIP: '',
+  });
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    let error = '';
+    if (name === 'SSN' && value.length !== 9) {
+      error = 'Invalid SSN.';
+    }
+    if (name === 'PhoneNumber' && value.length !== 10) {
+      error = 'Invalid Phone Number.';
+    }
+  
+    setFormErrors({ ...formErrors, [name]: error });
     setFormData({
       ...formData,
       [name]: value,
@@ -29,7 +52,7 @@ function Register() {
   };
   const isFormValid = () => {
     return (
-      formData.username &&
+      !Object.values(formErrors).some((error) => error) && 
       formData.email &&
       formData.password &&
       formData.FirstName &&
@@ -66,18 +89,6 @@ function Register() {
       <h2>Register</h2>
       <form onSubmit={handleSubmit} className="register-form">
         <div className="form-columns">
-          <div className='form-group'>
-            <label htmlFor="username" className='form-label'>Username:</label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              value={formData.username}
-              onChange={handleInputChange}
-              required
-              className='form-input'
-            />
-          </div>
           <div className='form-group'>
             <label htmlFor="email" className='form-label'>Email:</label>
             <input
@@ -140,6 +151,7 @@ function Register() {
               pattern="\d{3}-\d{2}-\d{4}|\d{9}"
               className='form-input'
             />
+            {formErrors.SSN && <p className="error-message">{formErrors.SSN}</p>}
           </div>
           <div className='form-group'>
             <label htmlFor="PhoneNumber" className='form-label'>Phone Number:</label>
@@ -153,6 +165,7 @@ function Register() {
               pattern="[0-9]{10}"
               className='form-input'
             />
+          {formErrors.PhoneNumber && <p className="error-message">{formErrors.PhoneNumber}</p>}
           </div>
         </div>
         <div className="form-columns">
