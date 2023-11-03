@@ -39,15 +39,12 @@ app.get('/', (req, res) => {
 });
 
 // -------------------- User ----------------------------
-// GET: Get User's Information (Login Required)
+// GET: Get User's Information
 // Params: UserID
 // Return: User{ UserID, Role, Email, Password, FirstName, LastName, Phone Number, SSN, DOB, Street, Street2, City, State, ZIP }
 app.get('/user', async (req, res) => {
   let userID = req.body.UserID
   console.log(`Getting User ${req.session.UserID}'s Information`);
-  if (!userID) {
-    return res.status(401).json({ error: "User Is Not Logged In" });
-  }
 
   // Query User Information
   let [userData, err_userData] = await database.getUser(userID);
