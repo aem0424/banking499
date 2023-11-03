@@ -144,8 +144,8 @@ app.get('/user/address', async (req, res) => {
 // Return: Confirmation Message
 app.post('/user/login', async (req, res) => {
   // Check parameters
-  let email = req.body.email;
-  let password = req.body.password;
+  let email = req.body.Email;
+  let password = req.body.Password;
 
   if (!email || !password) {
     return res.status(401).json({ error: "Empty values passed in for email or password" });
