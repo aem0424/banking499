@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    Email: '',
+    Password: '',
   });
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
@@ -26,7 +26,7 @@ function Login() {
     setError(null); // Clear any previous error messages
 
     try {
-      const response = await axios.post('http://localhost:4000/user/login', { "email" : email, "password" : password });;
+      const response = await axios.post('http://localhost:4000/user/login', { "Email" : email, "Password" : password });;
 
       if (response.data) {
         console.log('Login successful:', response.data);
