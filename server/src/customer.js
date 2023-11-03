@@ -23,7 +23,7 @@ router.get('/customer', async (req, res) => {
     return res.status(200).json(userData);
 });
 
-// PUT: Register a Customer
+// PUT: Register a Customer (include {withCredentials:true})
 // params: User:{FirstName, LastName, Street, Street2, City, State, ZIP, PhoneNumber, SSN, DOB}
 // return: Confirmation Message
 router.put('/customer/register', async (req, res) => {
@@ -54,7 +54,7 @@ router.put('/customer/register', async (req, res) => {
     return res.status(200).json({ message: `Registration successful as UserID: ${customerData.UserID}` });
 });
 
-// POST: Update a Customer Information
+// POST: Update a Customer Information (include {withCredentials:true})
 // params: User:{ Password, FirstName, LastName, Street, Street2, City, State, ZIP, PhoneNumber, DOB }
 // return: Confirmation Message
 router.post('/customer/update', async (req, res) => {
@@ -77,7 +77,7 @@ router.post('/customer/update', async (req, res) => {
     return res.status(200).json({ message: `Customer Information Update Successful as UserID: ${userData.FirstName} ${userData.LastName}  ${userData.UserID}` });
 });
 
-// DELETE: Delete a Customer
+// DELETE: Delete a Customer (include {withCredentials:true})
 // params: UserID
 // return: { message: <message> }
 router.delete('/customer/delete', async (req, res) => {
@@ -106,7 +106,7 @@ router.delete('/customer/delete', async (req, res) => {
     return res.status(200).json({ message: `Customer ${userID} is successful deleted from the database:`, data: deletionData });
 });
 
-// GET: Get a List of Customer Accounts (Login Required)
+// GET: Get a List of Customer Accounts (include {withCredentials:true})
 // Params: None
 // Return: [ Account1 {AccountID, UserID, AccountName, AccountType, Balance, InterestRate, Activated, Deleted}, Account2{...}, ... ]
 router.get('/customer/accounts', async (req, res) => {
@@ -124,7 +124,7 @@ router.get('/customer/accounts', async (req, res) => {
     return res.status(200).json(accountList);
 });
 
-// GET: Get a Customer Account (Login Required)
+// GET: Get a Customer Account (include {withCredentials:true})
 // Params: AccountID
 // Return: Account {AccountID, UserID, AccountName, AccountType, Balance, InterestRate, Activated, Deleted}
 router.get('/customer/account', async (req, res) => {

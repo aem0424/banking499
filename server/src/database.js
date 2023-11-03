@@ -462,10 +462,11 @@ async function updateAccountActivated(accountID, isActivated) {
 }
 
 // -------------------------- TellerInbox Table -------------------------------
-async function getNotification() {
+async function getNotification(inboxID) {
     let { data, error } = await supabase
     .from('TellerInbox')
-    .select("Type, Message, User!TellerInbox_CustomerID_fkey(FirstName, LastName), Account!TellerInbox_AccountID_fkey(AccountName), TimeStamp")
+    .select("InboxID, Type, Message, User!TellerInbox_CustomerID_fkey(FirstName, LastName), Account!TellerInbox_AccountID_fkey(AccountName), TimeStamp")
+    .eq("InboxID", inboxID)
     .eq("Resolved", false);
 
     return [ data, error ];
