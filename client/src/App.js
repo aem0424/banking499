@@ -48,7 +48,7 @@ function App() {
       <Route exact path="/ForgotPass" element ={<ForgotPass/>}/>
       <Route exact path="/Login" element ={<Login setUser={setUser}/>}/>
       <Route exact path="/Register" element ={<Register/>}/>
-      <Route exact path="/Customer" element ={<CustomerMain/>}/>
+      <Route exact path="/Customer" element ={<CustomerMain user={user}/>}/>
       <Route exact path="/Customer/Transaction" element ={<CustomerTransaction/>}/>
       <Route exact path="/Customer/Transaction/Transfer" element ={<CustomerTransfer/>}/>
       <Route exact path="/Customer/Transaction/Deposit" element ={<CustomerDeposit/>}/>

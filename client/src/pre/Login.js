@@ -22,17 +22,17 @@ function Login() {
   const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { email, password } = formData;
+    const { Email, Password } = formData;
     setError(null); // Clear any previous error messages
 
     try {
-      const response = await axios.post('http://localhost:4000/user/login', { "Email" : email, "Password" : password });;
+      const response = await axios.post('http://localhost:4000/user/login', { "Email" : Email, "Password" : Password });;
 
       if (response.data) {
         console.log('Login successful:', response.data);
         setUser(response.data);
         navigate('/Admin', {state:{user:response.data}});
-      } else {
+        /*navigate('/Customer', {state:{user:response.data}});*/
         setError('Login failed. Please check your email and password.');
       }
     } catch (error) {
@@ -46,23 +46,23 @@ function Login() {
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="email">Email:</label>
+          <label htmlFor="Email">Email:</label>
           <input
             type="text"
-            id="email"
-            name="email"
-            value={formData.email}
+            id="Email"
+            name="Email"
+            value={formData.Email}
             onChange={handleInputChange}
             required
           />
         </div>
         <div>
-          <label htmlFor="password">Password:</label>
+          <label htmlFor="Password">Password:</label>
           <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
+            type="Password"
+            id="Password"
+            name="Password"
+            value={formData.Password}
             onChange={handleInputChange}
             required
           />
