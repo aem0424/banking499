@@ -2,8 +2,12 @@ const express = require('express');
 const router = express.Router();
 const database = require('./database.js');
 
-
 const ADMIN_ID = 1;
+
+router.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+}));
 
 // ------------------------ Admininstrator -------------------------------
 // GET: Get a List of Tellers

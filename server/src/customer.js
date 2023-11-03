@@ -2,10 +2,12 @@ const express = require('express');
 const router = express.Router();
 const database = require('./database.js');
 
+router.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+}));
+
 // ------------------ Customer -----------------------
-
-
-
 // GET: Get Customer Information (Login Required)
 // Params: None
 // Return: User{UserID, Email, Password, FirstName, LastName, Street, Street2, City, State, ZIP, PhoneNumber, SSN, DOB}
@@ -122,7 +124,7 @@ router.get('/customer/accounts', async (req, res) => {
 
     let [accountList, err_accountList] = await database.getUserAccounts(userID);
     if (err_accountList) return res.status(404).json({ error: 'Failed to query Customer Accounts', message: err_accountList.message });
-    if (accountList) return res.status(404).json({ error: `No Account Found for User ${userID}`, data: accountList});
+    if (accountList) return res.status(404).json({ error: `No Account Found for User ${userID}`, data: accountList });
     return res.status(200).json(accountList);
 });
 
