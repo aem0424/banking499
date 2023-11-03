@@ -4,18 +4,13 @@ const database = require('./database.js');
 
 const ADMIN_ID = 1;
 
-router.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true,
-}));
-
 // ------------------------ Admininstrator -------------------------------
 // GET: Get a List of Tellers
 // Params: None
 // Return: List of Tellers
 router.get('/admin/tellers', async (req, res) => {
     if (!req.session.UserID) {
-      return res.status(401).json({ error: "User Not Logged In" });
+      return res.status(403).json({ error: "User Not Logged In" });
     }
     if (req.session.UserID != ADMIN_ID) {
       return res.status(403).json({ error: "Unauthorized User Access. Admin Access Required" });
@@ -42,7 +37,7 @@ router.get('/admin/tellers', async (req, res) => {
     // Check if the email already exists in the database
     let [userData, err_userData] = await database.getUserFromEmail(teller.Email);
     if (err_userData) {
-      return res.status(401).json({ error: 'Failed to query User name', message: err_userData.message });
+      return res.status(404).json({ error: 'Failed to query User name', message: err_userData.message });
     }
     userData = userData[0];
     if (userData)   return res.status(401).json({ error: `The email is already in use by ${userData.FirstName} ${userData.LastName} ${userData.UserID}` });
@@ -80,7 +75,8 @@ router.get('/admin/tellers', async (req, res) => {
     let tellerID = req.body.UserID;
 
     let [userData, err_userData] = await database.getTeller(tellerID);
-    if (err_userData) return res.status(401).json({ error: "Failed to delete this teller", message: err_userData });
+    if (err_userData) return res.status(401).json({ error: `Failed to find Teller ${tellerID}`, message: err_userData });
+    userData = userData[0];
     if (!userData) return res.status(404).json({ error: `Teller ${tellerID} Does Not Exist`, message: err_userData });
 
     let [tellerData, err_tellerData] = await database.deleteTeller(tellerID);

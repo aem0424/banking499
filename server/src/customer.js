@@ -2,10 +2,6 @@ const express = require('express');
 const router = express.Router();
 const database = require('./database.js');
 
-router.use(cors({
-    origin: 'http://localhost:3000',
-    credentials: true,
-}));
 
 // ------------------ Customer -----------------------
 // GET: Get Customer Information (Login Required)

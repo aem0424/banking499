@@ -2,11 +2,6 @@ const express = require('express');
 const router = express.Router();
 const database = require('./database.js');
 
-router.use(cors({
-    origin: 'http://localhost:3000',
-    credentials: true,
-}));
-
 // ------------------------ Teller -----------------------------------
 
 // GET: Get Teller Information (Login Required)
@@ -53,37 +48,7 @@ router.post('/teller/update', async (req, res) => {
     return res.status(200).json({ message: `Teller Information Updated Successfully as UserID: ${tellerData.UserID}` });
 });
 
-// DELETE: Delete a Teller
-// params: UserID
-// return: { message: <message> }
-router.delete('/teller/delete', async (req, res) => {
-    // Check If it is the Administrator making this request
-    let adminID = req.session.UserID;
-    console.log(`Deleting a Teller`);
-    if (!adminID || adminID != ADMIN_ID) return res.status(401).json({ error: "Invalid Access Level to perfom the task: Creating a Teller account" });
 
-    // Check the user body
-    let tellerID = req.body.UserID;
-    if (!tellerID) return res.status(401).json({ error: "Empty value passed in body. Make sure it looks like the example", example: { tellerID: "10" } });
-
-
-    // Check if the email already exists in the database
-    let [teller, err_teller] = await database.getUser(tellerID);
-    if (err_teller) {
-        return res.status(401).json({ error: 'Failed to query User name', message: err_teller.message });
-    }
-    if (!teller[0]) {
-        return res.status(404).json({ error: `User with the UserID ${tellerID} does not exist` });
-    }
-
-    // Insert user information
-    let [deletionData, err_deletionData] = await database.deleteCustomer(tellerID);
-    if (err_deletionData) {
-        return res.status(401).json({ error: "Customer Deletion Failed", message: err_deletionData.message });
-    }
-
-    return res.status(200).json({ message: `Customer ${tellerID} is successful deleted from the database:`, data: deletionData });
-});
 
 // GET: Get Teller Information (Login Required)
 // Params: None
