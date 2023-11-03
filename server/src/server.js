@@ -44,7 +44,7 @@ app.get('/', (req, res) => {
 // Return: User{ UserID, Role, Email, Password, FirstName, LastName, Phone Number, SSN, DOB, Street, Street2, City, State, ZIP }
 app.get('/user', async (req, res) => {
   let userID = req.body.UserID
-  console.log(`Getting User ${req.session.UserID}'s Information`);
+  console.log(`Getting User ${req.body.UserID}'s Information`);
 
   // Query User Information
   let [userData, err_userData] = await database.getUser(userID);
