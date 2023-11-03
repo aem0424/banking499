@@ -10,9 +10,7 @@ function AdminMain() {
     useEffect(() => {
       if (user) {
         axios.get('/user', {
-          params: {
-            UserID: user.id,
-          }
+
         })
           .then((response) => {
             if (response.status === 200) {
