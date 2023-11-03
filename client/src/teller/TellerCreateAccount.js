@@ -1,4 +1,6 @@
 import React from 'react'
+import './/css/TellerCreateAccount.css';
+
 
 function TellerCreateAccount() {
     return (

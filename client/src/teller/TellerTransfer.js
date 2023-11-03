@@ -1,4 +1,6 @@
 import React from 'react'
+import './/css/TellerTransfer.css';
+
 
 function TellerTransfer() {
     return (

@@ -1,12 +1,21 @@
 import React from 'react'
+import './/css/TellerMain.css';
+
 
 function TellerMain() {
     return (
         <div>
             <h1>This is a placeholder for the main teller page.</h1>
-            <button href = "/Teller/Transaction">Show Transactions</button>
-            <button href = "/Teller/Customer">Search Customers</button>
-            <button href = "/Teller/CreateAccount">Customer Account Requests</button>
+            <a href = "/Teller/Transaction">
+                <button>Show Transactions</button>
+            </a>
+            <a href = "Teller/Customer">
+                <button>Search Customers</button>
+            </a>
+            <a href = "Teller/CreateAccount">
+                <button>Customer Account Requests</button>
+            </a>
+            <button>Logout logic to-do</button>
         </div>
     )
 }

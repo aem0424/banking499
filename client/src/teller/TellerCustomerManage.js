@@ -1,4 +1,6 @@
 import React from 'react'
+import './/css/TellerCustomerManage.css';
+
 
 function TellerCustomerManage() {
     return (

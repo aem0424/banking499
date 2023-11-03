@@ -1,4 +1,6 @@
 import React from 'react'
+import './/css/TellerDeposit.css';
+
 
 function TellerDeposit() {
     return (

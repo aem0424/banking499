@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
+import './/css/CustomerCreateAccount.css';
+
 
 function CustomerCreateAccount() {
     const [formData, setFormData] = useState({
@@ -60,6 +62,10 @@ function CustomerCreateAccount() {
                         required
                     >
                       <option value="Checking">Checking</option>
+                      <option value="Savings">Savings</option>
+                      <option value="MoneyMarket">Money Market</option>
+                      <option value="HomeMortgage">Home Mortgage</option>
+                      <option value="CreditCard">Credit Card</option>
                     </select>
                 </div>
                 <div>
