@@ -35,10 +35,9 @@ router.get('/teller', async (req, res) => {
 // return: Confirmation Message
 router.post('/teller/update', async (req, res) => {
     // Check If it is the Administrator making this request
-    let adminID = req.session.UserID;
     console.log(`Updating a Teller Information`);
-    if (!adminID || adminID != ADMIN_ID) {
-        return res.status(401).json({ error: "Invalid Access Level to perfom the task: Creating a Teller account" });
+    if (!req.session.UserID || !req.session.UserRole) {
+        return res.status(401).json({ error: "Invalid Access Level to perfom the task: Updating a Teller account" });
     }
 
 
@@ -46,17 +45,12 @@ router.post('/teller/update', async (req, res) => {
     let teller = req.body;
     if (!teller) return res.status(401).json({ error: "Empty json passed in body" });
 
-    // Check if the email already exists in the database
-    let [name, err_name] = await database.getUserNameFromEmail(teller.Email);
-    if (err_name) return res.status(401).json({ error: 'Failed to query User name', message: err_name.message });
-    name = name[0];
-    if (!name) return res.status(401).json({ error: `The email is already in use by ${name.FirstName} ${name.LastName}` });
 
     // Insert user information
     let [tellerData, err_tellerData] = await database.updateTeller(teller);
     if (err_tellerData) return res.status(401).json({ error: "Database Insertion Failed", message: err_tellerData.message });
 
-    return res.status(200).json({ message: `Registration successful as UserID: ${tellerData.UserID}` });
+    return res.status(200).json({ message: `Teller Information Updated Successfully as UserID: ${tellerData.UserID}` });
 });
 
 // DELETE: Delete a Teller
