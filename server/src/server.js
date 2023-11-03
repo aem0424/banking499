@@ -39,18 +39,22 @@ app.get('/', (req, res) => {
 });
 
 // -------------------- User ----------------------------
-// GET: Get User's Information
+// GET: Get User's Information (Login Require)
 // Params: UserID
 // Return: User{ UserID, Role, Email, Password, FirstName, LastName, Phone Number, SSN, DOB, Street, Street2, City, State, ZIP }
 app.get('/user', async (req, res) => {
-  let userID = req.body.UserID
-  console.log(`Getting User ${req.body.UserID}'s Information`);
+  let userID = req.session.UserID
+
+  if (!userID) return res.status(401).json({ error: "User Not Logged In", message: `${userID}` });
+  console.log(`Getting User ${userID}'s Information`);
 
   // Query User Information
   let [userData, err_userData] = await database.getUser(userID);
-  if (err_userData) {
-    return res.status(404).json({ error: `User ${userID} Not Found`, message: err_userData.message });
-  }
+  if (err_userData) return res.status(404).json({ error: `Failed to query User with UserID ${userID}`, message: err_userData.message });
+
+  userData = userData[0];
+  if (!userData) return res.status(404).json({ error: `User ${userID} Not Found`, message: err_userData.message });
+
 
   return res.status(200).json(userData);
 });
