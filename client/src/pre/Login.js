@@ -26,12 +26,11 @@ function Login() {
     setError(null); // Clear any previous error messages
 
     try {
-      const response = await axios.post('http://localhost:4000/user/login', { "Email" : Email, "Password" : Password });;
-
+      const response = await axios.post('http://localhost:4000/user/login', { "Email" : Email, "Password" : Password }, { withCredentials: true });
       if (response.data) {
         console.log('Login successful:', response.data);
         setUser(response.data);
-        axios.get('/user')
+        
         navigate('/Admin' ,{state:{user:response.data}});
         /*navigate('/Customer', {state:{user:response.data}});*/
         setError('Login failed. Please check your email and password.');

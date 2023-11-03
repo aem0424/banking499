@@ -15,7 +15,10 @@ const PORT = 4000;
 
 // ----------------------- Middleware ---------------------------
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+}));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -121,14 +124,12 @@ app.get('/user/role', async (req, res) => {
 });
 
 // GET: Get a User's Address Information (Login Required)
-// Params: None 
+// Params: None
 // Return: User{ Street, City, State, ZIP }
 app.get('/user/address', async (req, res) => {
   let userID = req.session.UserID;
   console.log(`Getting User ${req.session.UserID}'s Role`);
-  if (!userID) {
-    return res.status(401).json({ error: "User Is Not Logged In" });
-  }
+  if (!userID) return res.status(401).json({ error: "User Is Not Logged In" });
 
   // Query User Information
   let [userData, err_userData] = await database.getUserAddress(userID);
@@ -198,5 +199,3 @@ app.post('/user/logout', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
-
-
