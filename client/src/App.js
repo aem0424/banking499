@@ -67,15 +67,15 @@ function App() {
       <Route exact path="/Teller/CreateAccount" element = {<TellerCreateAccount/>}/>
       <Route exact path="/Teller/Customer" element = {<TellerCustomerManage/>}/>
       <Route exact path="/Admin" element = {<AdminMain user={user}/>}/>
-      <Route exact path="/Admin/Teller" element = {<AdminTellerMain/>}/>
-      <Route exact path="/Admin/Teller/CreateTeller" element = {<AdminCreateTeller/>}/>
-      <Route path="/Admin/Teller/EditTeller/:id" element={<AdminTellerEdit />} />
-      <Route exact path="/Admin/Teller/TellerList" element = {<AdminTellerList/>}/>
-      <Route exact path="/Admin/Customer" element = {<AdminCustomerList/>}/>
-      <Route exact path="/Admin/Customer/Account" element = {<AdminCustomerAccountList/>}/>
-      <Route exact path="/Admin/Customer/Account/Info" element = {<AdminCustomerAccountInfo/>}/>
-      <Route exact path="/Admin/Customer/Info" element = {<AdminCustomerInfo/>}/>
-      <Route exact path="/Admin/Customer/Info/Edit" element = {<AdminCustomerInfoEdit/>}/>
+      <Route exact path="/Admin/Teller" element = {<AdminTellerMain user={user}/>}/>
+      <Route exact path="/Admin/Teller/CreateTeller" element = {<AdminCreateTeller user={user}/>}/>
+      <Route path="/Admin/Teller/EditTeller/:id" element={<AdminTellerEdit user={user}/>} />
+      <Route exact path="/Admin/Teller/TellerList" element = {<AdminTellerList user={user}/>}/>
+      <Route exact path="/Admin/Customer" element = {<AdminCustomerList user={user}/>}/>
+      <Route exact path="/Admin/Customer/Account" element = {<AdminCustomerAccountList user={user}/>}/>
+      <Route exact path="/Admin/Customer/Account/Info" element = {<AdminCustomerAccountInfo user={user}/>}/>
+      <Route exact path="/Admin/Customer/Info" element = {<AdminCustomerInfo user={user}/>}/>
+      <Route exact path="/Admin/Customer/Info/Edit" element = {<AdminCustomerInfoEdit user={user}/>}/>
       <Route exact path="/UserList" element = {<UserList/>}/>
      </Routes>
     </div>

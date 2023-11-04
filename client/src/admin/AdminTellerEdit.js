@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import axios from 'axios'
 
 function AdminTellerEdit() {
-  const navigate = useNavigate();
-  const { id } = useParams();
   const location = useLocation();
-  const tellerData = location.state.tellerData;
   const user = location.state.user;
+  const navigate = useNavigate();
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const tellerData = location.state.tellerData;
   
-  console.log('User in AdminTellerEdit:', user);
 
   const [formData, setFormData] = useState({
     Email: tellerData?.Email || " ",
@@ -32,21 +33,38 @@ function AdminTellerEdit() {
       [name]: value,
     });
   };
+  useEffect(() => {
+    if (user) {
+      axios.get('/user', {})
+        .then((response) => {
+          if (response.status === 200) {
+            setUserData(response.data);
+            setLoading(false);
+            console.log('User in AdminTellerEdit:', user);
+            console.log('User FirstName:', userData.FirstName);
+          }
+        })
+        .catch((error) => {
+          setError(error);
+          setLoading(false);
+        });
+    }
+  }, [user]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('User First Name:', user.FirstName);
-    axios.post('http://localhost:4000/admin/teller/update', formData, {withCredentials:true})
-      .then((response) => {
-        if (response.status === 200) {
-          navigate('/Admin/Teller', {state:{user}});
-        } else {
-          console.error('Error updating teller data:', response.data.message);
-        }
-      })
-      .catch((error) => {
-        console.error('Error updating teller data:', error);
-      });
+    
+    try {
+      const response = await axios.post('http://localhost:4000/admin/teller/update', formData, {withCredentials:true});
+  
+      if (response.status === 200) {
+        console.log('Teller Updated successfully:', response.data);
+      } else {
+        console.error('Error updating teller:', response.statusText);
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
   };
   return (
     <div className='container'>
