@@ -1,47 +1,51 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
 function AdminMain() {
-    /*const [user, setUser] = useState(null);*/
     const location = useLocation();
     const user = location.state.user;
+    const navigate = useNavigate();
+    const [userData, setUserData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const handleManageTellersClick = () => {
+      navigate('/Admin/Teller/TellerList', { state: { user } });
+    };
 
     useEffect(() => {
       if (user) {
-        axios.get('/user', {
-
-        })
+        axios.get('/user', {})
           .then((response) => {
             if (response.status === 200) {
-              console.log('User data:', response.data);
+              setUserData(response.data);
+              setLoading(false);
             }
           })
           .catch((error) => {
-            console.error('Error fetching user data:', error);
-            console.log('Response data:', error.response.data);
-            console.log('Response headers:', error.response.headers);
+            setError(error);
+            setLoading(false);
           });
       }
-    }, [user]);
-
+    }, [user]);;
 
     return (
-        <div className='container'>
-        {user ? (
+      <div className='container'>
+        {loading ? (
+          <p>Loading user data...</p>
+        ) : error ? (
+          <p>Error fetching user data: {error.message}</p>
+        ) : userData ? (
           <div>
-            <h1>Welcome, {user.FirstName} {user.LastName}</h1>
+            <h1>Welcome, {userData.FirstName} {userData.LastName}</h1>
             <p>This is the main admin page.</p>
-            <a href="/Admin/Teller">
-              <button>Manage Tellers</button>
-            </a>
+            <button onClick={handleManageTellersClick}>Manage Tellers</button>
             <a href="/Admin/Customer">
               <button>Manage Customers</button>
             </a>
           </div>
-        ) : (
-          <p>Loading user data...</p>
-        )}
+        ) : null}
       </div>
     );
   }

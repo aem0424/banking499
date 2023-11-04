@@ -9,6 +9,7 @@ function AdminTellerEdit() {
   const tellerData = location.state.tellerData;
   const user = location.state.user;
   
+  console.log('User in AdminTellerEdit:', user);
 
   const [formData, setFormData] = useState({
     Email: tellerData?.Email || " ",
@@ -34,8 +35,8 @@ function AdminTellerEdit() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    axios.post('http://localhost:4000/admin/teller/update', formData)
+    console.log('User First Name:', user.FirstName);
+    axios.post('http://localhost:4000/admin/teller/update', formData, {withCredentials:true})
       .then((response) => {
         if (response.status === 200) {
           navigate('/Admin/Teller', {state:{user}});
