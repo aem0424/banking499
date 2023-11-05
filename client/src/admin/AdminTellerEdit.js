@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import axios from 'axios'
+import axios from 'axios';
+import '../pre/Logout.css';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function AdminTellerEdit() {
   const location = useLocation();
@@ -33,6 +34,19 @@ function AdminTellerEdit() {
       [name]: value,
     });
   };
+
+  const handleLogoutClick = () => {
+    axios.post('/user/logout')
+      .then((response) => {
+        if (response.status === 200) {
+          navigate('/Login');
+        }
+      })
+      .catch((error) => {
+        setError(error);
+      });
+  };
+  
   useEffect(() => {
     if (user) {
       axios.get('/user', {})
@@ -260,6 +274,7 @@ function AdminTellerEdit() {
       <div className="form-links">
           <a href="/Admin">Admin Main</a>
         </div>
+        <button onClick={handleLogoutClick} className='logout-button'>Logout</button>
     </div>
   );
 }

@@ -63,6 +63,8 @@
   border-radius: 5px;
   font-size: 18px;
   cursor: pointer;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  margin-bottom: 10px;
 }
 
 /* Style for error messages */

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import '../pre/Logout.css';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function AdminTellerMain() {
     const location = useLocation();
@@ -13,6 +14,19 @@ function AdminTellerMain() {
     const handleManageTellersClick = () => {
         navigate('/Admin/Teller/TellerList', { state: { user } });
       };
+
+    const handleLogoutClick = () => {
+        axios.post('/user/logout')
+          .then((response) => {
+            if (response.status === 200) {
+              navigate('/Login');
+            }
+          })
+          .catch((error) => {
+            setError(error);
+          });
+      };
+
 
       useEffect(() => {
         if (user) {
@@ -38,6 +52,7 @@ function AdminTellerMain() {
                 <button>Create Teller</button>
             </a>
             <button onClick={handleManageTellersClick}>Manage Tellers</button>
+            <button onClick={handleLogoutClick} className='logout-button'>Logout</button>
         </div>
     )
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import '../pre/Logout.css';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function AdminMain() {
     const location = useLocation();
@@ -12,6 +13,22 @@ function AdminMain() {
 
     const handleManageTellersClick = () => {
       navigate('/Admin/Teller/TellerList', { state: { user } });
+    };
+
+    const handleManageCustomersClick = () => {
+      navigate('/Admin/Customer', { state: { user } });
+    };
+
+    const handleLogoutClick = () => {
+      axios.post('/user/logout')
+        .then((response) => {
+          if (response.status === 200) {
+            navigate('/Login');
+          }
+        })
+        .catch((error) => {
+          setError(error);
+        });
     };
 
     useEffect(() => {
@@ -41,9 +58,8 @@ function AdminMain() {
             <h1>Welcome, {userData.FirstName} {userData.LastName}</h1>
             <p>This is the main admin page.</p>
             <button onClick={handleManageTellersClick}>Manage Tellers</button>
-            <a href="/Admin/Customer">
-              <button>Manage Customers</button>
-            </a>
+            <button onClick={handleManageCustomersClick}>Manage Customers</button>
+            <button onClick={handleLogoutClick} className='logout-button'>Logout</button>
           </div>
         ) : null}
       </div>

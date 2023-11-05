@@ -20,26 +20,50 @@ function Login() {
   };
 
   const navigate = useNavigate();
+
+  const handleLoginSuccess = () => {
+    axios.get('/user/role')
+      .then((response) => {
+        const role = response.data;
+        
+        // Redirect the user based on their role
+        if (role === 'A') {
+          navigate('/Admin',{state:{user:response.data}});
+        } else if (role === 'C' || role === null) {
+          navigate('/Customer',{state:{user:response.data}});
+        } else if (role === 'T') {
+          navigate('/Teller',{state:{user:response.data}});
+        } else {
+          setError('Invalid Role');
+        }
+      })
+      .catch((error) => {
+        setError('Failed to retrieve user role');
+      });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { Email, Password } = formData;
-    setError(null); // Clear any previous error messages
+    setError(null); 
 
     try {
-      const response = await axios.post('http://localhost:4000/user/login', { "Email" : Email, "Password" : Password }, { withCredentials: true });
+      const response = await axios.post('http://localhost:4000/user/login', {
+        Email,
+        Password,
+      }, { withCredentials: true });
+
       if (response.data) {
         console.log('Login successful:', response.data);
         setUser(response.data);
-        
-        navigate('/Admin' ,{state:{user:response.data}});
-        /*navigate('/Customer', {state:{user:response.data}});*/
+        handleLoginSuccess();
+      } else {
         setError('Login failed. Please check your email and password.');
       }
     } catch (error) {
       setError('An unexpected error occurred. Please try again later.');
     }
   };
-
   return (
     <div className='container'>
       <h1>Welcome to Summit Financial</h1>

@@ -105,7 +105,18 @@ async function getUserRole(userID) {
         .select('Role')
         .eq('UserID', userID);
         
-    return [ data, error ];
+    // Error checking
+    if (error) {
+        return [null, error];
+    }
+    
+    // Make sure there is a valid Role
+    if (data && data.length > 0) {
+        const role = data[0].Role;
+        return [role, null];
+    } else {
+        return [null, new Error('Role not found')];
+    }
 }
 
 // Get User Address

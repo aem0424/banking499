@@ -3,7 +3,7 @@ import axios from 'axios';
 
 function ForgotPass() {
   const [formData, setFormData] = useState({
-    email: '',
+    Email: '',
     SSN: '',
   });
   const [error, setError] = useState(null);
@@ -18,12 +18,12 @@ function ForgotPass() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { email, SSN } = formData;
+    const { Email, SSN } = formData;
     setError(null); // Clear any previous error messages
 
     //will change to an update API call to adjust password
     try {
-      const response = await axios.post(' http://localhost:4000/user/login', { "email" : email, "SSN" : SSN });
+      const response = await axios.post(' http://localhost:4000/user/login', { "Email" : Email, "SSN" : SSN });
       if (response.data) {
         console.log('Connect successful:', response.data);
       } else {
@@ -42,11 +42,11 @@ function ForgotPass() {
       <h2>Change Passsword</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="email">Email:</label>
+          <label htmlFor="Email">Email:</label>
           <input
             type="text"
-            id="email"
-            name="email"
+            id="Email"
+            name="Email"
             value={formData.email}
             onChange={handleInputChange}
             required
