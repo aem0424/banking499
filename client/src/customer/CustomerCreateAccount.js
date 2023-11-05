@@ -5,6 +5,7 @@ import './/css/CustomerCreateAccount.css';
 
 
 function CustomerCreateAccount() {
+  const navigate = useNavigate();
     const [formData, setFormData] = useState({
         AccountName: '',
         AccountType:'',
@@ -20,7 +21,7 @@ function CustomerCreateAccount() {
           [name]: value,
         });
       };    
-    const navigate = useNavigate();
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -54,7 +55,6 @@ function CustomerCreateAccount() {
                 <div>
                  <label htmlFor="AccountType">Account Type:</label>
                     <select
-                        type="text"
                         id="AccountType"
                         name="AccountType"
                         value={formData.AccountType}
@@ -89,10 +89,9 @@ function CustomerCreateAccount() {
                         onChange={handleInputChange}
                         required
                     />
-                </div>                                                
+                </div>            
+              <button type = "submit" className='form-button'>Create Request</button>                                    
             </form>
-            <p>Account Type:</p>
-            {error && <div className="error-message">{error}</div>}
         </div>
     )
 }

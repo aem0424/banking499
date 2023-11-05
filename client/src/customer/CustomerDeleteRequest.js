@@ -1,24 +1,34 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useNavigate, useLocation } from 'react-router-dom'
-import './/css/CustomerViewAccountInformation.css';
+import './/css/CustomerDeleteRequest.css';
 
-function CustomerViewAccountInformation() {
+function CustomerDeleteRequest() {
     const location = useLocation();
     const user = location.state.user;
     const account = location.state.account;
+    const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
     const [accountData, setAccountData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
 
-    const handleBack = () => {
-        navigate('/Customer/AccountList', {state: {user}})
+    const handleNo = () => {
+        navigate('/Customer/AccountInfo')
     }
 
-    const handleDeleteRequest = () => {
-        navigate('/Customer/Account/Delete', {state: {user, account}})
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.delete('/customer/account/delete')
+            if(response.status === 200) {
+                console.log('Delete request submitted');
+            } else {
+                console.error("error: ", error);
+            }
+        } catch (error) {
+            console.log("an error has occured", error)
+        }
     }
 
     useEffect(() => {
@@ -47,18 +57,20 @@ function CustomerViewAccountInformation() {
     }, [userData, accountData]);
 
     return (
-        <div className='container'>
-            {loading ? (
-                <p>Loading user data...</p>
-            ): error ? (
-                <p>ERROR: {error.message}</p>
-            ): accountData ? (
-                <div>
-                    <button onClick={handleDeleteRequest}>Delete Account</button><br/>
-                </div>
-            ): null }
-            <button onCLick={handleBack}>Back</button>
-        </div>
+     <div className='container'>
+        {loading ? (
+            <p>Loading...</p>
+        ) : error ? (
+            <p>Error: {error.message}</p>
+        ) : accountData ? (
+            <div>
+                <p>Are you sure you want to delete the account TBA?</p>
+                <button onClick={handleSubmit}>Yes</button>
+                <button onClick={handleNo}>No</button>
+            </div>
+        ): null}
+     </div>
     )
 }
-export default CustomerViewAccountInformation;
+
+export default CustomerDeleteRequest;

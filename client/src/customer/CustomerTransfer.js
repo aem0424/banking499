@@ -6,7 +6,7 @@ import './/css/CustomerTransfer.css';
 
 function CustomerTransfer() {
     const [formData, setFormData] = useState({
-        amount:0,
+        amount:'',
         to:'',
         from:'',
     });

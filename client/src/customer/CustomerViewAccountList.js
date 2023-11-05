@@ -1,25 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import './/css/CustomerViewAccountList.css';
 
-
 function CustomerViewAccountList() {
-    const [userData, setUserData] = useState(null);
+    const [userAccounts, setUserAccounts] = useState([]);
+    const navigate = useNavigate();
+
+    const handleBackButton = () => {
+        navigate('/Customer');
+    }
+
     useEffect(() => {
-        try {
-            axios.get('accounts')
-            .then(function(response) {
-                console.log(response);
-            });
-        } catch (error) {
-            console.log("error", error);
-        }
+        axios.get('/customer/accounts', {withCredentials:true})
+        .then((response) => {
+            if (response.status === 200) {
+                setUserAccounts(response.data);
+            }
+        })
+        .catch((error) => {
+            console.error("error occurred:", error);
+        });
     }, []);
 
-    //const navigate = useNavigate();
     return (
-        <div>
-            <h1>placeholder</h1>
+        <div className='container'>
+            <h1>Accounts</h1>
+            <ul>
+                {userAccounts.map((account, index) => (
+                    <li ky={index}>{account.accountName}</li>
+                ))}
+            </ul>
+            <button onCLick={handleBackButton}>Back</button>
         </div>
     )
 }
