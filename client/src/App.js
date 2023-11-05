@@ -14,6 +14,7 @@ import CustomerTransaction from ".//customer/CustomerTransaction";
 import CustomerTransfer from ".//customer/CustomerTransfer";
 import CustomerViewAccountInformation from ".//customer/CustomerViewAccountInformation";
 import CustomerViewAccountList from ".//customer/CustomerViewAccountList";
+import CustomerDeleteRequest from "./customer/CustomerDeleteRequest";
 import CustomerViewUserInformation from ".//customer/CustomerViewUserInformation";
 import TellerCreateAccount from ".//teller/TellerCreateAccount";
 import TellerCustomerManage from ".//teller/TellerCustomerManage";
@@ -37,6 +38,7 @@ import UserList from ".//pre/UserList";
 import {Route, Routes} from 'react-router-dom';
 
 
+
 function App() {
   const [user, setUser] = React.useState(null);
   return (
@@ -57,6 +59,7 @@ function App() {
       <Route exact path="/Customer/UserInfo" element ={<CustomerViewUserInformation/>}/>
       <Route exact path="/Customer/UserInfo/Edit" element ={<CustomerEditUserInformation/>}/>
       <Route exact path="/Customer/AccountInfo" element ={<CustomerViewAccountInformation/>}/>
+      <Route exact path="/Customer/AccountInfo/Delete" element={<CustomerDeleteRequest/>}/>
       <Route exact path="/Customer/AccountList" element ={<CustomerViewAccountList/>}/>
       <Route exact path="/Teller" element = {<TellerMain/>}/>
       <Route exact path="/Teller/Account" element = {<TellerViewAccount/>}/>

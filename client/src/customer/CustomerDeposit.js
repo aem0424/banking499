@@ -5,8 +5,8 @@ import './/css/CustomerDeposit.css';
 
 function CustomerDeposit() {
     const [formData, setFormData] = useState({
-        payto:'',
-        payamount:0,
+        PayTo:'',
+        PayAmount:'',
     });
     const [error, setError] = useState(null);
 
@@ -35,9 +35,9 @@ function CustomerDeposit() {
             <form onSubmit={handleSubmit} className='amount-form'>
                 <label htmlFor="amount">Amount of Deposit</label>
                 <input
-                    type="int"
-                    id="amount"
-                    name="amount"
+                    type="text"
+                    id="PayAmount"
+                    name="PayAmount"
                     value={formData.amount}
                     onChange={handleInputChange}
                     required

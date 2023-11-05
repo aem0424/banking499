@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './/css/CustomerViewUserInformation.css';
 
 
 function CustomerViewUserInformation() {
     const location = useLocation();
     const user = location.state.user;
+    const navigate = useNavigate();
+    const [userData, setUserData] = useState(null);
+    const [loading, setLoading] = useState(null);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
       if (user) {
