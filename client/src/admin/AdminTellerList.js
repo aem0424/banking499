@@ -57,6 +57,10 @@ function AdminTellerList() {
     navigate('/Admin/Teller/EditTeller/$teller.UserID', { state: { user, tellerData : teller } });
   };
 
+  const handleAdminMainClick = () => {
+    navigate('/Admin', { state: { user } });
+  };
+
     return (
       <div className='container'>
         <h1>Teller List</h1>
@@ -71,6 +75,7 @@ function AdminTellerList() {
             ))}
           </ul>
         )}
+      <button onClick={handleAdminMainClick} className='form-button'>Admin Main</button>
       <button onClick={handleLogoutClick} className='logout-button'>Logout</button>
       </div>
     );

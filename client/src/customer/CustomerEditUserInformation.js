@@ -16,6 +16,7 @@ function CustomerEditUserInformation() {
         Password: customerData?.Password || " ",
         FirstName: customerData?.FirstName || " ",
         LastName: customerData?.LastName || " ",
+        FullName: customerData?.FirstName + customerData?.LastName || " ",
         Street: customerData?.Street || " ",
         Street2: customerData?.Street2 || " ",
         City: customerData?.City || " ",
@@ -24,8 +25,11 @@ function CustomerEditUserInformation() {
         PhoneNumber: customerData?.PhoneNumber || " ",
         SSN: customerData?.SSN || " ",
         DOB: customerData?.DOB || " ",
-
     });
+
+    const handleBackButtonClick = () => {
+      navigate('/Customer/UserInfo', { state : { user }})
+    }
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -39,14 +43,12 @@ function CustomerEditUserInformation() {
       };
   
       useEffect(() => {
-        if (userData) {
+        if (user) {
           axios.get('/user', {})
             .then((response) => {
               if (response.status === 200) {
                 setUserData(response.data);
                 setLoading(false);
-                console.log('User in CustomerEditUserInformation:', user);
-                console.log('User FirstName:', userData.FirstName);
               }
             })
             .catch((error) => {
@@ -239,6 +241,7 @@ function CustomerEditUserInformation() {
                     />             
                 </div>
                 <button type="submit" className="form-button">Make Edits</button>
+                <button onClick={handleBackButtonClick}>Back</button>
             </form>
            </div>
           ): null}

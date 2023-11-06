@@ -1,18 +1,22 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './/css/CustomerCreateAccount.css';
 
 
 function CustomerCreateAccount() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const user = location.state.user;
     const [formData, setFormData] = useState({
         AccountName: '',
         AccountType:'',
-        Balance:'',
-        InterestRate:'',
       });
     const [error, setError] = useState(null);
+
+    const handleBackButtonClick = () => {
+      navigate('/Customer/AccountList', {state:{user}})
+    }
     
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -67,30 +71,9 @@ function CustomerCreateAccount() {
                       <option value="HomeMortgage">Home Mortgage</option>
                       <option value="CreditCard">Credit Card</option>
                     </select>
-                </div>
-                <div>
-                 <label htmlFor="Balance">Balance:</label>
-                    <input
-                        type="text"
-                        id="Balance"
-                        name="Balance"
-                        value={formData.Balance}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </div>
-                <div>
-                 <label htmlFor="InterestRate">Interest Rate:</label>
-                    <input
-                        type="text"
-                        id="InterestRate"
-                        name="InterestRate"
-                        value={formData.InterestRate}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </div>            
-              <button type = "submit" className='form-button'>Create Request</button>                                    
+                </div>        
+              <button type = "submit" className='form-button'>Create Request</button> 
+              <button onClick={handleBackButtonClick}>Back</button>                                   
             </form>
         </div>
     )

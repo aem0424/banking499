@@ -57,8 +57,8 @@ function AdminMain() {
           <div>
             <h1>Welcome, {userData.FirstName} {userData.LastName}</h1>
             <p>This is the main admin page.</p>
-            <button onClick={handleManageTellersClick}>Manage Tellers</button>
-            <button onClick={handleManageCustomersClick}>Manage Customers</button>
+            <button onClick={handleManageTellersClick} className='form-button'>Manage Tellers</button>
+            <button onClick={handleManageCustomersClick} className='form-button'>Manage Customers</button>
             <button onClick={handleLogoutClick} className='logout-button'>Logout</button>
           </div>
         ) : null}

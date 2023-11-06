@@ -54,10 +54,14 @@ function CustomerViewAccountInformation() {
                 <p>ERROR: {error.message}</p>
             ): accountData ? (
                 <div>
+                    <p>Account Name: {accountData.AccountName}</p>
+                    <p>Account Type: {accountData.AccountType}</p>
+                    <p>Balance: {accountData.Balance}</p>
+                    <p>Interest Rate: {accountData.InterestRate}</p>
                     <button onClick={handleDeleteRequest}>Delete Account</button><br/>
+                    <button onCLick={handleBack}>Back</button>                    
                 </div>
             ): null }
-            <button onCLick={handleBack}>Back</button>
         </div>
     )
 }

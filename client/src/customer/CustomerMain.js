@@ -16,28 +16,28 @@ function CustomerMain() {
     }
 
     const handleCustomerViewUserInformationClick = () => {
-      navigate('Customer/UserInfo', {state: {user}});
+      navigate('/Customer/UserInfo', {state: {user}});
     }
 
     const handleCustomerTransactionClick = () => {
-      navigate('Customer/Transaction', {state: {user}});
+      navigate('/Customer/Transaction', {state: {user}});
     }
 
-    const handleLogout = async (e) => {
-      try {
-      const response = await axios.post('/user/logout');
-      if(response.status === 200) {
-        console.log("Logging out...");
-        navigate('');
-      }
-      else {
-        console.error("Could not log out:", response.statusText);
-      }
-      navigate('');
-      } catch (error) {
-        console.log("an error has occurred", error)
-      }
+    const handleCustomerAccountsClick = () => {
+      navigate('/Customer/AccountList', {state: {user}})
     }
+
+    const handleLogoutClick = () => {
+      axios.post('/user/logout')
+        .then((response) => {
+          if (response.status === 200) {
+            navigate('/Login');
+          }
+        })
+        .catch((error) => {
+          setError(error);
+        });
+    };
 
     useEffect(() => {
       if (user) {
@@ -67,7 +67,8 @@ function CustomerMain() {
              <button onClick={handleCustomerBillPayClick}>Pay Bill</button><br/>
              <button onClick={handleCustomerViewUserInformationClick}>User Information</button><br/>
              <button onClick={handleCustomerTransactionClick}>Transfer/Deposit</button><br/>
-             <button onClick={handleLogout}>Log Out</button>
+             <button onClick={handleCustomerAccountsClick}>Accounts</button>
+             <button onClick={handleLogoutClick}>Log Out</button>
            </div> 
           ) : null}
         </div>

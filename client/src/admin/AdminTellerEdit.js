@@ -24,7 +24,6 @@ function AdminTellerEdit() {
   
 
   const [formData, setFormData] = useState({
-    Email: tellerData?.Email || " ",
     FirstName: tellerData?.FirstName || "",
     LastName: tellerData?.LastName || "",
     DOB: tellerData?.DOB || "",
@@ -75,6 +74,10 @@ function AdminTellerEdit() {
     }
   }, [user]);
 
+  const handleAdminMainClick = () => {
+    navigate('/Admin', { state: { user } });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -96,18 +99,6 @@ function AdminTellerEdit() {
       <p>Name: {tellerData.FirstName} {tellerData.LastName}</p>
       <form onSubmit={handleSubmit} className="register-form">
           <div className="form-columns">
-            <div className='form-group'>
-              <label htmlFor="Email" className='form-label'>Email:</label>
-              <input
-                type="Email"
-                id="Email"
-                name="Email"
-                value={formData.Email}
-                onChange={handleInputChange}
-                required
-                className='form-input'
-              />
-            </div>
             <div className='form-group'>
               <label htmlFor="FirstName" className='form-label'>First Name:</label>
               <input
@@ -279,10 +270,10 @@ function AdminTellerEdit() {
               />
             </div>
             </div>
-        <button type='submit'>Save Changes</button>
+        <button type='submit' className='submit-button'>Save Changes</button>
       </form>
       <div className="form-links">
-          <a href="/Admin">Admin Main</a>
+          <button onClick={handleAdminMainClick} className='form-button'>Admin Main</button>
         </div>
         <button onClick={handleLogoutClick} className='logout-button'>Logout</button>
     </div>

@@ -35,6 +35,7 @@ import AdminTellerEdit from ".//admin/AdminTellerEdit";
 import AdminTellerList from ".//admin/AdminTellerList";
 import AdminTellerMain from ".//admin/AdminTellerMain";
 import {Route, Routes} from 'react-router-dom';
+import TellerViewCustomerInfo from "./teller/TellerViewCustomerInfo";
 
 
 
@@ -67,6 +68,7 @@ function App() {
       <Route exact path="/Teller/Transaction/Transfer" element = {<TellerTransfer user={user}/>}/>
       <Route exact path="/Teller/CreateAccount" element = {<TellerCreateAccount user={user}/>}/>
       <Route exact path="/Teller/Customer" element = {<TellerCustomerManage user={user}/>}/>
+      <Route exact path="/Teller/Customer/UserInfo" element = {<TellerViewCustomerInfo user={user}/>}/>
       <Route exact path="/Customer/Transaction" element ={<CustomerTransaction/>}/>
       <Route exact path="/Customer/Transaction/Transfer" element ={<CustomerTransfer/>}/>
       <Route exact path="/Customer/Transaction/Deposit" element ={<CustomerDeposit/>}/>

@@ -1,8 +1,22 @@
+# Summit Financial Corporation
+CS499-02
+
+Group 2
+
+Bank Management Utility
+
+
 # Quick instructions
 
-fill in details later
+1. Download the repository
+2. Insert .env file with supabase api-key and url into root
+3. Set up Docker
+   * Windows: Install Docker Desktop
+   * Linux: Install Docker
+4. Run `docker-compose up --build`
 
-Client = Reacet Frontend
-Server = nodejs Backend
+Client = React.js Frontend
 
-DB = notsetup
+Server = Express.js Backend
+
+Database = Supabase
