@@ -50,7 +50,7 @@ function AdminMain() {
     return (
       <div className='container'>
         {loading ? (
-          <p>Loading user data...</p>
+          <p>Loading...</p>
         ) : error ? (
           <p>Error fetching user data: {error.message}</p>
         ) : userData ? (

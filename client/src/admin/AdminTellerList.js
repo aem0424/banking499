@@ -63,10 +63,11 @@ function AdminTellerList() {
 
     return (
       <div className='container'>
-        <h1>Teller List</h1>
         {loading ? (
           <p>Loading...</p>
         ) : (
+          <div>
+          <h1>Teller List</h1>
           <ul>
             {tellers.map((teller, index) => (
               <li key={index}>
@@ -74,9 +75,10 @@ function AdminTellerList() {
               </li>
             ))}
           </ul>
+          <button onClick={handleAdminMainClick} className='form-button'>Admin Main</button>
+          <button onClick={handleLogoutClick} className='logout-button'>Logout</button>
+        </div>
         )}
-      <button onClick={handleAdminMainClick} className='form-button'>Admin Main</button>
-      <button onClick={handleLogoutClick} className='logout-button'>Logout</button>
       </div>
     );
   }

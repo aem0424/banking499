@@ -69,7 +69,8 @@ function Login() {
         setError('Login failed. Please check your email and password.');
       }
     } catch (error) {
-      setError('An unexpected error occurred. Please try again later.');
+      setError('Login failed. Please check your email and password.');
+      //setError('An unexpected error occurred. Please try again later.');
     }
   };
   return (

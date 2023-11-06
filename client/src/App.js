@@ -34,8 +34,11 @@ import AdminMain from ".//admin/AdminMain";
 import AdminTellerEdit from ".//admin/AdminTellerEdit";
 import AdminTellerList from ".//admin/AdminTellerList";
 import AdminTellerMain from ".//admin/AdminTellerMain";
-import {Route, Routes} from 'react-router-dom';
 import TellerViewCustomerInfo from "./teller/TellerViewCustomerInfo";
+import ProtectedRoute from './pre/ProtectedRoute';
+import Unauthorized from './/pre/Unauthorized'
+import {Route, Routes} from 'react-router-dom';
+
 
 
 
@@ -97,6 +100,8 @@ function App() {
       <Route exact path="/Admin/Customer/Account/Info" element = {<AdminCustomerAccountInfo user={user}/>}/>
       <Route exact path="/Admin/Customer/Info" element = {<AdminCustomerInfo user={user}/>}/>
       <Route exact path="/Admin/Customer/Info/Edit" element = {<AdminCustomerInfoEdit user={user}/>}/>
+      <Route exact path="/" element ={<Login/>}/>
+      <Route exact path="/Unauthorized" element ={<Unauthorized/>}/>
      </Routes>
     </div>
   );

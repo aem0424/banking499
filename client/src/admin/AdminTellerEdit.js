@@ -21,6 +21,7 @@ function AdminTellerEdit() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const tellerData = location.state.tellerData;
+  const [successMessage, setSuccessMessage] = useState(null);
   
 
   const [formData, setFormData] = useState({
@@ -64,8 +65,6 @@ function AdminTellerEdit() {
           if (response.status === 200) {
             setUserData(response.data);
             setLoading(false);
-            console.log('User in AdminTellerEdit:', user);
-            console.log('User FirstName:', userData.FirstName);
           }
         })
         .catch((error) => {
@@ -87,6 +86,7 @@ function AdminTellerEdit() {
   
       if (response.status === 200) {
         console.log('Teller Updated successfully:', response.data);
+        setSuccessMessage('Teller updated successfully');
       } else {
         console.error('Error updating teller:', response.statusText);
       }
@@ -271,6 +271,7 @@ function AdminTellerEdit() {
               />
             </div>
             </div>
+            {successMessage && (<p className="success-message">{successMessage}</p>)}
         <button type='submit' className='submit-button'>Save Changes</button>
       </form>
       <div className="form-links">
