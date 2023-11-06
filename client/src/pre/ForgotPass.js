@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function ForgotPass() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     Email: '',
     SSN: '',
@@ -14,6 +17,14 @@ function ForgotPass() {
       ...formData,
       [name]: value,
     });
+  };
+
+  const handleLoginClick = () => {
+    navigate('/Login');
+  };
+
+  const handleRegisterClick = () => {
+    navigate('/Register');
   };
 
   const handleSubmit = async (e) => {
@@ -63,12 +74,12 @@ function ForgotPass() {
             required
           />
         </div>
-        <button type="submit">Change Password</button>
+        <button type="submit" className='submit-button'>Change Password</button>
       </form>
       <div className="form-links">
-        <a href="/Register">Register</a>
+      <button onClick={handleRegisterClick} className='form-button'>Register</button>
         <br />
-        <a href="/Login">Login</a>
+      <button onClick={handleLoginClick} className='form-button'>Login</button>
       </div>
       {error && <div className="error-message">{error}</div>}
     </div>

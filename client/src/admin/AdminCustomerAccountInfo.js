@@ -32,7 +32,7 @@ function AdminCustomerAccountInfo() {
             <p>Account Type:</p>
             <p>Account Owner:</p>
             <p>Interest Rate:</p>
-            <button onClick={handleAdminMainClick}>Admin Main</button>
+            <button onClick={handleAdminMainClick} className='form-button'>Admin Main</button>
             <button onClick={handleLogoutClick} className='logout-button'>Logout</button>
         </div>
     )

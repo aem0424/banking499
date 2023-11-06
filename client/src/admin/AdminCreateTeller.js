@@ -27,7 +27,6 @@ function AdminCreateTeller() {
       City: '',
       State: '',
       ZIP: '',
-      // Add more fields as needed for registration (e.g., name, email, etc.)
     });
   
     const handleInputChange = (e) => {
@@ -284,10 +283,10 @@ function AdminCreateTeller() {
               />
             </div>
             </div>
-          <button type="submit" className='form-button'>Add Teller</button>
+          <button type="submit" className='submit-button'>Add Teller</button>
         </form>
         <div className="form-links">
-        <button onClick={handleAdminMainClick}>Admin Main</button>
+        <button onClick={handleAdminMainClick} className='form-button'>Admin Main</button>
         </div>
         <button onClick={handleLogoutClick} className='logout-button'>Logout</button>
       </div>

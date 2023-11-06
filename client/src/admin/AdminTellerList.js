@@ -75,7 +75,7 @@ function AdminTellerList() {
             ))}
           </ul>
         )}
-      <button onClick={handleAdminMainClick}>Admin Main</button>
+      <button onClick={handleAdminMainClick} className='form-button'>Admin Main</button>
       <button onClick={handleLogoutClick} className='logout-button'>Logout</button>
       </div>
     );

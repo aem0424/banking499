@@ -15,6 +15,10 @@ function AdminTellerMain() {
         navigate('/Admin/Teller/TellerList', { state: { user } });
       };
 
+      const handleNewTellerClick = () => {
+        navigate('/Admin/Teller/CreateTeller', { state: { user } });
+      };
+
       const handleAdminMainClick = () => {
         navigate('/Admin', { state: { user } });
       };
@@ -52,11 +56,9 @@ function AdminTellerMain() {
     return (
         <div className='container'>
             <h1>Teller Management</h1>
-            <a href="/Admin/Teller/CreateTeller">
-                <button>Create Teller</button>
-            </a>
-            <button onClick={handleAdminMainClick}>Admin Main</button>
-            <button onClick={handleManageTellersClick}>Manage Tellers</button>
+            <button onClick={handleNewTellerClick} className='submit-button'>Add New Teller</button>
+            <button onClick={handleManageTellersClick} className='submit-button'>Manage Tellers</button>
+            <button onClick={handleAdminMainClick} className='form-button'>Admin Main</button>
             <button onClick={handleLogoutClick} className='logout-button'>Logout</button>
         </div>
     )
