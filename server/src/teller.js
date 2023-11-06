@@ -8,12 +8,13 @@ const database = require('./database.js');
 // Params: None
 // Return: Teller:{ Role, Email, Password, FirstName, LastName, PhoneNumber}
 router.get('/teller', async (req, res) => {
-    let userID = req.session.UserID;
+    let userID = req.session.user?.UserID;
+    let userEmail = req.session.user?.Email;
     console.log(`Getting Teller ${userID}'s Information`);
     if (!userID) return res.status(403).json({ error: "User Is Not Logged In" });
 
     // Query User Information
-    let [userData, err_userData] = await database.getUserShorthand(userID);
+    let [userData, err_userData] = await database.getUserShorthand(userEmail);
     if (err_userData) return res.status(404).json({ error: "Failed to query Teller information", message: err_userData.message });
     userData = userData[0];
     if (!userData) return res.status(404).json({ error: `Teller ${userID} IS Not Found`, message: err_userData });
@@ -24,20 +25,19 @@ router.get('/teller', async (req, res) => {
 
 
 // POST: Update a Teller
-// params: User:{ FirstName, LastName, PhoneNumber }
+// params: User{ Email*, FirstName, LastName, SSN, PhoneNumber, DOB, Address, Address2, City, State, ZIP }
 // return: Confirmation Message
 router.post('/teller/update', async (req, res) => {
     // Check If it is the Administrator making this request
     console.log(`Updating a Teller Information`);
-    if (!req.session.UserID || !req.session.UserRole) {
+    if (!req.session.UserID || !req.session.user?.Role) {
         return res.status(403).json({ error: "Invalid Access Level to perfom the task: Updating a Teller account" });
     }
-
 
     // Check the user body
     let teller = req.body;
     if (!teller) return res.status(401).json({ error: "Empty json passed in body" });
-
+    teller.Email = req.session.user?.Email;
 
     // Insert user information
     let [tellerData, err_tellerData] = await database.updateTeller(teller);
@@ -52,8 +52,8 @@ router.post('/teller/update', async (req, res) => {
 // Params: None
 // Return: List of Tellers
 router.get('/teller/customers', async (req, res) => {
-    let tellerID = req.session.UserID;
-    let tellerRole = req.session.UserRole;
+    let tellerID = req.session.user?.UserID;
+    let tellerRole = req.session.user?.Role;
     if (!tellerID || tellerRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As Teller" });
 
     console.log(`Getting All Customer Information`);
@@ -70,8 +70,8 @@ router.get('/teller/customers', async (req, res) => {
 // Params: { Text String } (First Name and/or Last Name)
 // Return: Users:[User1{...}, User2{...}, ...]
 router.get('/teller/customer/search', async (req, res) => {
-    let tellerID = req.session.UserID;
-    let tellerRole = req.session.UserRole;
+    let tellerID = req.session.user?.UserID;
+    let tellerRole = req.session.user?.Role;
     if (!tellerID || tellerRole != "Teller") return res.status(403).json({ error: "User Is Not Logged In As Teller" });
 
     let userText = user.body.Text
@@ -88,8 +88,8 @@ router.get('/teller/customer/search', async (req, res) => {
 // Params: {UserID} (CustomerID)
 // Return: Customer:{ UserID, Email, Password, FirstName, LastName, Street, Street2, City, State, ZIP, PhoneNumber, SSN, DOB } ***
 router.get('/teller/customer', async (req, res) => {
-    let tellerID = req.session.UserID;
-    let tellerRole = req.session.UserRole;
+    let tellerID = req.session.user?.UserID;
+    let tellerRole = req.session.user?.Role;
     if (!tellerID || tellerRole != "Teller") return res.status(403).json({ error: "User Is Not Logged In As Teller" });
 
     let customerID = req.body.UserID;
@@ -106,8 +106,8 @@ router.get('/teller/customer', async (req, res) => {
 // Params: UserID (CustomerID)
 // Return: List of Tellers
 router.get('/teller/customer/accounts', async (req, res) => {
-    let tellerID = req.session.UserID;
-    let tellerRole = req.session.UserRole;
+    let tellerID = req.session.user?.UserID;
+    let tellerRole = req.session.user?.Role;
     console.log(`Getting Teller ${tellerID}'s Information`);
 
     if (!tellerID || tellerRole != "Teller") return res.status(403).json({ error: "User Is Not Logged In As Teller" });
@@ -126,8 +126,8 @@ router.get('/teller/customer/accounts', async (req, res) => {
 // Params: UserID (CustomerID), AccountID
 // Return: Confirmation Message
 router.get('/teller/customer/account/activate', async (req, res) => {
-    let tellerID = req.session.UserID;
-    let tellerRole = req.session.UserRole;
+    let tellerID = req.session.user?.UserID;
+    let tellerRole = req.session.user?.Role;
     console.log(`Getting Teller ${tellerID}'s Information`);
 
     if (!tellerID || tellerRole != "Teller") return res.status(403).json({ error: "User Is Not Logged In As Teller" });
@@ -150,8 +150,8 @@ router.get('/teller/customer/account/activate', async (req, res) => {
 // Params: None
 // Return: [TellerInbox1{InboxID, Type, Message, User{FirstName, LastName}, Account{AccountName}, TimeStamp}, TellerInbox2{...}, ...]
 router.get('/teller/notifications', async (req, res) => {
-    let userID = req.session.UserID;
-    let userRole = req.session.UserRole;
+    let userID = req.session.user?.UserID;
+    let userRole = req.session.user?.Role;
     console.log(`Getting All Notification`);
     if (!userID) return res.status(403).json({ error: "User Is Not Logged In" });
     if (!userRole) return res.status(403).json({ error: "Invalid Access Detected: User is not logged in as Teller", data: userRole });
@@ -168,8 +168,8 @@ router.get('/teller/notifications', async (req, res) => {
 // Params: None
 // Return: [TellerInbox1{InboxID, Type, Message, User{FirstName, LastName}, Account{AccountName}, TimeStamp}, TellerInbox2{...}, ...]
 router.get('/teller/notifications/all', async (req, res) => {
-    let userID = req.session.UserID;
-    let userRole = req.session.UserRole;
+    let userID = req.session.user?.UserID;
+    let userRole = req.session.user?.Role;
     console.log(`Getting All Notification`);
     if (!userID) return res.status(403).json({ error: "User Is Not Logged In" });
     if (!userRole) return res.status(403).json({ error: "Invalid Access Detected: User is not logged in as Teller", data: userRole });
@@ -186,7 +186,7 @@ router.get('/teller/notifications/all', async (req, res) => {
 // Params: InboxID
 // Return: TellerInbox{InboxID, Type, Message, User{FirstName, LastName}, Account{AccountName}, TimeStamp}
 router.get('/teller/notification', async (req, res) => {
-    if (!req.session.UserID || req.session.UserRole != "Teller") {
+    if (!req.session.user?.UserID || req.session.user?.Role != "Teller") {
         return res.status(403).json({ error: "Unauthorized User Access" });
     }
     console.log("Getting Teller Notifications");

@@ -8,16 +8,45 @@ const database = require('./database.js');
 // Params: None
 // Return: User{UserID, Email, Password, FirstName, LastName, Street, Street2, City, State, ZIP, PhoneNumber, SSN, DOB}
 router.get('/customer', async (req, res) => {
-    let userID = req.session.UserID;
-    let userRole = req.session.UserRole;
+    // Check If the User is Logged In
+    let userID = req.session.user?.UserID;
+    let userRole = req.session.user?.Role;
+
     console.log(`Getting User ${userID}'s Information`);
+
     if (!userID || userRole != "Customer") return res.status(401).json({ error: "User Is Not Logged In As Customer" });
+
 
     // Query User Information
     let [userData, err_userData] = await database.getUser(userID);
     if (err_userData) {
         return res.status(404).json({ error: `User ${userID} Not Found`, message: err_userData.message });
     }
+
+    // Parse Data
+    userData = userData[0];
+    return res.status(200).json(userData);
+});
+
+// GET: Get All Customer Information (Login Required)
+// Params: None
+// Return: User{UserID, Email, Password, FirstName, LastName, Street, Street2, City, State, ZIP, PhoneNumber, SSN, DOB}
+router.get('/customer/all', async (req, res) => {
+    // Check If the User is Logged In
+    let userID = req.session.user?.UserID;
+    let userRole = req.session.user?.Role;
+
+    console.log(`Getting User ${userID}'s Information`);
+
+    if (!userID || userRole != "Customer") return res.status(401).json({ error: "User Is Not Logged In As Customer" });
+
+
+    // Query User Information
+    let [userData, err_userData] = await database.getUser(userID);
+    if (err_userData) {
+        return res.status(404).json({ error: `User ${userID} Not Found`, message: err_userData.message });
+    }
+    
     // Parse Data
     userData = userData[0];
     return res.status(200).json(userData);
@@ -27,6 +56,8 @@ router.get('/customer', async (req, res) => {
 // params: User:{FirstName, LastName, Street, Street2, City, State, ZIP, PhoneNumber, SSN, DOB}
 // return: Confirmation Message
 router.put('/customer/register', async (req, res) => {
+
+    // Get Parameter
     let user = req.body;
     console.log(`Registering ${user.FirstName} ${user.LastName}`);
 
@@ -36,7 +67,7 @@ router.put('/customer/register', async (req, res) => {
     }
 
     // Check if the email already exists in the database
-    let [userData, err_userData] = await database.getUserFromEmail(user.Email);
+    let [userData, err_userData] = await database.getUserNameFromEmail(user.Email);
     if (err_userData) {
         return res.status(401).json({ error: 'Failed to query User name', message: err_userData.message });
     }
@@ -58,12 +89,14 @@ router.put('/customer/register', async (req, res) => {
 // params: User:{ Password, FirstName, LastName, Street, Street2, City, State, ZIP, PhoneNumber, DOB }
 // return: Confirmation Message
 router.post('/customer/update', async (req, res) => {
-    let userID = req.session.UserID;
-    if (!userID) return res.status(401).json({ error: "User Not Logged In" });
+    // Check If User is Logged In
+    let userID = req.session.user?.Email;
+    let userRole = req.session.user?.Role;
+    if (!userID || userRole != "Customer") return res.status(401).json({ error: "User Is Not Logged In As Customer" });
 
 
     let customer = req.body;
-    console.log(`Updating Customer Information of ${userID}`);
+    console.log(`Updating Customer Information of ${Email}`);
 
     // Check the user body
     if (!customer) return res.status(401).json({ error: "Empty json passed in body", data: customer });
@@ -81,12 +114,14 @@ router.post('/customer/update', async (req, res) => {
 // params: UserID
 // return: { message: <message> }
 router.delete('/customer/delete', async (req, res) => {
-    let userID = req.body.UserID;
+    // Check If User is Logged In
+    let userID = req.session.user?.UserID;
+    let userRole = req.session.user?.Role;
+
+    console.log(`Deleting the User ${userID}`)
 
     // Check the user body
-    if (!userID) {
-        return res.status(401).json({ error: "Empty value passed in body. Make sure it looks like the example", example: { UserID: "10" } });
-    }
+    if (!userID || userRole != "Customer") return res.status(401).json({ error: "User Is Not Logged In As Customer" });
 
     // Check if the email already exists in the database
     let [customer, err_customer] = await database.getUser(userID);
@@ -110,13 +145,14 @@ router.delete('/customer/delete', async (req, res) => {
 // Params: None
 // Return: [ Account1 {AccountID, UserID, AccountName, AccountType, Balance, InterestRate, Activated, Deleted}, Account2{...}, ... ]
 router.get('/customer/accounts', async (req, res) => {
-    let userID = req.session.UserID;
+    // Check If User is Logged In
+    let userID = req.session.user?.UserID;
+    let userRole = req.session.user?.Role;
+
     console.log(`Getting Bank Accounts List for User ${userID}`);
 
     // Check If a session exsits for the user
-    if (!userID) {
-        return res.status(401).json({ error: "User Not Logged In" });
-    }
+    if (!userID || userRole != "Customer") return res.status(401).json({ error: "User Is Not Logged In As Customer" });
 
     let [accountList, err_accountList] = await database.getUserAccounts(userID);
     if (err_accountList) return res.status(404).json({ error: 'Failed to query Customer Accounts', message: err_accountList.message });
@@ -128,11 +164,10 @@ router.get('/customer/accounts', async (req, res) => {
 // Params: AccountID
 // Return: Account {AccountID, UserID, AccountName, AccountType, Balance, InterestRate, Activated, Deleted}
 router.get('/customer/account', async (req, res) => {
-    // Check If a session exsits for the user
-    let userID = req.session.UserID;
-    if (!userID) {
-        return res.status(401).json({ error: "User Not Logged In" });
-    }
+    // Check If User is Logged In
+    let userID = req.session.user?.UserID;
+    let userRole = req.session.user?.Role;
+    if (!userID || userRole != "Customer") return res.status(401).json({ error: "User Not Logged In As Customer" });
 
     let accountID = req.body.AccountID;
     console.log(`Getting Account ${accountID} Information for User ${userID}`);
@@ -150,12 +185,13 @@ router.get('/customer/account', async (req, res) => {
 // Params: Account {AccountID, UserID, AccountName, AccountType, Balance, InterestRate, Activated, Deleted}
 // Return: confirmation message
 router.put('/customer/account/create', async (req, res) => {
-    // Check If a session exsits for the user
-    let userID = req.session.UserID;
+    // Check If User is Logged In
+    let userID = req.session.user?.UserID;
+    let userRole = req.session.user?.Role;
+
     console.log(`Creating a new Account for Customer ${userID}`);
-    if (!userID) {
-        return res.status(401).json({ error: "User Not Logged In" });
-    }
+
+    if (!userID || userRole != "Customer") return res.status(401).json({ error: "User Is Not Logged In As Customer" });
 
     // Check if the Account Already Exists
     let account = req.body;
@@ -183,12 +219,14 @@ router.put('/customer/account/create', async (req, res) => {
 // Params: AccountID
 // Return: Confirmation Message
 router.delete('/customer/account/delete', async (req, res) => {
-    // Check If a session exsits for the user
-    let userID = req.session.UserID;
+    // Check If User is Logged In
+    let userID = req.session.user?.UserID;
+    let userRole = req.session.user?.Role;
+
     console.log(`Deleting an Account for Customer ${userID}`);
-    if (!userID) {
-        return res.status(401).json({ error: "User Not Logged In" });
-    }
+
+    if (!userID || userRole != "Customer") return res.status(401).json({ error: "User Is Not Logged In As Customer" });
+
 
     // Check if the Account Already Exists
     let accountID = req.body.AccountID;
@@ -207,7 +245,7 @@ router.delete('/customer/account/delete', async (req, res) => {
     let [notificationData, err_notificationData] = await database.insertNotification(userID, accountID, null, "Deactivate Account", `User ${userID} requests to deactivate Account ${accountID}`);
     if (err_notificationData) return res.status(402).json({ error: `Failed to insert an Account Deactivation Notification`, message: err_notificationData.message });
 
-    return res.status(200).json({ message: "Account Deletion Request Submitted Successfully", data: accountData });
+    return res.status(200).json({ message: "Account Deletion Request Submitted Successfully", data: accountData, notification: notificationData });
 });
 
 //export this router to use in our index.js

@@ -25,13 +25,13 @@ function Login() {
     axios.get('/user/role')
       .then((response) => {
         const role = response.data;
-        
+        console.log(role);
         // Redirect the user based on their role
-        if (role === 'A') {
+        if (role === 'Administrator') {
           navigate('/Admin',{state:{user:response.data}});
-        } else if (role === 'C' || role === null) {
+        } else if (role === 'Customer' || role === null) {
           navigate('/Customer',{state:{user:response.data}});
-        } else if (role === 'T') {
+        } else if (role === 'Teller') {
           navigate('/Teller',{state:{user:response.data}});
         } else {
           setError('Invalid Role');

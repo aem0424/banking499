@@ -3,6 +3,16 @@ import axios from 'axios';
 import '../pre/Logout.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+let AxiosInstance = axios.create({
+  baseURL: process.env.REACT_APP_BASE_URL, // http://localhost:8000
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+
+})
+
+
 function AdminTellerEdit() {
   const location = useLocation();
   const user = location.state.user;
