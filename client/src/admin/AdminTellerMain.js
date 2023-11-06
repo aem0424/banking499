@@ -15,6 +15,10 @@ function AdminTellerMain() {
         navigate('/Admin/Teller/TellerList', { state: { user } });
       };
 
+      const handleAdminMainClick = () => {
+        navigate('/Admin', { state: { user } });
+      };
+
     const handleLogoutClick = () => {
         axios.post('/user/logout')
           .then((response) => {
@@ -51,6 +55,7 @@ function AdminTellerMain() {
             <a href="/Admin/Teller/CreateTeller">
                 <button>Create Teller</button>
             </a>
+            <button onClick={handleAdminMainClick}>Admin Main</button>
             <button onClick={handleManageTellersClick}>Manage Tellers</button>
             <button onClick={handleLogoutClick} className='logout-button'>Logout</button>
         </div>

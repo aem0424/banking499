@@ -65,6 +65,10 @@ function AdminTellerEdit() {
     }
   }, [user]);
 
+  const handleAdminMainClick = () => {
+    navigate('/Admin', { state: { user } });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -272,7 +276,7 @@ function AdminTellerEdit() {
         <button type='submit'>Save Changes</button>
       </form>
       <div className="form-links">
-          <a href="/Admin">Admin Main</a>
+          <button onClick={handleAdminMainClick}>Admin Main</button>
         </div>
         <button onClick={handleLogoutClick} className='logout-button'>Logout</button>
     </div>
