@@ -9,42 +9,47 @@ function CustomerViewUserInformation() {
     const user = location.state.user;
     const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
-    const [loading, setLoading] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const handleEditClick = () => {
+      navigate('/Customer/UserInfo/Edit', {state: {user}})
+    }
 
     useEffect(() => {
       if (user) {
-        axios.get('/user', {
-
-        })
+        axios.get('/user', {})
           .then((response) => {
             if (response.status === 200) {
-              console.log('User data:', response.data);
+              setUserData(response.data);
+              setLoading(false);
             }
           })
           .catch((error) => {
-            console.error('Error fetching user data:', error);
-            console.log('Response data:', error.response.data);
-            console.log('Response headers:', error.response.headers);
+            setError(error);
+            setLoading(false);
           });
       }
     }, [user]);
 
     return (
         <div className='container'>
-        {user ? (
+        {loading ? (
+          <p>Loading...</p>
+        ) : error ? (
+          <p>ERROR: {error.message}</p>
+        ) : userData? (
           <div>
-            <p>Name: {user.FirstName} {user.LastName}</p>
-            <p>Address:</p>
-            <p>Phone Number:</p>
-            <p>SSN:</p>
-            <p>Date of Birth:</p>
+            <p>Name: {userData.FirstName} {userData.LastName}</p><br/>
+            <p>Address: {userData.Street}, {userData.Street2}</p><br/>
+            <p>Address: {userData.City}, {userData.State} {userData.ZIP}</p>
+            <p>Phone Number: {userData.PhoneNumber}</p><br/>
+            <p>SSN: {userData.SSN}</p><br/>
+            <p>Date of Birth: {userData.DOB}</p><br/>
+            <button onClick={handleEditClick}>Edit User Information</button>
           </div>
-        ) : (
-          <p>test</p>
-        )}     
+        ) : null}
         </div>
-
     )
 }
 export default CustomerViewUserInformation;

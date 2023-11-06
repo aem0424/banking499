@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import './/css/CustomerBillPay.css';
 
 
@@ -9,6 +9,8 @@ function CustomerBillPay() {
         PayTo:'',
         PayAmount:'',
     });
+    const location = useLocation();
+    const user = location.state.user;
     const [accounts, setAccounts] = useState([]);
     const [error, setError] = useState(null);
     const navigate = useNavigate();    
@@ -37,7 +39,7 @@ function CustomerBillPay() {
     };
 
     const handleBackButton = () => {
-        navigate('/Customer/Transaction')
+        navigate('/Customer', {state: {user}})
     }
 
     return (
