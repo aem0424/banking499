@@ -13,32 +13,28 @@ function TellerMain() {
     const [error, setError] = useState(null);
 
     const handleTellerTransaction = () => {
-        navigate('/Teller/Transaction')
+        navigate('/Teller/Transaction', { state: { user }})
     }
 
     const handleTellerCustomer = () => {
-        navigate('Teller/Customer')
+        navigate('Teller/Customer', { state: { user }})
     }
 
     const handleTellerCreateAccount = () => {
-        navigate('Teller/CreateAccount')
+        navigate('Teller/CreateAccount', { state: { user }})
     }
 
-    const handleLogout = async (e) => {
-        try {
-        const response = await axios.post('/user/logout');
-        if(response.status === 200) {
-          console.log("Logging out...");
-          navigate('');
-        }
-        else {
-          console.error("Could not log out:", response.statusText);
-        }
-        navigate('');
-        } catch (error) {
-          console.log("an error has occurred", error)
-        }
-      }    
+    const handleLogoutClick = () => {
+        axios.post('/user/logout')
+        .then((response) => {
+          if (response.status === 200) {
+            navigate('/Login');
+          }
+        })
+        .catch((error) => {
+          setError(error);
+        });
+    };
 
     useEffect(() => {
         if(user) {
@@ -64,11 +60,12 @@ function TellerMain() {
                 <p>ERROR: {error.message}</p>
             ) : userData ? (
                <div> 
-                <h1>This is a placeholder for the main teller page.</h1>
+                <h1>Welcome, {userData.FirstName} {userData.LastName}!</h1>
+                <p> This is the main teller page.</p>
                 <button onClick={handleTellerTransaction}>Show Transactions</button><br/>
                 <button onClick={handleTellerCustomer}>Search Customers</button><br/>
                 <button onClick={handleTellerCreateAccount}>Customer Account Requests</button><br/>
-                <button onClick={handleLogout}>Logout</button>            
+                <button onClick={handleLogoutClick}>Logout</button>            
                </div>     
             ) : null}
         </div>

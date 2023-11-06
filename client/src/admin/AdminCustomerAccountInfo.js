@@ -22,6 +22,9 @@ function AdminCustomerAccountInfo() {
             setError(error);
           });
       };
+      const handleAdminMainClick = () => {
+        navigate('/Admin', { state: { user } });
+      };
 
     return (
         <div className='container'>
@@ -29,6 +32,7 @@ function AdminCustomerAccountInfo() {
             <p>Account Type:</p>
             <p>Account Owner:</p>
             <p>Interest Rate:</p>
+            <button onClick={handleAdminMainClick} className='form-button'>Admin Main</button>
             <button onClick={handleLogoutClick} className='logout-button'>Logout</button>
         </div>
     )

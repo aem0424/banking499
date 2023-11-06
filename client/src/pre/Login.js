@@ -42,6 +42,14 @@ function Login() {
       });
   };
 
+  const handleRegisterClick = () => {
+    navigate('/Register');
+  };
+
+  const handleForgotPassClick = () => {
+    navigate('/ForgotPass');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { Email, Password } = formData;
@@ -91,13 +99,11 @@ function Login() {
             required
           />
         </div>
-        <button type="submit">Login</button>
-      </form>
-      <div className="form-links">
-        <a href="/Register">Register</a>
         <br />
-        <a href="/ForgotPass">Forgot Password</a>
-      </div>
+        <button type="submit" className='submit-button'>Login</button>
+      </form>
+        <button onClick={handleRegisterClick} className='form-button'>Register</button>
+        <button onClick={handleForgotPassClick} className='form-button'>Forgot Password?</button>
       {error && <div className="error-message">{error}</div>}
     </div>
   );

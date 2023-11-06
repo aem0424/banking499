@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import './Register.css';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     Email: '',
     Password: '',
@@ -34,6 +37,15 @@ function Register() {
       [name]: value,
     });
   };
+
+  const handleLoginClick = () => {
+    navigate('/Login');
+  };
+
+  const handleForgotPassClick = () => {
+    navigate('/ForgotPass');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Form Data:', formData);
@@ -252,12 +264,12 @@ function Register() {
             />
           </div>
           </div>
-        <button type="submit" className='form-button'>Register</button>
+        <button type="submit" className='submit-button'>Register</button>
       </form>
       <div className="form-links">
-        <a href="/Login">Login</a>
+        <button onClick={handleLoginClick} className='form-button'>Login</button>
         <br />
-        <a href="/ForgotPass">Forgot Password</a>
+        <button onClick={handleForgotPassClick} className='form-button'>Forgot Password?</button>
       </div>
     </div>
   );
