@@ -8,10 +8,15 @@ function TellerTransfer() {
     const navigate = useNavigate();
     const location = useLocation();
     const user = location.state.user;    
+
+    const handleBackButtonClick = () => {
+        navigate('/Teller/Transaction', {state: {user}})
+    }
     return (
         <div>
             <form>Amount to Transfer</form>
-            <button>Transfer Funds</button>
+            <button>Transfer Funds</button><br/>
+            <button onClick={handleBackButtonClick}>Back</button> 
         </div>
     )
 }

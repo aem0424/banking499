@@ -29,8 +29,8 @@ function CustomerViewAccountList() {
         .then((response) => {
             if (response.status === 200) {
                 setUserAccounts(response.data);
-                setLoading(false);
             }
+            setLoading(false);            
         })
         .catch((error) => {
             console.error("error occurred:", error);
@@ -60,7 +60,7 @@ function CustomerViewAccountList() {
                 <button onClick={handleCreateRequestClick}>Request a New Account</button>
                 </div>
             )}
-            <h1>Accounts</h1>
+            <button onClick={handleBackButtonClick}>Back</button>            
         </div>
     )
 }

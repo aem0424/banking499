@@ -18,35 +18,36 @@ function TellerCustomerManage() {
     }
 
     const handleViewCustomerClick = (customer) => {
-        navigate('/Teller/Customer', {state: {user, CustomerData: customer}})
+        navigate('/Teller/Customer/UserInfo', {state: {user, customerData: customer}})
     }
 
     useEffect(() => {
         if (user) {
-            axios.get('/user', {})
-            .then((response => {
-                if(response.status === 200) {
-                    setUserData(response.data);
-                    setLoading(false);
-                }
-            })
-            .catch((error) => {
-                setError(error);
-                setLoading(false);
-            }))
-            axios.get('teller/customers')
+          axios.get('/user', {})
             .then((response) => {
-                if(response.status === 200) {
-                    setCustomers(response.data);
-                }
+              if (response.status === 200) {
+                setUserData(response.data);
                 setLoading(false);
+              }
             })
             .catch((error) => {
-                console.error('ERROR: ', error);
-                setLoading(false);
+              setError(error);
+              setLoading(false);
             });
         }
-    }, [user]);
+      
+        axios.get('/teller/customers')
+          .then((response) => {
+            if (response.status === 200) {
+              setCustomers(response.data);
+            }
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.error('Error fetching customers:', error);
+            setLoading(false);
+          });
+      }, [user]);
 
     return (
         <div className='container'>
@@ -59,8 +60,8 @@ function TellerCustomerManage() {
                 <ul>
                     {customers.map((customer, index) => (
                         <li key={index}>
-                            <p>{customer.FirstName} {customer.LastName}</p>
-                            <button onClick={() => handleViewCustomerClick(customer)}>View</button>
+                            <p>{customer.FirstName} {customer.LastName}
+                            <button onClick={() => handleViewCustomerClick(customer)}>View</button></p>
                         </li>
                     ))}
                 </ul>
