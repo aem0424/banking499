@@ -156,7 +156,6 @@ router.get('/customer/accounts', async (req, res) => {
 
     let [accountList, err_accountList] = await database.getUserAccounts(userID);
     if (err_accountList) return res.status(404).json({ error: 'Failed to query Customer Accounts', message: err_accountList.message });
-    if (accountList) return res.status(404).json({ error: `No Account Found for User ${userID}`, data: accountList });
     return res.status(200).json(accountList);
 });
 
@@ -173,9 +172,7 @@ router.get('/customer/account', async (req, res) => {
     console.log(`Getting Account ${accountID} Information for User ${userID}`);
     let [accountData, err_accountData] = await database.getAccount(userID, accountID);
 
-    if (err_accountData) {
-        return res.status(404).json({ error: `Failed to query an Account for User ${userID}`, message: err_accountData.message });
-    }
+    if (err_accountData) return res.status(404).json({ error: `Failed to query an Account for User ${userID}`, message: err_accountData.message });
     // Parse Data
     accountData = accountData[0];
     return res.status(200).json(accountData);

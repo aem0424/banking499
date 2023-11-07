@@ -17,7 +17,6 @@ router.get('/teller', async (req, res) => {
     let [userData, err_userData] = await database.getUserShorthand(userEmail);
     if (err_userData) return res.status(404).json({ error: "Failed to query Teller information", message: err_userData.message });
     userData = userData[0];
-    if (!userData) return res.status(404).json({ error: `Teller ${userID} IS Not Found`, message: err_userData });
 
     return res.status(200).json(userData);
 });
@@ -61,7 +60,6 @@ router.get('/teller/customers', async (req, res) => {
     // Query User Information
     let [userData, err_userData] = await database.getCustomers(userID);
     if (err_userData) return res.status(404).json({ error: "Failed to query Teller information", message: err_userData.message });
-    if (!userData) return res.status(404).json({ error: `Teller ${userID} IS Not Found`, message: err_userData });
 
     return res.status(200).json(userData);
 });
@@ -97,7 +95,6 @@ router.get('/teller/customer', async (req, res) => {
     // Query User Information
     let [userData, err_userData] = await database.getCustomer(customerID);
     if (err_userData) return res.status(404).json({ error: "Failed to query Teller information", message: err_userData.message });
-    if (!userData) return res.status(404).json({ error: `Customer ${customerID} IS Not Found`, message: err_userData });
 
     return res.status(200).json(userData);
 });
@@ -117,7 +114,6 @@ router.get('/teller/customer/accounts', async (req, res) => {
     // Query Customer Accounts
     let [userData, err_userData] = await database.getAllUserAccounts(customerID);
     if (err_userData) return res.status(404).json({ error: "Failed to query Teller information", message: err_userData.message });
-    if (!userData) return res.status(404).json({ error: `Teller ${customerID} IS Not Found`, message: err_userData });
 
     return res.status(200).json(userData);
 });
@@ -138,7 +134,6 @@ router.get('/teller/customer/account/activate', async (req, res) => {
     // Query Customer Accounts
     let [activationData, err_activationData] = await database.updateAccountActivated(accountID, true);
     if (err_activationData) return res.status(404).json({ error: "Failed to query Teller information", message: err_activationData.message });
-    if (!activationData) return res.status(404).json({ error: `Confirmation Data Not Queried for Account Activation`, data: activationData });
 
     return res.status(200).json({ message: `Customer ${customerID}'s Account ${accountID} Activated Successfully`, data: activationData });
 });
@@ -159,7 +154,6 @@ router.get('/teller/notifications', async (req, res) => {
     // Query User Information
     let [notificationData, err_notificationData] = await database.getNotifications();
     if (err_notificationData) return res.status(404).json({ error: "Failed to query Teller information", message: err_notificationData.message });
-    if (!notificationData) return res.status(404).json({ error: `Teller ${userID} IS Not Found`, message: "The TellerInbox table may be empty" });
 
     return res.status(200).json(notificationData);
 });
@@ -177,8 +171,6 @@ router.get('/teller/notifications/all', async (req, res) => {
     // Query User Information
     let [notificationData, err_notificationData] = await database.getNotificationsAll();
     if (err_notificationData) return res.status(404).json({ error: "Failed to query Teller information", message: err_notificationData.message });
-    if (!notificationData) return res.status(404).json({ error: `Teller ${userID} IS Not Found`, message: "The TellerInbox table may be empty" });
-
     return res.status(200).json(notificationData);
 });
 
@@ -195,7 +187,6 @@ router.get('/teller/notification', async (req, res) => {
     let [notificationData, err_notificationData] = await database.getNotification(inboxID);
     if (err_tellerData) return res.status(401).json({ error: "Failed to get teller notification", message: err_notificationData });
     notificationData = notificationData[0];
-    if (!notificationData) return res.status(404).json({error: "Notification ${inboxID} Not Found", message: "Is the InboxID Valid?"});
     
     return res.status(200).json(notificationData);
 });
