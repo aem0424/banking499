@@ -10,7 +10,7 @@ function TellerDeposit() {
     const user = location.state.user;   
     
     const handleBackButtonClick = () => {
-        navigate('/Teller/Transaction')
+        navigate('/Teller/Transaction', {state: {user}})
     }
     return (
         <div>

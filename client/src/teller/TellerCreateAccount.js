@@ -16,7 +16,7 @@ function TellerCreateAccount() {
     const [error, setError] = useState(null);
 
     const handleBackButtonClick = () => {
-        navigate('/Customer/Account', {state: {user, customer}})
+        navigate('/Teller/Customer', {state: {user, customer}})
     }
 
     const handleInputChange = (e) => {

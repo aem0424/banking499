@@ -51,9 +51,9 @@ function CustomerViewUserInformation() {
             <p>SSN: {userData.SSN}</p><br/>
             <p>Date of Birth: {userData.DOB}</p><br/>
             <button onClick={handleEditClick}>Edit User Information</button>
-            <button onClick={handleBackButtonClick}>Back</button>
           </div>
         ) : null}
+        <button onClick={handleBackButtonClick}>Back</button>        
         </div>
     )
 }

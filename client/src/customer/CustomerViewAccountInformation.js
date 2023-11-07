@@ -13,7 +13,7 @@ function CustomerViewAccountInformation() {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-    const handleBack = () => {
+    const handleBackButtonClick = () => {
         navigate('/Customer/AccountList', {state: {user}})
     }
 
@@ -39,6 +39,7 @@ function CustomerViewAccountInformation() {
                 if(response.status === 200) {
                     setAccountData(response.data);
                 }
+                setLoading(false);
             }).catch((error) => {
                 setError(error);
                 setLoading(false);
@@ -58,10 +59,10 @@ function CustomerViewAccountInformation() {
                     <p>Account Type: {accountData.AccountType}</p>
                     <p>Balance: {accountData.Balance}</p>
                     <p>Interest Rate: {accountData.InterestRate}</p>
-                    <button onClick={handleDeleteRequest}>Delete Account</button><br/>
-                    <button onClick={handleBack}>Back</button>                    
+                    <button onClick={handleDeleteRequest}>Delete Account</button><br/>                  
                 </div>
             ): null }
+            <button onClick={handleBackButtonClick}>Back</button>            
         </div>
     )
 }

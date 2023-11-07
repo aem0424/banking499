@@ -56,7 +56,7 @@ function CustomerEditUserInformation() {
               setLoading(false);
             });
         }
-      }, [userData]);      
+      }, [user]);      
 
       const handleSubmit = async (e) => {
         e.preventDefault();
@@ -241,10 +241,10 @@ function CustomerEditUserInformation() {
                     />             
                 </div>
                 <button type="submit" className="form-button">Make Edits</button><br/>
-                <button onClick={handleBackButtonClick}>Back</button>
             </form>
            </div>
           ): null}
+          <button onClick={handleBackButtonClick}>Back</button>          
         </div>
     )
 }
