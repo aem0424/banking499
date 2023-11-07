@@ -137,9 +137,7 @@ router.get('/admin/customer/accounts', async (req, res) => {
   let userRole = req.session.user?.Role;
   if (!userID || userRole != "Administrator") return res.status(401).json({ error: "Unauthorized User Access" });
 
-  let customerID = req.body.UserID;
-
-  let [userData, err_userData] = await database.getAllUserAccounts(customerID);
+  let [userData, err_userData] = await database.getAllUserAccounts();
   if (err_userData) return res.status(404).json({ error: "Failed to query Admin information", message: err_userData.message });
   if (!userData) return res.status(404).json({ error: `Admin IS Not Found`, message: err_userData });
 
