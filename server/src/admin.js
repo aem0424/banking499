@@ -114,5 +114,37 @@ router.get('/admin/teller/search', async (req, res) => {
   return res.status(200).json(userData);
 });
 
+// GET: Get a List of Customers
+// Params: None
+// Return: List of Customers
+router.get('/admin/customers', async (req, res) => {
+  console.log("Getting a Customers List");
+
+  let userID = req.session.user?.UserID;
+  let userRole = req.session.user?.Role;
+  if (!userID || userRole != "Administrator") return res.status(401).json({ error: "Unauthorized User Access" });
+
+ 
+  let [customerList, err_customerList] = await database.getCustomers();
+  if (err_customerList) {
+    return res.status(404).json({ error: "Failed to query Customers List", message: err_customerList.message });
+  }
+  return res.status(200).json(customerList);
+});
+
+router.get('/admin/customer/accounts', async (req, res) => {
+  let userID = req.session.user?.UserID;
+  let userRole = req.session.user?.Role;
+  if (!userID || userRole != "Administrator") return res.status(401).json({ error: "Unauthorized User Access" });
+
+  let customerID = req.body.UserID;
+
+  let [userData, err_userData] = await database.getAllUserAccounts(customerID);
+  if (err_userData) return res.status(404).json({ error: "Failed to query Admin information", message: err_userData.message });
+  if (!userData) return res.status(404).json({ error: `Admin IS Not Found`, message: err_userData });
+
+  return res.status(200).json(userData);
+});
+
 //export this router to use in our index.js
 module.exports = router;

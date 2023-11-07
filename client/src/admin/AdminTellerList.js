@@ -25,7 +25,6 @@ function AdminTellerList() {
   };
   
   useEffect(() => {
-    console.log('User in AdminTellerEdit:', user);
     if (user) {
       axios.get('/user', {})
         .then((response) => {

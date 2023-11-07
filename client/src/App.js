@@ -25,10 +25,7 @@ import TellerTransaction from ".//teller/TellerTransaction";
 import TellerTransfer from ".//teller/TellerTransfer";
 import TellerViewAccount from ".//teller/TellerViewAccount";
 import AdminCreateTeller from ".//admin/AdminCreateTeller";
-import AdminCustomerAccountInfo from ".//admin/AdminCustomerAccountInfo";
-import AdminCustomerAccountList from ".//admin/AdminCustomerAccountList";
 import AdminCustomerInfo from ".//admin/AdminCustomerInfo";
-import AdminCustomerInfoEdit from ".//admin/AdminCustomerInfoEdit";
 import AdminCustomerList from ".//admin/AdminCustomerList";
 import AdminMain from ".//admin/AdminMain";
 import AdminTellerEdit from ".//admin/AdminTellerEdit";
@@ -96,10 +93,7 @@ function App() {
       <Route path="/Admin/Teller/EditTeller/:id" element={<AdminTellerEdit user={user}/>} />
       <Route exact path="/Admin/Teller/TellerList" element = {<AdminTellerList user={user}/>}/>
       <Route exact path="/Admin/Customer" element = {<AdminCustomerList user={user}/>}/>
-      <Route exact path="/Admin/Customer/Account" element = {<AdminCustomerAccountList user={user}/>}/>
-      <Route exact path="/Admin/Customer/Account/Info" element = {<AdminCustomerAccountInfo user={user}/>}/>
       <Route exact path="/Admin/Customer/Info" element = {<AdminCustomerInfo user={user}/>}/>
-      <Route exact path="/Admin/Customer/Info/Edit" element = {<AdminCustomerInfoEdit user={user}/>}/>
       <Route exact path="/" element ={<Login/>}/>
       <Route exact path="/Unauthorized" element ={<Unauthorized/>}/>
      </Routes>
