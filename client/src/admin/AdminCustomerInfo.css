@@ -5,3 +5,27 @@
   .info-item {
     margin: 0;
   }
+
+  .striped-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .striped-table th,
+  .striped-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .striped-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .striped-table tr:nth-child(even) {
+    background-color: #d3d3d3;
+  }
+  
+  .striped-table tr:nth-child(odd) {
+    background-color: white;
+  }

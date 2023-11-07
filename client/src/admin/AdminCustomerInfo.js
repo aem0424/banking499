@@ -62,6 +62,7 @@ function AdminCustomerInfo() {
     return (
         <div className='container'>
           <div className='info'>
+            <h2>Customer Personal Information</h2>
             <p>Name: {customerData.FirstName} {customerData.LastName}</p>
             <p>Address Line 1: {customerData.Street}</p>
             <p>Address Line 2: {customerData.Street2}</p>
@@ -74,16 +75,25 @@ function AdminCustomerInfo() {
             
             <div>
               <h2>Customer Accounts</h2>
-              <ul>
-                {accounts.map((account) => (
-                <li key={account.accountId}>
-                  Account Type: {account.AccountType}, Account Name: {account.AccountName}, Balance: {account.Balance}
-                </li>
+              <table className='striped-table'>
+               <thead>
+                <tr>
+                  <th>Account Type</th>
+                  <th>Account Name</th>
+                  <th>Balance</th>
+                </tr>
+                </thead>
+            <tbody>
+              {accounts.map((account) => (
+                <tr key={account.accountId}>
+                  <td>{account.AccountType}</td>
+                  <td>{account.AccountName}</td>
+                  <td>${account.Balance.toFixed(2)}</td>
+                </tr>
                 ))}
-              </ul>
+              </tbody>
+              </table>
             </div>
-            
-
             <button onClick={handleAdminMainClick} className='form-button'>Admin Main</button>
             <button onClick={handleLogoutClick} className='logout-button'>Logout</button>
         </div>

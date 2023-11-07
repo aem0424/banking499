@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 function Register() {
   const navigate = useNavigate();
+  const [successMessage, setSuccessMessage] = useState(null);
 
   const [formData, setFormData] = useState({
     Email: '',
@@ -19,7 +20,10 @@ function Register() {
     City: '',
     State: '',
     ZIP: '',
-    // Add more fields as needed for registration (e.g., name, email, etc.)
+    Question1:'',
+    Question2:'',
+    Answer1: '',
+    Answer2: '',
   });
 
   const handleInputChange = (e) => {
@@ -55,6 +59,7 @@ function Register() {
   
       if (response.status === 200) {
         console.log('Customer registered successfully:', response.data);
+        setSuccessMessage('Customer registered successfully');
       } else {
         console.error('Error registering customer:', response.statusText);
       }
@@ -199,6 +204,7 @@ function Register() {
               onChange={handleInputChange}
               required
             >
+                  <option value="" disabled selected>Select your State</option>
                   <option value="Alabama">Alabama</option>
                   <option value="Alaska">Alaska</option>
                   <option value="Arizona">Arizona</option>
@@ -264,6 +270,60 @@ function Register() {
             />
           </div>
           </div>
+          <div className="form-columns">
+            <div className='form-group'>
+              <label htmlFor="Question1" className='form-label'>Security Question 1:</label>
+             <select
+               id="Question1"
+                name="Question1"
+                value={formData.Question1}
+                onChange={handleInputChange}
+               required
+              >
+                <option value="DEFAULT" disabled>Select your security question</option>
+               <option value="What is your mother\'s maiden name?">What is your mother's maiden name?</option>
+               <option value="What is the name of your first pet??">What is the name of your first pet?</option>
+               <option value="In which city were you born?">In which city were you born?</option>
+              </select>
+              <input
+                type="text"
+                id="Answer1"
+                name="Answer1"
+                value={formData.Answer1}
+                onChange={handleInputChange}
+               required
+                className='form-input'
+               placeholder="Answer 1"
+              />
+           </div>
+
+            <div className='form-group'>
+             <label htmlFor="Question2" className='form-label'>Security Question 2:</label>
+             <select
+              id="Question2"
+              name="Question2"
+              value={formData.Question2}
+              onChange={handleInputChange}
+              required
+             >
+               <option value="DEFAULT" disabled>Select your security question</option>
+                <option value="What is your mother\'s maiden name?">What is your mother's maiden name?</option>
+               <option value="What is the name of your first pet??">What is the name of your first pet?</option>
+               <option value="In which city were you born?">In which city were you born?</option>
+             </select>
+             <input
+                type="text"
+                id="Answer2"
+                name="Answer2"
+                value={formData.Answer2}
+               onChange={handleInputChange}
+               required
+                className='form-input'
+                placeholder="Answer 2"
+              />
+           </div>
+          </div>
+          {successMessage && (<p className="success-message">{successMessage}</p>)}
         <button type="submit" className='submit-button'>Register</button>
       </form>
       <div className="form-links">
