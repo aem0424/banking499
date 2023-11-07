@@ -498,6 +498,34 @@ async function deleteAccount(accountID) {
     return [ data, error ];
 }
 
+// Update Account
+// Params: Account{ AccountID*, AccountName,... }
+// Return: Account{ AccountID, UserID, AccountName, AccountType, Balance, InterestRate } (Confirmation)
+async function updateAccount(userID, account) {
+    const {data, error } = await supabase
+    .from('Account')
+    .update(account)
+    .eq("UserID", userID)
+    .eq("AccountID", account.AccountID)
+    .select();
+
+    return [ data, error ];
+}
+
+// Update AccountName
+// Params: Account{ AccountID*, AccountName }
+// Return: Account{ AccountID, UserID, AccountName, AccountType, Balance, InterestRate } (Confirmation)
+async function updateAccountName(userID, accountName) {
+    const {data, error } = await supabase
+    .from('Account')
+    .update({ AccountName: accountName })
+    .eq("UserID", userID)
+    .eq("AccountID", account.AccountID)
+    .select();
+
+    return [ data, error ];
+}
+
 // Activate Account
 // Params: {Activated: true}
 // Return: Account { UserID, AccountName, AccountType, Balance, InterestRate } (Confirmation)
@@ -685,6 +713,8 @@ module.exports = {
     getAccountIDFromUserID,
     insertAccount,
     deleteAccount,
+    updateAccount,
+    updateAccountName,
     updateAccountActivated,
 
     getNotification,

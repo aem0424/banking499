@@ -118,6 +118,32 @@ router.get('/teller/customer/accounts', async (req, res) => {
     return res.status(200).json(userData);
 });
 
+// POST: Request to update a Customer Account (Login Required)
+// Params: Account{UserID* (Customer UserID), AccountID*, AccountName, ...}
+// Return: confirmation message
+router.post('/customer/account/update', async (req, res) => {
+    // Check If User is Logged In
+    let userID = req.session.user?.UserID;
+    let userRole = req.session.user?.Role;
+
+    console.log(`Updating an Account for Customer ${userID}`);
+
+    if (!userID || userRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As Teller" });
+
+    try {
+        let {UserID, ...account} = req.body;
+
+        // Insert the Account
+        let [accountData, err_accountData] = await database.updateAccount(UserID, account);
+        if (err_accountData) return res.status(402).json({ error: `Failed to Update User ${UserID}'s Account ${accountName}`, message: err_accountData.message });
+
+        return res.status(200).json({ message: "Account Update Completed Successfully", data: accountData });
+    } catch(error) {
+        console.log("You did not include UserID and AccountID in the body parameter");
+        return res.status(403).json({ error : "Incomplete Body Parameter", message: "Please include Customer's UserID and AccountID."})
+    }
+});
+
 // POST: Activate Customer Accounts
 // Params: UserID (CustomerID), AccountID
 // Return: Confirmation Message
