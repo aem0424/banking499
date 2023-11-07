@@ -16,6 +16,10 @@ function CustomerViewUserInformation() {
       navigate('/Customer/UserInfo/Edit', {state: {user}})
     }
 
+    const handleBackButtonClick = () => {
+      navigate('/Customer', {state: {user}})
+    }
+
     useEffect(() => {
       if (user) {
         axios.get('/user', {})
@@ -47,6 +51,7 @@ function CustomerViewUserInformation() {
             <p>SSN: {userData.SSN}</p><br/>
             <p>Date of Birth: {userData.DOB}</p><br/>
             <button onClick={handleEditClick}>Edit User Information</button>
+            <button onClick={handleBackButtonClick}>Back</button>
           </div>
         ) : null}
         </div>

@@ -59,7 +59,7 @@ function CustomerViewAccountInformation() {
                     <p>Balance: {accountData.Balance}</p>
                     <p>Interest Rate: {accountData.InterestRate}</p>
                     <button onClick={handleDeleteRequest}>Delete Account</button><br/>
-                    <button onCLick={handleBack}>Back</button>                    
+                    <button onClick={handleBack}>Back</button>                    
                 </div>
             ): null }
         </div>

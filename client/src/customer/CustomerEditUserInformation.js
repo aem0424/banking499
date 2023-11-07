@@ -240,7 +240,7 @@ function CustomerEditUserInformation() {
                         required
                     />             
                 </div>
-                <button type="submit" className="form-button">Make Edits</button>
+                <button type="submit" className="form-button">Make Edits</button><br/>
                 <button onClick={handleBackButtonClick}>Back</button>
             </form>
            </div>

@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './/css/CustomerDeposit.css';
 
 
 function CustomerDeposit() {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const user = location.state.user;
     const [formData, setFormData] = useState({
         PayTo:'',
         PayAmount:'',
@@ -17,13 +20,16 @@ function CustomerDeposit() {
             [name]: value,
         });
     };
-    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const {payto, paymount} = formData;
         setError(null);
     };
+
+    const handleBackButtonClick = () => {
+        navigate('/Customer/Transaction', {state: {user}})
+    }
 
     return (
         <div>
@@ -43,6 +49,7 @@ function CustomerDeposit() {
                     required
                 />
                 <button type="submit">Deposit Funds</button>
+                <button onClick={handleBackButtonClick}>Back</button>
             </form>
         </div>
     )

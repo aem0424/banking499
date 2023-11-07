@@ -1,4 +1,5 @@
 import React from 'react'
+import axios from 'axios'
 import { useNavigate, useLocation } from 'react-router-dom'
 import './/css/TellerTransaction.css';
 
@@ -6,7 +7,7 @@ import './/css/TellerTransaction.css';
 function TellerTransaction() {
     const navigate = useNavigate();
     const location = useLocation();
-    const user = location.state.user();
+    const user = location.state.user;
 
     const handleTellerTransfer = () => {
         navigate('Teller/Transaction/Transfer', { state: { user }});

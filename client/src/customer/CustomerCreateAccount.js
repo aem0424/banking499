@@ -5,9 +5,9 @@ import './/css/CustomerCreateAccount.css';
 
 
 function CustomerCreateAccount() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const user = location.state.user;
+    const navigate = useNavigate();
+    const location = useLocation();
+    const user = location.state.user;
     const [formData, setFormData] = useState({
         AccountName: '',
         AccountType:'',

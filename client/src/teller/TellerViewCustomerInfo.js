@@ -11,6 +11,15 @@ function TellerViewCustomerInfo() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const handleBackButtonClick = () => {
+        navigate('/Teller/Customer', {state: {user}})
+    }
+
+    useEffect(() => {
+        if(user) {
+            axios.get('/user', {})
+        }
+    })
     // some of the following code is placeholder stuff
     return (
         <div className='container'>
@@ -26,6 +35,7 @@ function TellerViewCustomerInfo() {
                   <p>Phone Number: {customerData.PhoneNumber}</p><br/>
                   <p>SSN {customerData.SSN}:</p><br/>
                   <p>Date of Birth: {customerData.DOB}</p><br/>
+                  <button onClick={handleBackButtonClick}>Back</button>
                 </div>
             ) : null}
         </div>

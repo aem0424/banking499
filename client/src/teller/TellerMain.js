@@ -17,11 +17,11 @@ function TellerMain() {
     }
 
     const handleTellerCustomer = () => {
-        navigate('Teller/Customer', { state: { user }})
+        navigate('/Teller/Customer', { state: { user }})
     }
 
     const handleTellerCreateAccount = () => {
-        navigate('Teller/CreateAccount', { state: { user }})
+        navigate('/Teller/CreateAccount', { state: { user }})
     }
 
     const handleLogoutClick = () => {
