@@ -75,7 +75,7 @@ router.get('/teller/customer/search', async (req, res) => {
     let userText = user.body.Text
 
     console.log("Searching for Customer");
-    let [userData, err_userData] = await database.searchCustomer(userText);
+    let [userData, err_userData] = await database.searchCustomers(userText);
 
     if (err_userData) return res.status(401).json({ error: "Failed to search customers with the name", message: err_userData });
 
