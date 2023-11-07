@@ -21,9 +21,7 @@ router.get('/admin/tellers', async (req, res) => {
 
  
   let [tellerList, err_tellerList] = await database.getTellers();
-  if (err_tellerList) {
-    return res.status(404).json({ error: "Failed to query Tellers List", message: err_tellerList.message });
-  }
+  if (err_tellerList) return res.status(404).json({ error: "Failed to query Tellers List", message: err_tellerList.message });
   return res.status(200).json(tellerList);
 });
 
@@ -64,14 +62,12 @@ router.post('/admin/teller/update', async (req, res) => {
   let userRole = req.session.user?.Role;
   if (!userID || userRole != "Administrator") return res.status(401).json({ error: "Unauthorized User Access" });
 
-  console.log("Editing the Teller Information");
-
   let teller = req.body;
 
   console.log(teller);
   let [tellerData, err_tellerData] = await database.updateTeller(teller);
   if (err_tellerData) return res.status(500).json({ error: "Failed to update this teller", message: err_tellerData });
-  console.log("database updated");
+
   return res.status(200).json({ message: "Successfully Updated the Teller Information", data: tellerData });
 });
 
@@ -137,11 +133,8 @@ router.get('/admin/customer/accounts', async (req, res) => {
   let userRole = req.session.user?.Role;
   if (!userID || userRole != "Administrator") return res.status(401).json({ error: "Unauthorized User Access" });
 
-  let customerID = req.body.UserID;
-
-  let [userData, err_userData] = await database.getAllUserAccounts(customerID);
+  let [userData, err_userData] = await database.getAllUserAccounts();
   if (err_userData) return res.status(404).json({ error: "Failed to query Admin information", message: err_userData.message });
-  if (!userData) return res.status(404).json({ error: `Admin IS Not Found`, message: err_userData });
 
   return res.status(200).json(userData);
 });

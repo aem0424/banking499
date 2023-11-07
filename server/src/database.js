@@ -431,11 +431,10 @@ async function getUserAccounts(userID) {
 // Get All User Accounts Even the Deactivated Ones
 // Params: UserID
 // Return: Entire Account data
-async function getAllUserAccounts(userID) {
+async function getAllUserAccounts() {
     let { data, error } = await supabase
     .from('Account')
-    .select('*')
-    .eq("UserID", userID);
+    .select('*');
     
     return [ data, error ];
 }
