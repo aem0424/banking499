@@ -18,31 +18,19 @@ const debugging = true;
 async function getUser(userID) {
     const { data, error } = await supabase
         .from('User')
-        .select('*')
+        .select('Email, Password, FirstName, LastName, Street, Street2, City, State, ZIP, PhoneNumber, SSN, DOB')
         .eq('UserID', userID);
         
     return [ data, error ];
 }
 
 // Get User Information Summary (For Teller)
-// Params: UserID
-// Return: User {UserID, Role, Email, FirstName, LastName, PhoneNumber}
-async function getUserShorthand(userID) {
-    const { data, error } = await supabase
-        .from('User')
-        .select('UserID, Role, Email, FirstName, LastName, PhoneNumber')
-        .eq('UserID', userID);
-        
-    return [ data, error ];
-}
-
-// Get User Information Using Email
 // Params: Email
-// Return: Entire User row data
-async function getUserFromEmail(email) {
+// Return: User {Role, Email, FirstName, LastName, PhoneNumber}
+async function getUserShorthand(email) {
     const { data, error } = await supabase
         .from('User')
-        .select('*')
+        .select('Role, Email, FirstName, LastName, PhoneNumber')
         .eq('Email', email);
         
     return [ data, error ];
@@ -97,28 +85,63 @@ async function getUsers(role) {
 }
 
 // Get User Role
-// Params: UserID
-// Return: All Customers
-async function getUserRole(userID) {
+// Params: Email
+// Return: {Role}
+async function getUserRole(email) {
     const { data, error } = await supabase
         .from('User')
         .select('Role')
-        .eq('UserID', userID);
+        .eq('Email', email);
+        
+    // Error checking
+    if (error) {
+        return [null, error];
+    }
+    
+    // Make sure there is a valid Role
+    if (data && data.length > 0) {
+        const role = data[0].Role;
+        return [role, null];
+    } else {
+        return [null, new Error('Role not found')];
+    }
+}
+
+
+// Get User Password
+// Params: Email
+// Return: {Password}
+async function getUserPassword(email) {
+    const { data, error } = await supabase
+        .from('User')
+        .select('Password')
+        .eq('Email', email);
+
+    return [ data, error ];
+}
+
+async function getUserQuestionsAnswers(email) {
+    const { data, error } = await supabase
+        .from('User')
+        .select('Question1, Answer1, Question2, Answer2, Question3, Answer3')
+        .eq('Email', email);
+
+        return [ data, error ];
+    }
+
+// Get User Address
+// Params: Email
+// Return: All Customers
+async function getUserAddress(email) {
+    const { data, error } = await supabase
+        .from('User')
+        .select('Street, Street2, City, State, ZIP')
+        .eq('Email', email);
         
     return [ data, error ];
 }
 
-// Get User Address
-// Params: UserID
-// Return: All Customers
-async function getUserAddress(userID) {
-    const { data, error } = await supabase
-        .from('User')
-        .select('Street, Street2, City, State, ZIP')
-        .eq('UserID', userID);
-        
-    return [ data, error ];
-}
+
 
 
 // Get Customers
@@ -147,15 +170,15 @@ async function getCustomer(userID) {
     return [ data, error ];
 }
  
-// Get Customer
-// Params: firstName, lastName
-// Return: Entire Customer row data
-async function searchCustomerUsingNames(firstName, lastName) {
+// Search Customers
+// Params: text (first and last name)
+// Return: Found User data
+async function searchCustomers(text) {
     const { data, error } = await supabase
         .from('User')
         .select('*')
         .eq('Role', "Customer")
-        .textSearch('F');
+        .textSearch('FullName');
         
     return [ data, error ];
 }
@@ -203,7 +226,7 @@ async function insertCustomer(customer) {
 // Update Customer
 // Params: UserID, User{Password, FirstName, LastName, PhoneNumber, Street, Street2, City, State, ZIP,DOB}
 // Return: User{Email, Password, FirstName, LastName, PhoneNumber, Street, Street2, City, State, ZIP, SSN, DOB} (Confirmation)
-async function updateCustomer(userID, customer) {
+async function updateCustomer(email, customer) {
     console.log(customer);
     const { data, error } = await supabase
     .from('User')
@@ -241,6 +264,20 @@ async function deleteCustomerByEmail(email) {
     return [ data, error ];
 }
 
+// Update User Password
+// Params: Password
+// Return: User{Email, Password}
+async function updateCustomerPassword(email, password) {
+    const { data, error } = await supabase
+        .from('User')
+        .update({Email: email, Password: password})
+        .eq('Email', email)
+        .select('Email, Password');
+
+    return [ data, error ];
+        
+}
+
 // Insert Teller
 // Params: User{Email, Password, FirstName, LastName, PhoneNumber}
 // Return: User{Email, Password, FirstName, LastName, PhoneNumber} (Confirmation)
@@ -260,25 +297,50 @@ async function insertTeller(teller) {
 async function updateTeller(teller) {
     const { data, error } = await supabase
     .from('User')
-    .update([teller])
-    .eq("UserID", teller.UserID)
+    .update(teller)
+    .eq("Email", teller.Email)
     .select();
 
     return [ data, error ];
 }
 
 // Delete Teller
-// Params: UserID
-// Return: message
-async function deleteTeller(userID) {
+// Params: Email
+// Return: User{Email, Password, FirstName, LastName, PhoneNumber} (Confirmation)
+async function deleteTeller(email) {
     const { data, error } = await supabase
     .from('User')
     .delete()
-    .eq('UserID', userID)
+    .eq('Email', email)
     .select();
 
     return [ data, error ];
 }
+
+// Search Teller
+// Params: Text
+// Return: Users:[User{Email, Password, FirstName, LastName, PhoneNumber}, User2{}, ...]
+async function searchTellers(text) {
+    const { data, error } = await supabase
+    .from('User')
+    .select()
+    .eq('Role', 'Teller')
+    .textSearch('FullName', text);
+
+    return [ data, error ];
+}
+
+// -------------------- SecurityQuestion Table ----------------------
+// Get Security Questions
+// Params: UserID
+// Return: All Customers
+async function getSecurityQuestions() {
+    const { data, error } = await supabase.from('SecurityQuestion')
+        .select('Question1, Question2, Question3');
+
+        return [ data, error ];
+}
+
 
 
 // -------------------- Account Table -----------------------
@@ -369,11 +431,10 @@ async function getUserAccounts(userID) {
 // Get All User Accounts Even the Deactivated Ones
 // Params: UserID
 // Return: Entire Account data
-async function getAllUserAccounts(userID) {
+async function getAllUserAccounts() {
     let { data, error } = await supabase
     .from('Account')
-    .select('*')
-    .eq("UserID", userID);
+    .select('*');
     
     return [ data, error ];
 }
@@ -451,10 +512,11 @@ async function updateAccountActivated(accountID, isActivated) {
 }
 
 // -------------------------- TellerInbox Table -------------------------------
-async function getNotification() {
+async function getNotification(inboxID) {
     let { data, error } = await supabase
     .from('TellerInbox')
-    .select("Type, Message, User!TellerInbox_CustomerID_fkey(FirstName, LastName), Account!TellerInbox_AccountID_fkey(AccountName), TimeStamp")
+    .select("InboxID, Type, Message, User!TellerInbox_CustomerID_fkey(FirstName, LastName), Account!TellerInbox_AccountID_fkey(AccountName), TimeStamp")
+    .eq("InboxID", inboxID)
     .eq("Resolved", false);
 
     return [ data, error ];
@@ -653,26 +715,29 @@ module.exports = {
     getUser,
     getUserShorthand,
     getUsers,
-    getUserFromEmail,
     getUserRole,
     getUserAddress,
+    getSecurityQuestions,
+    getUserQuestionsAnswers,
     getUserIDFromLogin,
     getUserLoginFromUserID,
     getUserNameFromEmail,
 
     getCustomers,
     getCustomer,
-    searchCustomerUsingNames,
     insertCustomer,
     updateCustomer,
     deleteCustomer,
     deleteCustomerByEmail,
+    searchCustomers,
+    updateCustomerPassword,
 
     getTellers,
     getTeller,
     insertTeller,
     updateTeller,
     deleteTeller,
+    searchTellers,
 
     getAccount_,
     getAccount,

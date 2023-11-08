@@ -1,12 +1,22 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import './/css/CustomerCreateAccount.css';
+
 
 function CustomerCreateAccount() {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const user = location.state.user;
     const [formData, setFormData] = useState({
-        accountname: '',
+        AccountName: '',
+        AccountType:'',
       });
     const [error, setError] = useState(null);
+
+    const handleBackButtonClick = () => {
+      navigate('/Customer/AccountList', {state:{user}})
+    }
     
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -15,31 +25,56 @@ function CustomerCreateAccount() {
           [name]: value,
         });
       };    
-    const navigate = useNavigate();
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const { accountname } = formData;
-        setError(null); // Clear any previous error messages       
+        try {
+          const response = await axios.put('/customer/account/create', formData)
+          if (response.status === 200) {
+            console.log('Account creation requested successful:', response.data)
+          }
+          else {
+            console.error('Error requesting account creation:', response.statusText)
+          }
+        } catch (error) {
+          console.error('An error has occured:', error)
+        }
       };
 
     return (
-        <div>
+        <div className='container'>
             <form onSubmit={handleSubmit}>
                 <div>
-                 <label htmlFor="accountname">Account Name:</label>
+                 <label htmlFor="AccountName">Account Name:</label>
                     <input
                         type="text"
-                        id="accountname"
-                        name="accountname"
-                        value={formData.accountname}
+                        id="AccountName"
+                        name="AccountName"
+                        value={formData.AccountName}
                         onChange={handleInputChange}
                         required
                     />
                 </div>
+                <div>
+                 <label htmlFor="AccountType">Account Type:</label>
+                    <select
+                        id="AccountType"
+                        name="AccountType"
+                        value={formData.AccountType}
+                        onChange={handleInputChange}
+                        required
+                    >
+                      <option value="Checking">Checking</option>
+                      <option value="Savings">Savings</option>
+                      <option value="MoneyMarket">Money Market</option>
+                      <option value="HomeMortgage">Home Mortgage</option>
+                      <option value="CreditCard">Credit Card</option>
+                    </select>
+                </div>        
+              <button type = "submit" className='form-button'>Create Request</button> 
+              <button onClick={handleBackButtonClick}>Back</button>                                   
             </form>
-            <p>Account Type:</p>
-            {error && <div className="error-message">{error}</div>}
         </div>
     )
 }

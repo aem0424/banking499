@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import './Register.css';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
+  const navigate = useNavigate();
+  const [successMessage, setSuccessMessage] = useState(null);
+
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
+    Email: '',
+    Password: '',
     FirstName: '',
     LastName: '',
     SSN: '',
@@ -17,15 +20,34 @@ function Register() {
     City: '',
     State: '',
     ZIP: '',
-    // Add more fields as needed for registration (e.g., name, email, etc.)
+    Question1:'',
+    Question2:'',
+    Answer1: '',
+    Answer2: '',
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    let error = '';
+    if (name === 'SSN' && value.length !== 9) {
+      error = 'Invalid SSN.';
+    }
+    if (name === 'PhoneNumber' && value.length !== 10) {
+      error = 'Invalid Phone Number.';
+    }
+  
     setFormData({
       ...formData,
       [name]: value,
     });
+  };
+
+  const handleLoginClick = () => {
+    navigate('/Login');
+  };
+
+  const handleForgotPassClick = () => {
+    navigate('/ForgotPass');
   };
 
   const handleSubmit = async (e) => {
@@ -37,6 +59,7 @@ function Register() {
   
       if (response.status === 200) {
         console.log('Customer registered successfully:', response.data);
+        setSuccessMessage('Customer registered successfully');
       } else {
         console.error('Error registering customer:', response.statusText);
       }
@@ -52,36 +75,24 @@ function Register() {
       <form onSubmit={handleSubmit} className="register-form">
         <div className="form-columns">
           <div className='form-group'>
-            <label htmlFor="username" className='form-label'>Username:</label>
+            <label htmlFor="Email" className='form-label'>Email:</label>
             <input
-              type="text"
-              id="username"
-              name="username"
-              value={formData.username}
+              type="Email"
+              id="Email"
+              name="Email"
+              value={formData.Email}
               onChange={handleInputChange}
               required
               className='form-input'
             />
           </div>
           <div className='form-group'>
-            <label htmlFor="email" className='form-label'>Email:</label>
+            <label htmlFor="Password" className='form-label'>Password:</label>
             <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              required
-              className='form-input'
-            />
-          </div>
-          <div className='form-group'>
-            <label htmlFor="password" className='form-label'>Password:</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
+              type="Password"
+              id="Password"
+              name="Password"
+              value={formData.Password}
               onChange={handleInputChange}
               required
               className='form-input'
@@ -193,6 +204,7 @@ function Register() {
               onChange={handleInputChange}
               required
             >
+                  <option value="" disabled selected>Select your State</option>
                   <option value="Alabama">Alabama</option>
                   <option value="Alaska">Alaska</option>
                   <option value="Arizona">Arizona</option>
@@ -258,12 +270,66 @@ function Register() {
             />
           </div>
           </div>
-        <button type="submit" className='form-button'>Register</button>
+          <div className="form-columns">
+            <div className='form-group'>
+              <label htmlFor="Question1" className='form-label'>Security Question 1:</label>
+             <select
+               id="Question1"
+                name="Question1"
+                value={formData.Question1}
+                onChange={handleInputChange}
+               required
+              >
+                <option value="DEFAULT" disabled>Select your security question</option>
+               <option value="What is your mother\'s maiden name?">What is your mother's maiden name?</option>
+               <option value="What is the name of your first pet??">What is the name of your first pet?</option>
+               <option value="In which city were you born?">In which city were you born?</option>
+              </select>
+              <input
+                type="text"
+                id="Answer1"
+                name="Answer1"
+                value={formData.Answer1}
+                onChange={handleInputChange}
+               required
+                className='form-input'
+               placeholder="Answer 1"
+              />
+           </div>
+
+            <div className='form-group'>
+             <label htmlFor="Question2" className='form-label'>Security Question 2:</label>
+             <select
+              id="Question2"
+              name="Question2"
+              value={formData.Question2}
+              onChange={handleInputChange}
+              required
+             >
+               <option value="DEFAULT" disabled>Select your security question</option>
+                <option value="What is your mother\'s maiden name?">What is your mother's maiden name?</option>
+               <option value="What is the name of your first pet??">What is the name of your first pet?</option>
+               <option value="In which city were you born?">In which city were you born?</option>
+             </select>
+             <input
+                type="text"
+                id="Answer2"
+                name="Answer2"
+                value={formData.Answer2}
+               onChange={handleInputChange}
+               required
+                className='form-input'
+                placeholder="Answer 2"
+              />
+           </div>
+          </div>
+          {successMessage && (<p className="success-message">{successMessage}</p>)}
+        <button type="submit" className='submit-button'>Register</button>
       </form>
       <div className="form-links">
-        <a href="/Login">Login</a>
+        <button onClick={handleLoginClick} className='form-button'>Login</button>
         <br />
-        <a href="/ForgotPass">Forgot Password</a>
+        <button onClick={handleForgotPassClick} className='form-button'>Forgot Password?</button>
       </div>
     </div>
   );

@@ -1,24 +1,34 @@
-import React, { useState } from 'react';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import axios from 'axios'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import '../pre/Logout.css';
+import { useNavigate, useLocation } from 'react-router-dom';
+
+
+
 
 function AdminTellerEdit() {
-  const navigate = useNavigate();
-  const { id } = useParams();
   const location = useLocation();
+  const user = location.state.user;
+  const navigate = useNavigate();
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const tellerData = location.state.tellerData;
+  const [successMessage, setSuccessMessage] = useState(null);
+  
 
   const [formData, setFormData] = useState({
-    FirstName: tellerData.FirstName,
-    LastName: tellerData.LastName,
-    DOB: tellerData.DOB,
-    SSN: tellerData.SSN,
-    Street: tellerData.Street,
-    Street2: tellerData.Street2,
-    State: tellerData.State,
-    ZIP: tellerData.ZIP,
-    PhoneNumber: tellerData.PhoneNumber,
-    password: tellerData.password,
+    Email: tellerData?.Email || "",
+    FirstName: tellerData?.FirstName || "",
+    LastName: tellerData?.LastName || "",
+    DOB: tellerData?.DOB || "",
+    SSN: tellerData?.SSN || "",
+    Street: tellerData?.Street || "",
+    Street2: tellerData?.Street2 || "",
+    State: tellerData?.State || "",
+    City: tellerData?.City || "",
+    ZIP: tellerData?.ZIP || "",
+    PhoneNumber: tellerData?.PhoneNumber || "",
   });
 
   const handleInputChange = (e) => {
@@ -29,63 +39,60 @@ function AdminTellerEdit() {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    axios.post('/admin/teller/update', formData)
+  const handleLogoutClick = () => {
+    axios.post('/user/logout')
       .then((response) => {
         if (response.status === 200) {
-          navigate('/Admin/Teller')
-        } else {
-          console.error('Error updating teller data:', response.data.message);
+          navigate('/Login');
         }
       })
       .catch((error) => {
-        console.error('Error updating teller data:', error);
+        setError(error);
       });
+  };
+  
+  useEffect(() => {
+    if (user) {
+      axios.get('/user', {})
+        .then((response) => {
+          if (response.status === 200) {
+            setUserData(response.data);
+            setLoading(false);
+          }
+        })
+        .catch((error) => {
+          setError(error);
+          setLoading(false);
+        });
+    }
+  }, [user]);
+
+  const handleAdminMainClick = () => {
+    navigate('/Admin', { state: { user } });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    try {
+      const response = await axios.post('http://localhost:4000/admin/teller/update', formData, {withCredentials:true});
+  
+      if (response.status === 200) {
+        console.log('Teller Updated successfully:', response.data);
+        setSuccessMessage('Teller updated successfully');
+      } else {
+        console.error('Error updating teller:', response.statusText);
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
   };
   return (
     <div className='container'>
       <h1>Edit Teller</h1>
-      <p>Name: {tellerData.name}</p>
+      <p>Name: {tellerData.FirstName} {tellerData.LastName}</p>
       <form onSubmit={handleSubmit} className="register-form">
           <div className="form-columns">
-            <div className='form-group'>
-              <label htmlFor="username" className='form-label'>Username:</label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                value={formData.username}
-                onChange={handleInputChange}
-                required
-                className='form-input'
-              />
-            </div>
-            <div className='form-group'>
-              <label htmlFor="email" className='form-label'>Email:</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-                className='form-input'
-              />
-            </div>
-            <div className='form-group'>
-              <label htmlFor="password" className='form-label'>Password:</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                required
-                className='form-input'
-              />
-            </div>
             <div className='form-group'>
               <label htmlFor="FirstName" className='form-label'>First Name:</label>
               <input
@@ -257,11 +264,13 @@ function AdminTellerEdit() {
               />
             </div>
             </div>
-        <button type='submit'>Save Changes</button>
+            {successMessage && (<p className="success-message">{successMessage}</p>)}
+        <button type='submit' className='submit-button'>Save Changes</button>
       </form>
       <div className="form-links">
-          <a href="/Admin">Admin Main</a>
+          <button onClick={handleAdminMainClick} className='form-button'>Admin Main</button>
         </div>
+        <button onClick={handleLogoutClick} className='logout-button'>Logout</button>
     </div>
   );
 }

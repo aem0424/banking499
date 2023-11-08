@@ -1,11 +1,32 @@
 import React from 'react'
+import axios from 'axios'
+import { useNavigate, useLocation } from 'react-router-dom'
+import './/css/TellerTransaction.css';
+
 
 function TellerTransaction() {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const user = location.state.user;
+
+    const handleTellerTransfer = () => {
+        navigate('/Teller/Transaction/Transfer', { state: { user }});
+    }
+
+    const handleTellerDeposit = () => {
+        navigate('/Teller/Transaction/Deposit', {state: { user }});
+    }
+
+    const handleBackButtonClick = () => {
+        navigate('/Teller', {state: { user }})
+    }
+
     return (
         <div>
             <h1>Please select a transaction to perform on the selected account.</h1>
-            <button html = "Teller/Transaction/Transfer">Transfer</button>
-            <button html = "Teller/Transaction/Deposit">Deposit</button>
+            <button onClick={handleTellerTransfer}>Transfer</button>
+            <button onClick={handleTellerDeposit}>Deposit</button><br/>  
+            <button onClick={handleBackButtonClick}>Back</button> 
         </div>
     )
 }

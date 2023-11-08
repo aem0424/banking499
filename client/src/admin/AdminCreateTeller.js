@@ -1,8 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import '../pre/Logout.css';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 
 function AdminCreateTeller() {
+
+  const location = useLocation();
+  const user = location.state.user;
+  const navigate = useNavigate();
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
     const [formData, setFormData] = useState({
       username: '',
       email: '',
@@ -17,7 +27,6 @@ function AdminCreateTeller() {
       City: '',
       State: '',
       ZIP: '',
-      // Add more fields as needed for registration (e.g., name, email, etc.)
     });
   
     const handleInputChange = (e) => {
@@ -26,6 +35,22 @@ function AdminCreateTeller() {
         ...formData,
         [name]: value,
       });
+    };
+
+    const handleAdminMainClick = () => {
+      navigate('/Admin', { state: { user } });
+    };
+
+    const handleLogoutClick = () => {
+      axios.post('/user/logout')
+        .then((response) => {
+          if (response.status === 200) {
+            navigate('/Login');
+          }
+        })
+        .catch((error) => {
+          setError(error);
+        });
     };
   
     const handleSubmit = async (e) => {
@@ -258,11 +283,12 @@ function AdminCreateTeller() {
               />
             </div>
             </div>
-          <button type="submit" className='form-button'>Add Teller</button>
+          <button type="submit" className='submit-button'>Add Teller</button>
         </form>
         <div className="form-links">
-          <a href="/Admin">Admin Main</a>
+        <button onClick={handleAdminMainClick} className='form-button'>Admin Main</button>
         </div>
+        <button onClick={handleLogoutClick} className='logout-button'>Logout</button>
       </div>
     );
   }

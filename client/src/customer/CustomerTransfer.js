@@ -1,10 +1,15 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import './/css/CustomerTransfer.css';
+
 
 function CustomerTransfer() {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const user = location.state.user;
     const [formData, setFormData] = useState({
-        amount:0,
+        amount:'',
         to:'',
         from:'',
     });
@@ -17,7 +22,6 @@ function CustomerTransfer() {
             [name]: value,
         });
     };
-    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -43,6 +47,10 @@ function CustomerTransfer() {
         }
     };
 
+    const handleBackButtonClick = () => {
+        navigate('/Customer/Transaction', {state: {user}})
+    }
+
     return (
         <div className='container'>
             <form onSubmit={handleSubmit} className="amount-form">
@@ -59,6 +67,7 @@ function CustomerTransfer() {
                 </div>
             </form>
             <button type="submit">Transfer Funds</button>
+            <buttin onClick={handleBackButtonClick}>Back</buttin>
         </div>
     )
 }
