@@ -67,7 +67,7 @@ function CustomerTransfer() {
                 </div>
             </form>
             <button type="submit">Transfer Funds</button>
-            <buttin onCLick={handleBackButtonClick}>Back</buttin>
+            <buttin onClick={handleBackButtonClick}>Back</buttin>
         </div>
     )
 }

@@ -267,5 +267,131 @@ router.delete('/customer/account/delete', async (req, res) => {
     return res.status(200).json({ message: "Account Deletion Request Submitted Successfully", data: accountData, notification: notificationData });
 });
 
+// ------------------------ Transaction -------------------------------
+// GET: Get a Transaction by TransactionID
+// Params: TransactionID
+// Return: Entire Transaction row data
+router.get('/transactions', async (req, res) => {
+    const transactionID = req.body.transactionID;
+    if (!transactionID) {
+      return res.status(400).json({ error: "Transaction ID is missing from the request body" });
+    }
+
+    let [transactionData, error] = await database.getTransaction(transactionID);
+
+    if (error) {
+      return res.status(404).json({ error: "Failed to retrieve transaction data", message: error.message });
+    }
+
+    return res.status(200).json(transactionData);
+});
+
+  
+// GET: Get Transactions by FromAccountID
+// Params: None (pass accountID in the request body)
+// Return: Entire Transaction row data
+router.get('/transactions/account', async (req, res) => {
+    const accountID = req.body.accountID;
+    if (!accountID) {
+      return res.status(400).json({ error: "Account ID is missing from the request body" });
+    }
+
+    let [transactionData, error] = await database.getTransactionFromAccountID(accountID);
+
+    if (error) {
+      return res.status(404).json({ error: "Failed to retrieve transactions for the account", message: error.message });
+    }
+
+    return res.status(200).json(transactionData);
+});
+
+// GET: Get Deposit Transactions by FromAccountID
+// Params: None (pass accountID in the request body)
+// Return: Entire Transaction row data
+router.get('/transactions/deposits', async (req, res) => {
+    const accountID = req.body.accountID;
+    if (!accountID) {
+      return res.status(400).json({ error: "Account ID is missing from the request body" });
+    }
+
+    let [depositData, error] = await database.getTransactionDeposit(accountID);
+
+    if (error) {
+      return res.status(404).json({ error: "Failed to retrieve deposit transactions for the account", message: error.message });
+    }
+
+    return res.status(200).json(depositData);
+});
+
+  
+
+
+// GET: Get Withdrawal Transaction by FromAccountID
+// Params: None (pass accountID in the request body)
+// Return: Entire Withdrawal Transaction row data
+router.get('/transactions/withdrawals', async (req, res) => {
+    const accountID = req.body.accountID;
+    if (!accountID) {
+      return res.status(400).json({ error: "Account ID is missing from the request body" });
+    }
+
+    let [withdrawalData, error] = await database.getTransactionWithdrawal(accountID);
+
+    if (error) {
+        return res.status(404).json({ error: "Failed to retrieve withdrawal transaction data", message: error.message });
+    }
+
+    return res.status(200).json(withdrawalData);
+});
+
+// GET: Get Transfer Transaction by FromAccountID
+// Params: None (pass accountID in the request body)
+// Return: Entire Transfer Transaction row data
+router.get('/transactions/transfers', async (req, res) => {
+    const accountID = req.body.accountID;
+    if (!accountID) {
+      return res.status(400).json({ error: "Account ID is missing from the request body" });
+    }
+
+    let [transferData, error] = await database.getTransactionTransfer(accountID);
+
+    if (error) {
+        return res.status(404).json({ error: "Failed to retrieve transfer transaction data", message: error.message });
+    }
+
+    return res.status(200).json(transferData);
+});
+
+
+
+// POST: Insert a Transaction
+// Params: Transaction { TransactionType, FromAccountID, ToAccountID, Amount }
+// Return: Transaction { TransactionType, FromAccountID, ToAccountID, Amount, Timestamp } (Confirmation)
+  router.post('/transactions', async (req, res) => {
+    try {
+      const transaction = req.body; // Assuming the transaction data is sent in the request body
+  
+      // Validate the 'transaction' here
+  
+      // Perform the insertion of the transaction
+      let [insertedTransaction, error] = await database.insertTransaction(transaction);
+  
+      if (error) {
+        return res.status(500).json({ error: "Failed to insert the transaction", message: error.message });
+      }
+  
+      return res.status(201).json({ message: "Transaction inserted successfully", data: insertedTransaction });
+    } catch (error) {
+      console.error("An error occurred:", error);
+      res.status(500).json({ error: "An error occurred while processing the request." });
+    }
+  });
+  
+  
+  
+  // ------------------------------------------------------
+  
+
+
 //export this router to use in our index.js
 module.exports = router;

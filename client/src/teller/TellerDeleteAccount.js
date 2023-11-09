@@ -11,7 +11,7 @@ function TellerDeleteAccount() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const handleNoClick = () => {
-        navigate('Teller/Customer', {state: { user }});
+        navigate('/Teller/Customer', {state: { user }});
     }
     
     return (

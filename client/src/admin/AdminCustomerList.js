@@ -67,13 +67,31 @@ function AdminCustomerList() {
         ) : (
           <div>
           <h1>Customer List</h1>
-          <ul>
-            {customers.map((customer, index) => (
-              <li key={index}>
-                <button onClick={() => handleAdminCustomerClick(customer)}>View {customer.FirstName} {customer.LastName}</button>
-              </li>
+          <table className='striped-table'>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {customers
+            .slice()
+            .sort((a, b) => a.LastName.localeCompare(b.LastName))
+            .map((customer, index) => (
+              <tr key={index}>
+                <td>
+                  {customer.LastName}, {customer.FirstName}
+                </td>
+                <td>
+                  <button onClick={() => handleAdminCustomerClick(customer)}>
+                    View
+                  </button>
+                </td>
+              </tr>
             ))}
-          </ul>
+        </tbody>
+      </table>
           <button onClick={handleAdminMainClick} className='form-button'>Admin Main</button>
           <button onClick={handleLogoutClick} className='logout-button'>Logout</button>
         </div>

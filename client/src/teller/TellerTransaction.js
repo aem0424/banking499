@@ -10,18 +10,23 @@ function TellerTransaction() {
     const user = location.state.user;
 
     const handleTellerTransfer = () => {
-        navigate('Teller/Transaction/Transfer', { state: { user }});
+        navigate('/Teller/Transaction/Transfer', { state: { user }});
     }
 
     const handleTellerDeposit = () => {
-        navigate('Teller/Transaction/Deposit', {state: { user }});
+        navigate('/Teller/Transaction/Deposit', {state: { user }});
+    }
+
+    const handleBackButtonClick = () => {
+        navigate('/Teller', {state: { user }})
     }
 
     return (
         <div>
             <h1>Please select a transaction to perform on the selected account.</h1>
             <button onClick={handleTellerTransfer}>Transfer</button>
-            <button onClick={handleTellerDeposit}>Deposit</button>   
+            <button onClick={handleTellerDeposit}>Deposit</button><br/>  
+            <button onClick={handleBackButtonClick}>Back</button> 
         </div>
     )
 }
