@@ -71,6 +71,10 @@ function AdminTellerEdit() {
     navigate('/Admin', { state: { user } });
   };
 
+  const handleManageTellersClick = () => {
+    navigate('/Admin/Teller/TellerList', { state: { user } });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -175,6 +179,7 @@ function AdminTellerEdit() {
                 name="Street2"
                 value={formData.Street2}
                 onChange={handleInputChange}
+                required
                 className='form-input'
               />
             </div>
@@ -268,6 +273,7 @@ function AdminTellerEdit() {
         <button type='submit' className='submit-button'>Save Changes</button>
       </form>
       <div className="form-links">
+      <button onClick={handleManageTellersClick} className='form-button'>Manage Tellers</button>
           <button onClick={handleAdminMainClick} className='form-button'>Admin Main</button>
         </div>
         <button onClick={handleLogoutClick} className='logout-button'>Logout</button>

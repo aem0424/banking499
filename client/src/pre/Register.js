@@ -39,6 +39,7 @@ function Register() {
     setFormData({
       ...formData,
       [name]: value,
+      Role: 'Customer'
     });
   };
 
@@ -269,7 +270,7 @@ function Register() {
               className='form-input'
             />
           </div>
-          </div>
+        </div>
           <div className="form-columns">
             <div className='form-group'>
               <label htmlFor="Question1" className='form-label'>Security Question 1:</label>
@@ -285,6 +286,9 @@ function Register() {
                <option value="What is the name of your first pet??">What is the name of your first pet?</option>
                <option value="In which city were you born?">In which city were you born?</option>
               </select>
+            </div>
+            <div className='form-group'>
+                <label htmlFor="Answer1" className='form-label'>Answer:</label>
               <input
                 type="text"
                 id="Answer1"
@@ -311,15 +315,18 @@ function Register() {
                <option value="What is the name of your first pet??">What is the name of your first pet?</option>
                <option value="In which city were you born?">In which city were you born?</option>
              </select>
-             <input
+             </div>
+              <div className='form-group'>
+                <label htmlFor="Answer2" className='form-label'>Answer:</label>
+                <input
                 type="text"
                 id="Answer2"
                 name="Answer2"
                 value={formData.Answer2}
-               onChange={handleInputChange}
+                onChange={handleInputChange}
                required
                 className='form-input'
-                placeholder="Answer 2"
+               placeholder="Answer 2"
               />
            </div>
           </div>

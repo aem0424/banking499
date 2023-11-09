@@ -23,6 +23,10 @@ function AdminTellerList() {
         setError(error);
       });
   };
+
+  const handleNewTellerClick = () => {
+    navigate('/Admin/Teller/CreateTeller', { state: { user } });
+  };
   
   useEffect(() => {
     if (user) {
@@ -56,6 +60,10 @@ function AdminTellerList() {
     navigate('/Admin/Teller/EditTeller/$teller.UserID', { state: { user, tellerData : teller } });
   };
 
+  const handleDeleteTellerClick = (teller) => {
+    navigate('/Admin/Teller/Delete', { state: { user, tellerData : teller } });
+  };
+
   const handleAdminMainClick = () => {
     navigate('/Admin', { state: { user } });
   };
@@ -71,9 +79,11 @@ function AdminTellerList() {
             {tellers.map((teller, index) => (
               <li key={index}>
                 <button onClick={() => handleEditTellersClick(teller)}>Edit {teller.FirstName} {teller.LastName}</button>
+                <button onClick={() => handleDeleteTellerClick(teller)}>Delete</button>
               </li>
             ))}
           </ul>
+          <button onClick={handleNewTellerClick} className='submit-button'>Add New Teller</button>
           <button onClick={handleAdminMainClick} className='form-button'>Admin Main</button>
           <button onClick={handleLogoutClick} className='logout-button'>Logout</button>
         </div>
