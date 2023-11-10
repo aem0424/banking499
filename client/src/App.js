@@ -29,6 +29,7 @@ import AdminCustomerInfo from ".//admin/AdminCustomerInfo";
 import AdminCustomerList from ".//admin/AdminCustomerList";
 import AdminMain from ".//admin/AdminMain";
 import AdminTellerEdit from ".//admin/AdminTellerEdit";
+import AdminTellerDelete from ".//admin/AdminTellerDelete"
 import AdminTellerList from ".//admin/AdminTellerList";
 import AdminTellerMain from ".//admin/AdminTellerMain";
 import TellerViewCustomerInfo from "./teller/TellerViewCustomerInfo";
@@ -91,6 +92,7 @@ function App() {
       <Route exact path="/Admin/Teller" element = {<AdminTellerMain user={user}/>}/>
       <Route exact path="/Admin/Teller/CreateTeller" element = {<AdminCreateTeller user={user}/>}/>
       <Route path="/Admin/Teller/EditTeller/:id" element={<AdminTellerEdit user={user}/>} />
+      <Route exact path="/Admin/Teller/Delete" element = {<AdminTellerDelete user={user}/>}/>
       <Route exact path="/Admin/Teller/TellerList" element = {<AdminTellerList user={user}/>}/>
       <Route exact path="/Admin/Customer" element = {<AdminCustomerList user={user}/>}/>
       <Route exact path="/Admin/Customer/Info" element = {<AdminCustomerInfo user={user}/>}/>

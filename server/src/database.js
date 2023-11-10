@@ -214,11 +214,12 @@ async function getTeller(userID) {
 async function insertCustomer(customer) {
     const { data, error } = await supabase
     .from('User')
-    .insert([{"Role": 'Customer', "Email": customer.Email, "Password": customer.Password,
-                "FirstName": customer.FirstName, "LastName": customer.LastName, "PhoneNumber": customer.PhoneNumber,
-                "Street": customer.Street, "City": customer.City, "State": customer.State, "ZIP": customer.ZIP,
-                "SSN": customer.SSN, "DOB": customer.DOB}])
+    .insert(customer)
     .select();
+    // .insert([{"Role": 'Customer', "Email": customer.Email, "Password": customer.Password,
+    //             "FirstName": customer.FirstName, "LastName": customer.LastName, "PhoneNumber": customer.PhoneNumber,
+    //             "Street": customer.Street, "City": customer.City, "State": customer.State, "ZIP": customer.ZIP,
+    //             "SSN": customer.SSN, "DOB": customer.DOB}])
 
     return [ data, error ];
 }
@@ -431,9 +432,10 @@ async function getUserAccounts(userID) {
 // Get All User Accounts Even the Deactivated Ones
 // Params: UserID
 // Return: Entire Account data
-async function getAllUserAccounts() {
+async function getAllUserAccounts(userID) {
     let { data, error } = await supabase
     .from('Account')
+    .eq("UserID", userID)
     .select('*');
     
     return [ data, error ];
@@ -495,6 +497,34 @@ async function deleteAccount(accountID) {
     .update({Activated: false, Deleted: true})
     .eq("AccountID", accountID)
     .select();
+    return [ data, error ];
+}
+
+// Update Account
+// Params: Account{ AccountID*, AccountName,... }
+// Return: Account{ AccountID, UserID, AccountName, AccountType, Balance, InterestRate } (Confirmation)
+async function updateAccount(userID, account) {
+    const {data, error } = await supabase
+    .from('Account')
+    .update(account)
+    .eq("UserID", userID)
+    .eq("AccountID", account.AccountID)
+    .select();
+
+    return [ data, error ];
+}
+
+// Update AccountName
+// Params: Account{ AccountID*, AccountName }
+// Return: Account{ AccountID, UserID, AccountName, AccountType, Balance, InterestRate } (Confirmation)
+async function updateAccountName(userID, accountName) {
+    const {data, error } = await supabase
+    .from('Account')
+    .update({ AccountName: accountName })
+    .eq("UserID", userID)
+    .eq("AccountID", account.AccountID)
+    .select();
+
     return [ data, error ];
 }
 
@@ -765,6 +795,8 @@ module.exports = {
     getAccountIDFromUserID,
     insertAccount,
     deleteAccount,
+    updateAccount,
+    updateAccountName,
     updateAccountActivated,
 
     getNotification,

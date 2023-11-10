@@ -80,11 +80,7 @@ export type RealtimePostgresChangesFilter<
   filter?: string
 }
 
-export type RealtimeChannelSendResponse =
-  | 'ok'
-  | 'timed out'
-  | 'rate limited'
-  | 'error'
+export type RealtimeChannelSendResponse = 'ok' | 'timed out' | 'error'
 
 export enum REALTIME_POSTGRES_CHANGES_LISTEN_EVENT {
   ALL = '*',
@@ -109,11 +105,13 @@ export enum REALTIME_SUBSCRIBE_STATES {
   CHANNEL_ERROR = 'CHANNEL_ERROR',
 }
 
+export const REALTIME_CHANNEL_STATES = CHANNEL_STATES
+
 /** A channel is the basic building block of Realtime
  * and narrows the scope of data flow to subscribed clients.
  * You can think of a channel as a chatroom where participants are able to see who's online
  * and send and receive messages.
- **/
+ */
 export default class RealtimeChannel {
   bindings: {
     [key: string]: {
@@ -399,6 +397,15 @@ export default class RealtimeChannel {
       [key: string]: any
     }) => void
   ): RealtimeChannel
+  on<T extends { [key: string]: any }>(
+    type: `${REALTIME_LISTEN_TYPES.BROADCAST}`,
+    filter: { event: string },
+    callback: (payload: {
+      type: `${REALTIME_LISTEN_TYPES.BROADCAST}`
+      event: string
+      payload: T
+    }) => void
+  ): RealtimeChannel
   on(
     type: `${REALTIME_LISTEN_TYPES}`,
     filter: { event: string; [key: string]: string },
@@ -406,13 +413,26 @@ export default class RealtimeChannel {
   ): RealtimeChannel {
     return this._on(type, filter, callback)
   }
-
+  /**
+   * Sends a message into the channel.
+   *
+   * @param args Arguments to send to channel
+   * @param args.type The type of event to send
+   * @param args.event The name of the event being sent
+   * @param args.payload Payload to be sent
+   * @param opts Options to be used during the send process
+   */
   async send(
-    payload: { type: string; [key: string]: any },
+    args: {
+      type: 'broadcast' | 'presence' | 'postgres_changes'
+      event: string
+      payload?: any
+      [key: string]: any
+    },
     opts: { [key: string]: any } = {}
   ): Promise<RealtimeChannelSendResponse> {
-    if (!this._canPush() && payload.type === 'broadcast') {
-      const { event, payload: endpoint_payload } = payload
+    if (!this._canPush() && args.type === 'broadcast') {
+      const { event, payload: endpoint_payload } = args
       const options = {
         method: 'POST',
         headers: {
@@ -447,20 +467,9 @@ export default class RealtimeChannel {
       }
     } else {
       return new Promise((resolve) => {
-        const push = this._push(
-          payload.type,
-          payload,
-          opts.timeout || this.timeout
-        )
+        const push = this._push(args.type, args, opts.timeout || this.timeout)
 
-        if (push.rateLimited) {
-          resolve('rate limited')
-        }
-
-        if (
-          payload.type === 'broadcast' &&
-          !this.params?.config?.broadcast?.ack
-        ) {
+        if (args.type === 'broadcast' && !this.params?.config?.broadcast?.ack) {
           resolve('ok')
         }
 

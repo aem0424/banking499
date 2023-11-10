@@ -39,7 +39,7 @@ router.put('/admin/teller/register', async (req, res) => {
   let teller = req.body;
 
   // Check if the email already exists in the database
-  let [userData, err_userData] = await database.getUserFromEmail(teller.Email);
+  let [userData, err_userData] = await database.getUserNameFromEmail(teller.Email);
   if (err_userData) {
     return res.status(404).json({ error: 'Failed to query User name', message: err_userData.message });
   }

@@ -12,11 +12,12 @@ function AdminCreateTeller() {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+
   
     const [formData, setFormData] = useState({
-      username: '',
-      email: '',
-      password: '',
+      Email: '',
+      Password: '',
       FirstName: '',
       LastName: '',
       SSN: '',
@@ -34,11 +35,16 @@ function AdminCreateTeller() {
       setFormData({
         ...formData,
         [name]: value,
+        Role: "Teller"
       });
     };
 
     const handleAdminMainClick = () => {
       navigate('/Admin', { state: { user } });
+    };
+
+    const handleManageTellersClick = () => {
+      navigate('/Admin/Teller/TellerList', { state: { user } });
     };
 
     const handleLogoutClick = () => {
@@ -62,6 +68,7 @@ function AdminCreateTeller() {
     
         if (response.status === 200) {
           console.log('Teller added successfully:', response.data);
+          setSuccessMessage('Teller registered successfully');
         } else {
           console.error('Error adding teller:', response.statusText);
         }
@@ -77,36 +84,24 @@ function AdminCreateTeller() {
         <form onSubmit={handleSubmit} className="register-form">
           <div className="form-columns">
             <div className='form-group'>
-              <label htmlFor="username" className='form-label'>Username:</label>
+              <label htmlFor="Email" className='form-label'>Email:</label>
               <input
-                type="text"
-                id="username"
-                name="username"
-                value={formData.username}
+                type="Email"
+                id="Email"
+                name="Email"
+                value={formData.Email}
                 onChange={handleInputChange}
                 required
                 className='form-input'
               />
             </div>
             <div className='form-group'>
-              <label htmlFor="email" className='form-label'>Email:</label>
+              <label htmlFor="Password" className='form-label'>Password:</label>
               <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-                className='form-input'
-              />
-            </div>
-            <div className='form-group'>
-              <label htmlFor="password" className='form-label'>Password:</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
+                type="Password"
+                id="Password"
+                name="Password"
+                value={formData.Password}
                 onChange={handleInputChange}
                 required
                 className='form-input'
@@ -194,6 +189,7 @@ function AdminCreateTeller() {
                 name="Street2"
                 value={formData.Street2}
                 onChange={handleInputChange}
+                required
                 className='form-input'
               />
             </div>
@@ -283,9 +279,70 @@ function AdminCreateTeller() {
               />
             </div>
             </div>
+            <div className="form-columns">
+            <div className='form-group'>
+              <label htmlFor="Question1" className='form-label'>Security Question 1:</label>
+             <select
+               id="Question1"
+                name="Question1"
+                value={formData.Question1}
+                onChange={handleInputChange}
+               required
+              >
+                <option value="DEFAULT" disabled>Select your security question</option>
+               <option value="What is your mother\'s maiden name?">What is your mother's maiden name?</option>
+               <option value="What is the name of your first pet??">What is the name of your first pet?</option>
+               <option value="In which city were you born?">In which city were you born?</option>
+              </select>
+            </div>
+            <div className='form-group'>
+                <label htmlFor="Answer1" className='form-label'>Answer:</label>
+              <input
+                type="text"
+                id="Answer1"
+                name="Answer1"
+                value={formData.Answer1}
+                onChange={handleInputChange}
+               required
+                className='form-input'
+               placeholder="Answer 1"
+              />
+           </div>
+
+            <div className='form-group'>
+             <label htmlFor="Question2" className='form-label'>Security Question 2:</label>
+             <select
+              id="Question2"
+              name="Question2"
+              value={formData.Question2}
+              onChange={handleInputChange}
+              required
+             >
+               <option value="DEFAULT" disabled>Select your security question</option>
+                <option value="What is your mother\'s maiden name?">What is your mother's maiden name?</option>
+               <option value="What is the name of your first pet??">What is the name of your first pet?</option>
+               <option value="In which city were you born?">In which city were you born?</option>
+             </select>
+             </div>
+              <div className='form-group'>
+                <label htmlFor="Answer2" className='form-label'>Answer:</label>
+                <input
+                type="text"
+                id="Answer2"
+                name="Answer2"
+                value={formData.Answer2}
+                onChange={handleInputChange}
+               required
+                className='form-input'
+               placeholder="Answer 2"
+              />
+           </div>
+          </div>
+          {successMessage && (<p className="success-message">{successMessage}</p>)}
           <button type="submit" className='submit-button'>Add Teller</button>
         </form>
         <div className="form-links">
+        <button onClick={handleManageTellersClick} className='form-button'>Manage Tellers</button>
         <button onClick={handleAdminMainClick} className='form-button'>Admin Main</button>
         </div>
         <button onClick={handleLogoutClick} className='logout-button'>Logout</button>

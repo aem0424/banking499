@@ -212,8 +212,30 @@ router.put('/customer/account/create', async (req, res) => {
     return res.status(200).json({ message: "Account Creation Request Submitted Successfully", data: accountData });
 });
 
+// POST: Request to update a Customer Account (Login Required)
+// Params: Account{AccountID*, AccountName, ...}
+// Return: confirmation message
+router.post('/customer/account/update', async (req, res) => {
+    // Check If User is Logged In
+    let userID = req.session.user?.UserID;
+    let userRole = req.session.user?.Role;
+
+    console.log(`Updating an Account for Customer ${userID}`);
+
+    if (!userID || userRole != "Customer") return res.status(401).json({ error: "User Is Not Logged In As Customer" });
+
+    // Check if the Account Already Exists
+    let account = req.body;
+
+    // Insert the Account
+    let [accountData, err_accountData] = await database.updateAccount(userID, account);
+    if (err_accountData) return res.status(402).json({ error: `Failed to Update User ${userID}'s Account ${accountName}`, message: err_accountData.message });
+
+    return res.status(200).json({ message: "Account Update Completed Successfully", data: accountData });
+});
+
 // DELETE: Request to delete a Customer Account
-// Params: AccountID
+// Params: AccountName
 // Return: Confirmation Message
 router.delete('/customer/account/delete', async (req, res) => {
     // Check If User is Logged In
@@ -226,7 +248,7 @@ router.delete('/customer/account/delete', async (req, res) => {
 
 
     // Check if the Account Already Exists
-    let accountID = req.body.AccountID;
+    let accountID = req.body.AccountName;
     let [account, err_account] = await database.getAccount(userID, accountID);
     if (err_account) return res.status(404).json({ error: `Failed to query the Account ${accountID} for Customer ${userID}`, message: err_account.message, data: { UserId: userID, AccountID: accountID } });
     // Parse Data

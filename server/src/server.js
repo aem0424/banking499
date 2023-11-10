@@ -207,8 +207,6 @@ app.get('/user/password', async (req, res) => {
     return res.status(500).json({ error: `Failed to Query User ${userID}'s Address`, message: err_userData.message });
   }
   let password = userPassword[0];
-  if (!password)
-    return res.status(404).json({ error: `User ${userID}'s Password Not Found` })
 
   return res.status(200).json(password);
 });
