@@ -68,6 +68,21 @@ function AdminTellerList() {
     navigate('/Admin', { state: { user } });
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const handleLoadMore = () => {
+    setCurrentPage(currentPage + 1);
+  };
+
+  const handleLoadPrevious = () => {
+    setCurrentPage(currentPage - 1);
+  };
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = currentPage * itemsPerPage;
+
+
     return (
       <div className='container'>
         {loading ? (
@@ -75,14 +90,39 @@ function AdminTellerList() {
         ) : (
           <div>
           <h1>Teller List</h1>
-          <ul>
-            {tellers.map((teller, index) => (
-              <li key={index}>
-                <button onClick={() => handleEditTellersClick(teller)}>Edit {teller.FirstName} {teller.LastName}</button>
-                <button onClick={() => handleDeleteTellerClick(teller)}>Delete</button>
-              </li>
-            ))}
-          </ul>
+          <table className='striped-table'>
+            <thead>
+              {/*<tr>
+                <th>Name</th>
+                <th>Edit</th>
+                <th>Delete</th>
+        </tr>*/}
+            </thead>
+            <tbody>
+              {tellers
+              .slice(startIndex,endIndex)
+              .sort((a,b) => a.LastName.localeCompare(b.LastName))
+              .map((teller, index) => (
+                <tr key={startIndex + index}>
+                  <td>
+                    {teller.LastName}, {teller.FirstName}
+                  </td>
+                  <td>
+                    <button onClick={() => handleEditTellersClick(teller)}>Edit</button>
+                  </td>
+                  <td>
+                    <button onClick={() => handleDeleteTellerClick(teller)}>Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {startIndex > 0 && (
+              <button onClick={handleLoadPrevious} className='form-button'>Load Previous Tellers</button>
+            )}
+      {endIndex < customers.length && (
+            <button onClick={handleLoadMore} className='form-button'>Load Next Tellers</button>
+          )}
           <button onClick={handleNewTellerClick} className='submit-button'>Add New Teller</button>
           <button onClick={handleAdminMainClick} className='form-button'>Admin Main</button>
           <button onClick={handleLogoutClick} className='logout-button'>Logout</button>

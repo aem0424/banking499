@@ -325,7 +325,8 @@ async function insertTeller(teller) {
     const { data, error } = await supabase
     .from('User')
     .insert([{"Role": 'Teller', "Email": teller.Email, "Password": teller.Password,
-                "FirstName": teller.FirstName, "LastName": teller.LastName, "PhoneNumber": teller.PhoneNumber}])
+                "FirstName": teller.FirstName, "LastName": teller.LastName, "PhoneNumber": teller.PhoneNumber, "Question1" : teller.Question1,
+            "Answer1": teller.Answer1, "Question2": teller.Question2, "Answer2": teller.Answer2}])
     .select();
 
     return [ data, error ];

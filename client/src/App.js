@@ -1,6 +1,7 @@
 import React from "react"
 import './App.css';
 import ForgotPass from './/pre/ForgotPass'
+import ConfirmForgotPass from './/pre/ConfirmForgotPass'
 import Login from './/pre/Login'
 import Register from './/pre/Register'
 import ReactDemo from './ReactDemo'
@@ -49,6 +50,7 @@ function App() {
       <Route exact path="/DataDisplay" element ={<DataDisplay/>}/>
       <Route exact path="/reactdemo" element ={<ReactDemo/>}/>
       <Route exact path="/ForgotPass" element ={<ForgotPass/>}/>
+      <Route exact path="/ConfirmForgotPass" element ={<ConfirmForgotPass/>}/>
       <Route exact path="/Login" element ={<Login setUser={setUser}/>}/>
       <Route exact path="/Register" element ={<Register/>}/>
       <Route exact path="/Customer" element ={<CustomerMain user={user}/>}/>

@@ -60,6 +60,20 @@ function AdminCustomerList() {
     navigate('/Admin/Customer/Info', { state: { user, customerData : customer } });
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const handleLoadMore = () => {
+    setCurrentPage(currentPage + 1);
+  };
+
+  const handleLoadPrevious = () => {
+    setCurrentPage(currentPage - 1);
+  };
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = currentPage * itemsPerPage;
+
     return (
       <div className='container'>
         {loading ? (
@@ -69,29 +83,33 @@ function AdminCustomerList() {
           <h1>Customer List</h1>
           <table className='striped-table'>
         <thead>
-          <tr>
-            <th>Name</th>
-            <th>Actions</th>
-          </tr>
+              {/*<tr>
+                <th>Name</th>
+                <th>View</th>
+        </tr>*/}
         </thead>
         <tbody>
           {customers
-            .slice()
+            .slice(startIndex,endIndex)
             .sort((a, b) => a.LastName.localeCompare(b.LastName))
             .map((customer, index) => (
-              <tr key={index}>
+              <tr key={startIndex + index}>
                 <td>
                   {customer.LastName}, {customer.FirstName}
                 </td>
                 <td>
-                  <button onClick={() => handleAdminCustomerClick(customer)}>
-                    View
-                  </button>
+                  <button onClick={() => handleAdminCustomerClick(customer)}>View</button>
                 </td>
               </tr>
             ))}
         </tbody>
       </table>
+      {startIndex > 0 && (
+              <button onClick={handleLoadPrevious} className='form-button'>Load Previous Customers</button>
+            )}
+      {endIndex < customers.length && (
+            <button onClick={handleLoadMore} className='form-button'>Load Next Customers</button>
+          )}
           <button onClick={handleAdminMainClick} className='form-button'>Admin Main</button>
           <button onClick={handleLogoutClick} className='logout-button'>Logout</button>
         </div>

@@ -20,14 +20,19 @@ function AdminCreateTeller() {
       Password: '',
       FirstName: '',
       LastName: '',
-      SSN: '',
+      PhoneNumber: '',
+      /*SSN: '',
       PhoneNumber: '',
       DOB: '',
       Street: '',
       Street2: '',
       City: '',
       State: '',
-      ZIP: '',
+      ZIP: '',*/
+      Question1: '',
+      Answer1: '',
+      Question2: '',
+      Answer2: '',
     });
   
     const handleInputChange = (e) => {
@@ -131,6 +136,7 @@ function AdminCreateTeller() {
                 className='form-input'
               />
             </div>
+            {/*
             <div className='form-group'>
               <label htmlFor="SSN" className='form-label'>SSN:</label>
               <input
@@ -143,6 +149,7 @@ function AdminCreateTeller() {
                 className='form-input'
               />
             </div>
+            */}
             <div className='form-group'>
               <label htmlFor="PhoneNumber" className='form-label'>Phone Number:</label>
               <input
@@ -156,8 +163,11 @@ function AdminCreateTeller() {
               />
             </div>
           </div>
+
+          {/*
+
           <div className="form-columns">
-            
+
             <div className='form-group'>
               <label htmlFor="DOB" className='form-label'>Date of Birth:</label>
               <input
@@ -279,6 +289,9 @@ function AdminCreateTeller() {
               />
             </div>
             </div>
+
+          */}
+          
             <div className="form-columns">
             <div className='form-group'>
               <label htmlFor="Question1" className='form-label'>Security Question 1:</label>
