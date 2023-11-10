@@ -136,7 +136,7 @@ router.get('/admin/customers/search', async (req, res) => {
   if (!req.session.user?.UserID || req.session.user?.Role != "Administrator")
     return res.status(401).json({ error: "User Is Not Logged In As Admin" });
 
-  let userText = req.body.Name
+  let userText = req.body.Name;
 
   let [userData, err_userData] = await database.searchCustomers(userText);
 

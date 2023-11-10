@@ -121,6 +121,18 @@ async function getUserQuestionsAnswers(email) {
         return [ data, error ];
     }
 
+// Get User's Security Questions and Answers
+// Parms: Email
+// Return: { Question1, Answer1, Question2, Answer2 }
+async function getUserQuestionsAnswers(email) {
+    const { data, error } = await supabase
+        .from('User')
+        .select('Question1, Answer1, Question2, Answer2')
+        .eq('Email', email);
+
+        return [ data, error ];
+    }
+
 // Get User Address
 // Params: UserID
 // Return: { Street, Street2, City, State, ZIP }
@@ -395,8 +407,7 @@ async function getAccount_(accountID) {
     let { data, error } = await supabase
     .from('Account')
     .select('*')
-    .eq("AccountID", accountID)
-    .eq("Activated", true);
+    .eq("AccountID", accountID);
 
     return [ data, error ];
 }
@@ -409,8 +420,7 @@ async function getAccount(userID, accountID) {
     .from('Account')
     .select('*')
     .eq("UserID", userID)
-    .eq("AccountID", accountID)
-    .eq("Activated", true);
+    .eq("AccountID", accountID);
 
     return [ data, error ];
 }
@@ -432,8 +442,8 @@ async function getAccounts() {
 async function getUserAccounts(userID) {
     let { data, error } = await supabase
     .from('Account')
-    .eq("UserID", userID)
-    .select('*');
+    .select()
+    .eq("UserID", userID);
     
     return [ data, error ];
 }
