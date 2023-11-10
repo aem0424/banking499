@@ -21,7 +21,7 @@ function CustomerViewAccountList() {
     }
 
     const handleDeleteRequest = (account) => {
-        navigate('/Customer/Account/Delete', {state: {user, accountData : account}})
+        navigate('/Customer/AccountList/Delete', {state: {user, accountData : account}})
     }   
 
     useEffect(() => {
@@ -45,21 +45,20 @@ function CustomerViewAccountList() {
                 <p>Loading...</p>
             ) : error ? (
                 <p>ERROR: {error.message}</p>
-            ) : userAccounts > (
+            ) : userAccounts ? (
                 <div>
                     <ul>
                         {userAccounts.map((account, index) => (
                             <li key={index}>
-                                {account.accountName}
-                                <button onClick={handleDeleteRequest(account)}>Delete Account</button><br/>
+                                <p>{account.AccountName}</p>
+                                <button onClick={() => handleDeleteRequest(account)}>Delete Account</button><br/>
                                 </li>
                             
                          ))}
                     </ul>
-                <button onClick={handleBackButtonClick}>Back</button>
                 <button onClick={handleCreateRequestClick}>Request a New Account</button>
                 </div>
-            )}
+            ) : null}
             <button onClick={handleBackButtonClick}>Back</button>            
         </div>
     )
