@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const database = require('./database.js');
-f
+
 // ------------------------ Teller -----------------------------------
 
 // GET: Get Teller Information (Login Required)
