@@ -40,8 +40,6 @@ app.get('/', (req, res) => {
 
 
 
-
-
 // -------------------- User ----------------------------
 // GET: Get User's Information (Login Require)
 // Params: UserID
