@@ -589,7 +589,7 @@ async function getTransactionFromAccountID(accountID) {
     let { data, error } = await supabase
     .from('Transaction')
     .select('*')
-    .eq("FromAccountID", accountID);
+    .eq("AccountID", accountID);
 
     return [ data, error ];
 }
@@ -601,7 +601,7 @@ async function getTransactionDeposit(accountID) {
     let { data, error } = await supabase
     .from('Transaction')
     .select('*')
-    .eq("FromAccountID", accountID)
+    .eq("AccountID", accountID)
     .eq("TransactionType", "Deposit");
 
     return [ data, error ];
@@ -614,7 +614,7 @@ async function getTransactionWithdrawal(accountID) {
     let { data, error } = await supabase
     .from('Transaction')
     .select('*')
-    .eq("FromAccountID", accountID)
+    .eq("AccountID", accountID)
     .eq("TransactionType", "Withdrawl");
 
     return [ data, error ];
@@ -627,42 +627,55 @@ async function getTransactionTransfer(accountID) {
     let { data, error } = await supabase
     .from('Transaction')
     .select('*')
-    .eq("FromAccountID", accountID)
+    .eq("AccountID", accountID)
     .eq("TransactionType", "Transfer");
 
     return [ data, error ];
 }
 
 // Insert Transaction and update Account Balances
-// Params: Transaction { TransactionType, FromAccountID, ToAccountID, Amount }
-// Return: Transaction { TransactionType, FromAccountID, ToAccountID, Amount, Timestamp } (Confirmation)
+// Params: Transaction { TransactionType, AccountID, ToAccountID, Amount }
+// Return: Transaction { TransactionType, AccountID, ToAccountID, Amount, Timestamp } (Confirmation)
 async function insertTransaction(transaction) {
     const client = supabase; // Using the default client (not within a transaction)
     const currentTimeStamp = new Date().toISOString();
+  
     try {
-      // Insert the transaction
-      const { data: insertedTransaction, error: transactionError } = await client
+      // Insert the transaction for 'AccountID'
+      const { data: insertedTransactionFrom, error: transactionErrorFrom } = await client
         .from('Transaction')
         .upsert([{
           "TransactionType": transaction.TransactionType,
-          "FromAccountID": transaction.FromAccountID,
-          "ToAccountID": transaction.ToAccountID,
+          "AccountID": transaction.FromAccountID,
           "Amount": transaction.Amount,
           "Timestamp": currentTimeStamp
         }], { onConflict: ['TransactionID'] });
-        
-    const transactionData = {
+  
+      if (transactionErrorFrom) {
+        return [null, transactionErrorFrom];
+      }
+  
+      // Insert the transaction for 'ToAccountID'
+      const { data: insertedTransactionTo, error: transactionErrorTo } = await client
+        .from('Transaction')
+        .upsert([{
+          "TransactionType": transaction.TransactionType,
+          "AccountID": transaction.ToAccountID,
+          "Amount": -transaction.Amount,
+          "Timestamp": currentTimeStamp
+        }], { onConflict: ['TransactionID'] });
+  
+      if (transactionErrorTo) {
+        return [null, transactionErrorTo];
+      }
+  
+      const transactionData = {
         "TransactionType": transaction.TransactionType,
-        "FromAccountID": transaction.FromAccountID,
+        "AccountID": transaction.FromAccountID,
         "ToAccountID": transaction.ToAccountID,
         "Amount": transaction.Amount,
         "Timestamp": currentTimeStamp
-        };
-          
-
-      if (transactionError) {
-        return [null, transactionError];
-      }
+      };
   
       // Retrieve the current 'ToAccountID' balance
       const { data: toAccountData, error: toAccountError } = await client
@@ -685,7 +698,7 @@ async function insertTransaction(transaction) {
         return [null, toAccountUpdateError];
       }
   
-      // Retrieve the current 'FromAccountID' balance
+      // Retrieve the current 'AccountID' balance
       const { data: fromAccountData, error: fromAccountError } = await client
         .from('Account')
         .select('Balance')
@@ -711,6 +724,8 @@ async function insertTransaction(transaction) {
       return [null, error];
     }
   }
+
+
   
 
 
