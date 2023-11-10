@@ -272,7 +272,7 @@ router.delete('/customer/account/delete', async (req, res) => {
 // Params: TransactionID
 // Return: Entire Transaction row data
 router.get('/transactions', async (req, res) => {
-    const transactionID = req.body.transactionID;
+    const transactionID = req.body.TransactionID;
     if (!transactionID) {
       return res.status(400).json({ error: "Transaction ID is missing from the request body" });
     }
@@ -287,13 +287,13 @@ router.get('/transactions', async (req, res) => {
 });
 
   
-// GET: Get Transactions by FromAccountID
-// Params: None (pass accountID in the request body)
+// GET: Get Transactions by AccountID
+// Params: AccountID
 // Return: Entire Transaction row data
 router.get('/transactions/account', async (req, res) => {
-    const accountID = req.body.accountID;
+    const accountID = String(req.body.AccountID);
     if (!accountID) {
-      return res.status(400).json({ error: "Account ID is missing from the request body" });
+      return res.status(400).json({ error: "AccountID is missing from the request body" });
     }
 
     let [transactionData, error] = await database.getTransactionFromAccountID(accountID);
@@ -305,13 +305,13 @@ router.get('/transactions/account', async (req, res) => {
     return res.status(200).json(transactionData);
 });
 
-// GET: Get Deposit Transactions by FromAccountID
-// Params: None (pass accountID in the request body)
+// GET: Get Deposit Transactions by AccountID
+// Params: AccountID
 // Return: Entire Transaction row data
 router.get('/transactions/deposits', async (req, res) => {
-    const accountID = req.body.accountID;
+    const accountID = String(req.body.AccountID);
     if (!accountID) {
-      return res.status(400).json({ error: "Account ID is missing from the request body" });
+      return res.status(400).json({ error: "AccountID is missing from the request body" });
     }
 
     let [depositData, error] = await database.getTransactionDeposit(accountID);
@@ -326,13 +326,13 @@ router.get('/transactions/deposits', async (req, res) => {
   
 
 
-// GET: Get Withdrawal Transaction by FromAccountID
-// Params: None (pass accountID in the request body)
+// GET: Get Withdrawal Transaction by AccountID
+// Params: AccountID
 // Return: Entire Withdrawal Transaction row data
 router.get('/transactions/withdrawals', async (req, res) => {
-    const accountID = req.body.accountID;
+    const accountID = String(req.body.AccountID);
     if (!accountID) {
-      return res.status(400).json({ error: "Account ID is missing from the request body" });
+      return res.status(400).json({ error: "AccountID is missing from the request body" });
     }
 
     let [withdrawalData, error] = await database.getTransactionWithdrawal(accountID);
@@ -344,13 +344,13 @@ router.get('/transactions/withdrawals', async (req, res) => {
     return res.status(200).json(withdrawalData);
 });
 
-// GET: Get Transfer Transaction by FromAccountID
-// Params: None (pass accountID in the request body)
+// GET: Get Transfer Transaction by AccountID
+// Params: AccountID
 // Return: Entire Transfer Transaction row data
 router.get('/transactions/transfers', async (req, res) => {
-    const accountID = req.body.accountID;
+    const accountID = String(req.body.AccountID);
     if (!accountID) {
-      return res.status(400).json({ error: "Account ID is missing from the request body" });
+      return res.status(400).json({ error: "AccountID is missing from the request body" });
     }
 
     let [transferData, error] = await database.getTransactionTransfer(accountID);
