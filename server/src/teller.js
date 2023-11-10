@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const database = require('./database.js');
-
+f
 // ------------------------ Teller -----------------------------------
 
 // GET: Get Teller Information (Login Required)
@@ -11,38 +11,35 @@ router.get('/teller', async (req, res) => {
     let userID = req.session.user?.UserID;
     let userEmail = req.session.user?.Email;
     console.log(`Getting Teller ${userID}'s Information`);
-    if (!userID) return res.status(403).json({ error: "User Is Not Logged In" });
+    if (!userID) return res.status(401).json({ error: "User Is Not Logged In" });
 
     // Query User Information
-    let [userData, err_userData] = await database.getUserShorthand(userEmail);
-    if (err_userData) return res.status(404).json({ error: "Failed to query Teller information", message: err_userData.message });
+    let [userData, err_userData] = await database.getUser(userEmail);
+    if (err_userData) return res.status(500).json({ error: "Failed to query Teller information", message: err_userData.message });
+    
     userData = userData[0];
-
     return res.status(200).json(userData);
 });
 
-
-
-// POST: Update a Teller
-// params: User{ Email*, FirstName, LastName, SSN, PhoneNumber, DOB, Address, Address2, City, State, ZIP }
+// POST: Update Teller Information
+// params: User{ UserID, Email*, FirstName, LastName, SSN, PhoneNumber, DOB, Address, Address2, City, State, ZIP }
 // return: Confirmation Message
 router.post('/teller/update', async (req, res) => {
     // Check If it is the Administrator making this request
     console.log(`Updating a Teller Information`);
     if (!req.session.UserID || !req.session.user?.Role) {
-        return res.status(403).json({ error: "Invalid Access Level to perfom the task: Updating a Teller account" });
+        return res.status(401).json({ error: "Invalid Access Level to perfom the task: Updating a Teller account" });
     }
 
     // Check the user body
     let teller = req.body;
-    if (!teller) return res.status(401).json({ error: "Empty json passed in body" });
-    teller.Email = req.session.user?.Email;
 
     // Insert user information
-    let [tellerData, err_tellerData] = await database.updateTeller(teller);
-    if (err_tellerData) return res.status(404).json({ error: "Database Insertion Failed", message: err_tellerData.message });
+    let [userData, err_userData] = await database.updateUser(teller);
+    if (err_userData) return res.status(500).json({ error: "Database Insertion Failed", message: err_userData.message });
 
-    return res.status(200).json({ message: `Teller Information Updated Successfully as UserID: ${tellerData.UserID}` });
+    userData = userData[0];
+    return res.status(200).json({ message: `Teller Information Updated Successfully as UserID: ${userData.UserID}`, data: userData });
 });
 
 
@@ -58,26 +55,26 @@ router.get('/teller/customers', async (req, res) => {
     console.log(`Getting All Customer Information`);
 
     // Query User Information
-    let [userData, err_userData] = await database.getCustomers(userID);
-    if (err_userData) return res.status(404).json({ error: "Failed to query Teller information", message: err_userData.message });
+    let [userData, err_userData] = await database.getUsers("Customer");
+    if (err_userData) return res.status(500).json({ error: "Failed to query Customers", message: err_userData.message });
 
     return res.status(200).json(userData);
 });
 
-// GET: Search Customers
-// Params: { Text String } (First Name and/or Last Name)
+// GET: Search Customers by their names
+// Params: { Name String } (First Name and/or Last Name)
 // Return: Users:[User1{...}, User2{...}, ...]
-router.get('/teller/customer/search', async (req, res) => {
+router.get('/teller/customers/search', async (req, res) => {
     let tellerID = req.session.user?.UserID;
     let tellerRole = req.session.user?.Role;
-    if (!tellerID || tellerRole != "Teller") return res.status(403).json({ error: "User Is Not Logged In As Teller" });
+    if (!tellerID || tellerRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As Teller" });
 
-    let userText = user.body.Text
+    let userText = user.body.Name
 
-    console.log("Searching for Customer");
+    console.log("Searching for Customers");
     let [userData, err_userData] = await database.searchCustomers(userText);
 
-    if (err_userData) return res.status(401).json({ error: "Failed to search customers with the name", message: err_userData });
+    if (err_userData) return res.status(500).json({ error: "Failed to search customers with the name", message: err_userData });
 
     return res.status(200).json(userData);
 });
@@ -88,14 +85,15 @@ router.get('/teller/customer/search', async (req, res) => {
 router.get('/teller/customer', async (req, res) => {
     let tellerID = req.session.user?.UserID;
     let tellerRole = req.session.user?.Role;
-    if (!tellerID || tellerRole != "Teller") return res.status(403).json({ error: "User Is Not Logged In As Teller" });
+    if (!tellerID || tellerRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As Teller" });
 
     let customerID = req.body.UserID;
     console.log(`Getting Customer ${customerID}'s Information`);
     // Query User Information
     let [userData, err_userData] = await database.getCustomer(customerID);
-    if (err_userData) return res.status(404).json({ error: "Failed to query Teller information", message: err_userData.message });
-
+    if (err_userData) return res.status(500).json({ error: "Failed to query Teller information", message: err_userData.message });
+    
+    userData = userData[0];
     return res.status(200).json(userData);
 });
 
@@ -107,116 +105,127 @@ router.get('/teller/customer/accounts', async (req, res) => {
     let tellerRole = req.session.user?.Role;
     console.log(`Getting Teller ${tellerID}'s Information`);
 
-    if (!tellerID || tellerRole != "Teller") return res.status(403).json({ error: "User Is Not Logged In As Teller" });
+    if (!tellerID || tellerRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As Teller" });
 
     let customerID = req.body.UserID;
 
     // Query Customer Accounts
     let [userData, err_userData] = await database.getAllUserAccounts(customerID);
-    if (err_userData) return res.status(404).json({ error: "Failed to query Teller information", message: err_userData.message });
+    if (err_userData) return res.status(500).json({ error: "Failed to query Teller information", message: err_userData.message });
 
     return res.status(200).json(userData);
 });
 
+
+// GET: Search Accounts of a Customer based on the AccountName 
+// Params: { UserID, AccountName }
+// Return: List of Customers
+router.get('/teller/customer/accounts/search', async (req, res) => {
+    console.log("Searching for all Banking Accounts belong to a Customer based on the AccountName");
+    let tellerID = req.session.user?.UserID;
+    let tellerRole = req.session.user?.Role;
+    if (!tellerID || tellerRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As Teller" });
+
+    let customerID = req.body.UserID;
+    let userText = req.body.AccountName;
+
+    let [accountData, err_accountData] = await database.searchAccounts(customerID, userText);
+    if (err_accountData) return res.status(500).json({ error: `Failed to search the Customer ${customerID}'s Accounts`, message: err_accountData.message });
+
+    return res.status(200).json(accountData);
+});
+
+// GET: Get a Customer Banking Account
+// Params: { UserID, AccountID }
+// Return: Account {AccountID, UserID, AccountName, Balance, ... }
+router.get('/teller/customer/account', async (req, res) => {
+    console.log("Getting A Customer's Banking Account Information");
+    let tellerID = req.session.user?.UserID;
+    let tellerRole = req.session.user?.Role;
+    if (!tellerID || tellerRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As Teller" });
+  
+    let customerID = req.body.UserID;
+    let accountID = req.body.AccountID;
+  
+    let [accountData, err_accountData] = await database.getAccout(customerID, accountID);
+    if (err_accountData) return res.status(500).json({ error: "Failed to get the Customer's Banking Account Information", message: err_accountData.message });
+
+    accountData = accountData[0];
+    return res.status(200).json(accountData);
+  });
+
+// PUT: Create a new Customer Account (Login Required)
+// Params: Account {AccountID, UserID, AccountName, AccountType, Balance, InterestRate}
+// Return: confirmation message
+router.put('/teller/customer/account/create', async (req, res) => {
+    console.log(`Creating a new Account for Customer`);
+    
+    let tellerID = req.session.user?.UserID;
+    let tellerRole = req.session.user?.Role;
+    if (!tellerID || tellerRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As Teller" });
+
+    // Get Body Paremeter as an Account
+    let account = req.body;
+
+    // Insert the Account
+    let [accountData, err_accountData] = await database.insertAccount(account);
+    if (err_accountData) return res.status(500).json({ error: `Failed to Insert the Account Data`, message: err_accountData.message });
+    
+    accountData = accountData[0];
+    return res.status(200).json({ message: "Account Creation Completed", data: accountData });
+});
+
+
 // POST: Request to update a Customer Account (Login Required)
 // Params: Account{UserID* (Customer UserID), AccountID*, AccountName, ...}
 // Return: confirmation message
-router.post('/customer/account/update', async (req, res) => {
+router.post('/teller/customer/account/update', async (req, res) => {
+    console.log(`Updating a Banking Account Information of a Customer`);
+
+    let tellerID = req.session.user?.UserID;
+    let tellerRole = req.session.user?.Role;
+    if (!tellerID || tellerRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As Teller" });
+
+    try {
+        let account = req.body;
+
+        // Insert the Account
+        let [accountData, err_accountData] = await database.updateAccount(account);
+        if (err_accountData) return res.status(500).json({ error: `Failed to Update User ${account.UserID}'s Account ${account.accountName}`, message: err_accountData.message });
+
+        accountData = accountData[0];
+        return res.status(200).json({ message: "Account Update Completed Successfully", data: accountData });
+
+    } catch (error) {
+        console.log("You did not include UserID and AccountID in the body parameter");
+        return res.status(401).json({ error: "Incomplete Body Parameter", message: "Please include Customer's UserID and AccountID." })
+    }
+});
+
+// DELETE: Delete a Customer Account
+// Params: { UserID, AccountID }
+// Return: Confirmation Message
+router.delete('/teller/customer/account/delete', async (req, res) => {
+    console.log(`Deleting an Account for a Customer`);
     // Check If User is Logged In
     let userID = req.session.user?.UserID;
     let userRole = req.session.user?.Role;
 
-    console.log(`Updating an Account for Customer ${userID}`);
 
-    if (!userID || userRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As Teller" });
+    if (!userID || userRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As A Teller" });
 
-    try {
-        let {UserID, ...account} = req.body;
 
-        // Insert the Account
-        let [accountData, err_accountData] = await database.updateAccount(UserID, account);
-        if (err_accountData) return res.status(402).json({ error: `Failed to Update User ${UserID}'s Account ${accountName}`, message: err_accountData.message });
-
-        return res.status(200).json({ message: "Account Update Completed Successfully", data: accountData });
-    } catch(error) {
-        console.log("You did not include UserID and AccountID in the body parameter");
-        return res.status(403).json({ error : "Incomplete Body Parameter", message: "Please include Customer's UserID and AccountID."})
-    }
-});
-
-// POST: Activate Customer Accounts
-// Params: UserID (CustomerID), AccountID
-// Return: Confirmation Message
-router.get('/teller/customer/account/activate', async (req, res) => {
-    let tellerID = req.session.user?.UserID;
-    let tellerRole = req.session.user?.Role;
-    console.log(`Getting Teller ${tellerID}'s Information`);
-
-    if (!tellerID || tellerRole != "Teller") return res.status(403).json({ error: "User Is Not Logged In As Teller" });
-
+    // Check if the Account Already Exists
     let customerID = req.body.UserID;
-    let accountID = req.body.AccountID;
+    let accountID = req.body.AccountName;
 
-    // Query Customer Accounts
-    let [activationData, err_activationData] = await database.updateAccountActivated(accountID, true);
-    if (err_activationData) return res.status(404).json({ error: "Failed to query Teller information", message: err_activationData.message });
-
-    return res.status(200).json({ message: `Customer ${customerID}'s Account ${accountID} Activated Successfully`, data: activationData });
-});
-
-
-
-
-// GET: Get Teller Notifications (Only the unresolved requests)
-// Params: None
-// Return: [TellerInbox1{InboxID, Type, Message, User{FirstName, LastName}, Account{AccountName}, TimeStamp}, TellerInbox2{...}, ...]
-router.get('/teller/notifications', async (req, res) => {
-    let userID = req.session.user?.UserID;
-    let userRole = req.session.user?.Role;
-    console.log(`Getting All Notification`);
-    if (!userID) return res.status(403).json({ error: "User Is Not Logged In" });
-    if (!userRole) return res.status(403).json({ error: "Invalid Access Detected: User is not logged in as Teller", data: userRole });
-
-    // Query User Information
-    let [notificationData, err_notificationData] = await database.getNotifications();
-    if (err_notificationData) return res.status(404).json({ error: "Failed to query Teller information", message: err_notificationData.message });
-
-    return res.status(200).json(notificationData);
-});
-
-// GET: Get All Teller Notifications (Even the resolved requests)
-// Params: None
-// Return: [TellerInbox1{InboxID, Type, Message, User{FirstName, LastName}, Account{AccountName}, TimeStamp}, TellerInbox2{...}, ...]
-router.get('/teller/notifications/all', async (req, res) => {
-    let userID = req.session.user?.UserID;
-    let userRole = req.session.user?.Role;
-    console.log(`Getting All Notification`);
-    if (!userID) return res.status(403).json({ error: "User Is Not Logged In" });
-    if (!userRole) return res.status(403).json({ error: "Invalid Access Detected: User is not logged in as Teller", data: userRole });
-
-    // Query User Information
-    let [notificationData, err_notificationData] = await database.getNotificationsAll();
-    if (err_notificationData) return res.status(404).json({ error: "Failed to query Teller information", message: err_notificationData.message });
-    return res.status(200).json(notificationData);
-});
-
-// GET: Get Teller Notification
-// Params: InboxID
-// Return: TellerInbox{InboxID, Type, Message, User{FirstName, LastName}, Account{AccountName}, TimeStamp}
-router.get('/teller/notification', async (req, res) => {
-    if (!req.session.user?.UserID || req.session.user?.Role != "Teller") {
-        return res.status(403).json({ error: "Unauthorized User Access" });
-    }
-    console.log("Getting Teller Notifications");
-
-    let inboxID = req.body.InboxID;
-    let [notificationData, err_notificationData] = await database.getNotification(inboxID);
-    if (err_tellerData) return res.status(401).json({ error: "Failed to get teller notification", message: err_notificationData });
-    notificationData = notificationData[0];
+    let [accountData, err_accountData] = await database.getAccount(customerID, accountID);
+    if (err_account) return res.status(500).json({ error: `Failed to query the Account ${accountID} for Customer ${customerID}`, message: err_accountData.message, data: { TellerID: userID, AccountID: accountID, CustomerID: customerID } });
+    // Parse Data
     
-    return res.status(200).json(notificationData);
+    accountData = accountData[0];
+    return res.status(200).json({ message: "Account Deletion Completed", data: accountData });
 });
-
 
 
 

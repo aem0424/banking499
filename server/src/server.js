@@ -117,14 +117,12 @@ app.get('/user/email', async (req, res) => {
   return res.status(200).json(email);
 });
 
-// GET: Get the Current User's Address Information (Login Required)
-// Params: None
-// Return: User{ Street, City, State, ZIP }
+// GET: Get the Current User's Address Information
+// Params: { UserID }
+// Return: User{ Street, Street2, City, State, ZIP }
 app.get('/user/address', async (req, res) => {
-  let userID = req.session.user?.UserID;
-  console.log(`Getting User ${userID}'s Role`);
-  if (!userID) return res.status(401).json({ error: "User Is Not Logged In" });
 
+  let userID = req.body.UserID
   // Query User Information
   let [userData, err_userData] = await database.getUserAddress(userID);
   if (err_userData) {
@@ -137,6 +135,26 @@ app.get('/user/address', async (req, res) => {
   return res.status(200).json(role);
 });
 
+// PUT: Register a User
+// Params: { Role*, Email, Password, FirstName, LastName, Phone Number, SSN, DOB, Street, City, State, ZIP }
+// Return: Confirmation Message
+app.put('/user/create', async (req, res) => {
+  console.log("Registering a New User");
+  let user = req.body;
+
+  // Check if the Role is set correctly
+  const allowedRoles = ['Customer', 'Teller', 'Administrator'];
+  if (!user.role || !allowedRoles.includes(user.role)) {
+    return res.status(400).json({ error: `${user.role} is not a valid User Role. It must be Customer, Teller, or Administrator` });
+  }
+  
+  // Query User Information
+  let [userData, err_userData] = await database.insertUser(user);
+  if (err_userData) return res.status(500).json({ error: `Failed to Add the User Based on their Role ${user.role}`, message: err_userData.message });
+
+  userData = userData[0];
+  return res.status(200).json({ message: `User ${userData} Regiestered Successfully`, data: userData});
+});
 
 // POST: Log in
 // Params: body.{ "Email": "<email>", "Password": "<password>"}
@@ -174,6 +192,7 @@ app.post('/user/login', async (req, res) => {
 
   // Keept UserID just in case
   req.session.UserID = userID;
+  req.session.Role = userRole;
 
   console.log(req.session.user);
   return res.status(200).json({ message: `Login successful as UserID: ${userID}    Role: ${userRole}`, token: req.session.user?.Token });
@@ -203,11 +222,10 @@ app.get('/user/password', async (req, res) => {
 
   // Query User Information
   let [userPassword, err_userPassword] = await database.getUserPassword(userEmail);
-  if (err_userPassword) {
-    return res.status(500).json({ error: `Failed to Query User ${userID}'s Address`, message: err_userData.message });
-  }
-  let password = userPassword[0];
+  if (err_userPassword) return res.status(500).json({ error: `Failed to Query User ${userID}'s Address`, message: err_userData.message });
 
+
+  let password = userPassword[0];
   return res.status(200).json(password);
 });
 
@@ -225,31 +243,31 @@ app.post('/user/password/reset', async (req, res) => {
   let [userQA, err_userQA] = await database.getUserQuestionsAnswers(email);
   if (err_userQA) return res.status(500).json({ error: "Failed to query UserID and Role", message: err_userQA.message });
   userQA = userQA[0];
-  if (!userQA) return res.status(404).json({ error: `Security Questions/Answers Not Found`, userQA: 'userQA' })
+  if (!userQA) return res.status(404).json({ error: `Security Questions/Answers Not Found For User Email ${email}`, userQA: 'userQA' })
 
   // Verify Questions
   if ((body.Question1 != userQA.Question1 || body.Question1 != userQA.Question2) &&
       (body.Question2 != userQA.Question1 || body.Question2 != userQA.Question2)) {
-    return res.status(404).json({ error: 'Unmatching Security Questions', type: 'Question', message: 'The selected user questions do not match', param: body, userQA: userQA});
+    return res.status(400).json({ error: 'Unmatching Security Questions', type: 'Question', message: 'The selected user questions do not match', param: body, userQA: userQA});
   }
   // Verify Answers
   if ((body.Answer1 != userQA.Answer1 || body.Answer1 != userQA.Answer2) &&
       (body.Answer2 != userQA.Answer1 || body.Answer2 != userQA.Answer1)) {
-    return res.status(404).json({ error: 'Unmatching Security Answers', type: 'Answer', message: 'The entered user answers do not match', param: body, userQA: userQA});
+    return res.status(400).json({ error: 'Unmatching Security Answers', type: 'Answer', message: 'The entered user answers do not match', param: body, userQA: userQA});
   }
 
   // Reset Password
   let [userData, err_userData] = await database.updateCustomerPassword(email, password);
   if (err_userData) return res.status(500).json({ error: "Failed to query UserID and Role", message: err_userData.message });
+  
   userData = userData[0];
-  if (!userData) return res.status(404).json({ error: "Email Not Found", data: userData, email: email});
   return res.status(200).json({ message: "Password Reset Successful", data: userData});
 });
 
 
 
 // GET: Get User All Users Based on their Role
-// Params: body.{ Role: [Customer | Teller | Administrator] }
+// Params: { Role }  <= [Customer | Teller | Administrator]
 // Return: [User1{ UserID, Role, Email, Password, FirstName, LastName, Phone Number, SSN, DOB, Street, City, State, ZIP }, User2{...}, ...]
 app.get('/users', async (req, res) => {
   let role = req.body.Role
@@ -267,7 +285,6 @@ app.get('/users', async (req, res) => {
 
   return res.status(200).json(userData);
 });
-
 
 // GET: Get User All Customers
 // Params: None
@@ -292,6 +309,39 @@ app.get('/users/teller', async (req, res) => {
   if (err_userData) return res.status(500).json({ error: `Failed to Query Tellers`, message: err_userData.message });
   return res.status(200).json(userData);
 });
+
+// GET: Search Users by their names
+// Params: { NameText } (First Name and/or Last Name)
+// Return: Users:[User1{...}, User2{...}, ...]
+app.get('/users/search', async (req, res) => {
+  console.log("Searching for User");
+
+  let userText = req.body.NameText
+
+  let [userData, err_userData] = await database.searchUsers(userText);
+
+  if (err_userData) return res.status(500).json({ error: `Failed to search a User based on the name text ${userText}`, message: err_userData });
+
+  return res.status(200).json(userData);
+});
+
+// GET: Search Users in the selected Role by their names 
+// Params: { Role, NameText } (First Name and/or Last Name)
+// Return: Users:[User1{...}, User2{...}, ...]
+app.get('/users/search/role', async (req, res) => {
+  console.log("Searching for User");
+
+  let userRole = req.body.Role;
+  let userText = req.body.NameText;
+
+  let [userData, err_userData] = await database.searchUsersWithRole(userText, userRole);
+
+  if (err_userData) return res.status(500).json({ error: `Failed to search this ${userRole}`, message: err_userData });
+
+  return res.status(200).json(userData);
+});
+
+
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
