@@ -120,7 +120,7 @@ function AdminTellerList() {
           {startIndex > 0 && (
               <button onClick={handleLoadPrevious} className='form-button'>Load Previous Tellers</button>
             )}
-      {endIndex < customers.length && (
+      {endIndex < tellers.length && (
             <button onClick={handleLoadMore} className='form-button'>Load Next Tellers</button>
           )}
           <button onClick={handleNewTellerClick} className='submit-button'>Add New Teller</button>
