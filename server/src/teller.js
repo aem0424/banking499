@@ -25,11 +25,10 @@ router.get('/teller', async (req, res) => {
 // params: User{ UserID, Email*, FirstName, LastName, SSN, PhoneNumber, DOB, Address, Address2, City, State, ZIP }
 // return: Confirmation Message
 router.post('/teller/update', async (req, res) => {
-    // Check If it is the Administrator making this request
-    console.log(`Updating a Teller Information`);
-    if (!req.session.UserID || !req.session.user?.Role) {
-        return res.status(401).json({ error: "Invalid Access Level to perfom the task: Updating a Teller account" });
-    }
+    let tellerID = req.session.user?.UserID;
+    let tellerRole = req.session.user?.Role;
+    if (!tellerID || tellerRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As Teller" });
+    console.log(`Updating the Teller Information`);
 
     // Check the user body
     let teller = req.body;

@@ -33,21 +33,6 @@ app.use(customerRoute, sessionMiddleware);
 app.use(tellerRoute, sessionMiddleware);
 app.use(adminRoute, sessionMiddleware);
 
-// Global error handler
-// app.use((err, req, res, next) => {
-//   console.error(err);
-
-//   if (err.name === 'UnauthorizedError') {
-//     return res.status(401).json({ error: 'Unauthorized' });
-//   }
-
-//   if (err.status === 403) {
-//     return res.status(403).json({ error: 'Access Forbidden' });
-//   }
-
-//   res.status(500).json({ error: 'Internal Server Error' });
-// });
-
 app.get('/', (req, res) => {
   res.send('Home Route');
 });
@@ -171,14 +156,14 @@ app.post('/user/login', async (req, res) => {
   // Query UserID
   let [userData, err_userData] = await database.getUserIDFromLogin(email, password);
   if (err_userData) {
-    return res.status(401).json({ error: "Failed to query UserID and Role", message: err_userData.message });
+    return res.status(401).json({ error: "Failed to get User Login Information", message: err_userData.message });
   }
   // Parse UserID
   userID = userData[0]?.UserID;
   userRole = userData[0]?.Role;
 
   // Verify Data
-  if (!userID && userID != 0) {
+  if (!userID) {
     return res.status(404).json({ error: "No UserID found for the email and password" });
   }
 
@@ -189,10 +174,6 @@ app.post('/user/login', async (req, res) => {
     Email: email,
     Token: 'Token',
   };
-
-  // Keept UserID just in case
-  req.session.UserID = userID;
-  req.session.Role = userRole;
 
   console.log(req.session.user);
   return res.status(200).json({ message: `Login successful as UserID: ${userID}    Role: ${userRole}`, token: req.session.user?.Token });
@@ -236,14 +217,14 @@ app.post('/user/password/reset', async (req, res) => {
   // Check parameters
   let body = req.body
 
-  if (!body.email || !body.question1 || !body.question2 || !body.answer1 || !body.answer2)
-    return res.status(403).json({ error: "Empty values passed in for email or password" });
+  if (!body.Email || !body.Question1 || !body.Question2 || !body.Answer1 || !body.Answer2)
+    return res.status(403).json({ error: "Empty values passed in for answers or question", param: body });
 
   // Query User Security Questions and Answers
-  let [userQA, err_userQA] = await database.getUserQuestionsAnswers(email);
-  if (err_userQA) return res.status(500).json({ error: "Failed to query UserID and Role", message: err_userQA.message });
+  let [userQA, err_userQA] = await database.getUserQuestionsAnswers(body.Email);
+  if (err_userQA) return res.status(500).json({ error: "Failed to query UserID and Role", message: err_userQA.message, param: body });
   userQA = userQA[0];
-  if (!userQA) return res.status(404).json({ error: `Security Questions/Answers Not Found For User Email ${email}`, userQA: 'userQA' })
+  if (!userQA) return res.status(404).json({ error: `Security Questions/Answers Not Found For User Email ${body.Email}`, userQA: userQA })
 
   // Verify Questions
   if ((body.Question1 != userQA.Question1 || body.Question1 != userQA.Question2) &&
@@ -258,7 +239,7 @@ app.post('/user/password/reset', async (req, res) => {
 
   // Reset Password
   let [userData, err_userData] = await database.updateCustomerPassword(email, password);
-  if (err_userData) return res.status(500).json({ error: "Failed to query UserID and Role", message: err_userData.message });
+  if (err_userData) return res.status(500).json({ error: "Failed to query UserID and Role", message: err_userData.message, param: body, userQA: userQA });
   
   userData = userData[0];
   return res.status(200).json({ message: "Password Reset Successful", data: userData});
