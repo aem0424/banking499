@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useNavigate, useLocation } from 'react-router-dom';
 import './/css/CustomerTransfer.css';
@@ -8,12 +8,14 @@ function CustomerTransfer() {
     const navigate = useNavigate();
     const location = useLocation();
     const user = location.state.user;
+    const [userAccounts, setUserAccounts] = useState([]);
     const [formData, setFormData] = useState({
         TransactionType:'Transfer',
         FromAccountID:'',
         ToAccountID:'',
         Amount:'',
     });
+    const [loading, setLoading] = useState(true);    
     const [error, setError] = useState(null);
 
     const handleInputChange = (e) => {
@@ -23,6 +25,30 @@ function CustomerTransfer() {
             [name]: value,
         });
     };
+
+    const createAccountList = (e) => {
+        let accountList = [];
+        userAccounts.map((account, index) => (
+            accountList.push(<option key={index} value={account.AccountID}>{account.AccountID}: {account.AccountName}</option>)
+        ));
+        return accountList;
+    }
+
+    useEffect(() => {
+        axios.get('/customer/accounts', {withCredentials:true})
+        .then((response) => {
+            if (response.status === 200) {
+                setUserAccounts(response.data);
+                console.log(userAccounts);
+            }
+            setLoading(false);            
+        })
+        .catch((error) => {
+            console.error("error occurred:", error);
+            setError(error);
+            setLoading(false);
+        });
+    }, [user]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -35,10 +61,10 @@ function CustomerTransfer() {
                 FromAccountID,
                 ToAccountID,
                 Amount
-            }, { withCredentials: true});
+            });
 
         if(response.data) {
-            console.log(response.data);
+            console.log('success: ', response.data);
         } else {
             console.log('error!');
         }
@@ -54,44 +80,61 @@ function CustomerTransfer() {
     }
 
     return (
-        <div className='container'>
-            <form onSubmit={handleSubmit} className="amount-form">
-                <div>
-                    <label htmlFor="FromAccountID">Transfer From:</label>
-                    <input
-                     type="text"
-                     id="FromAccountID"
-                     name="FromAccountID"
-                     value={formData.FromAccountID}
-                     onChange={handleInputChange}
-                     required
-                    />
-                </div> 
-                <div>
-                    <label htmlFor="ToAccountID">Transfer To:</label>
-                    <input
-                     type="text"
-                     id="ToAccountID"
-                     name="ToAccountID"
-                     value={formData.ToAccountID}
-                     onChange={handleInputChange}
-                     required
-                    />
-                </div>                                            
-                <div>
-                    <label htmlFor="Amount">Amount to Transfer:</label>
-                    <input
-                     type="text"
-                     id="Amount"
-                     name="Amount"
-                     value={formData.Amount}
-                     onChange={handleInputChange}
-                     required
-                    />
-                </div>
-                <button type="submit">Transfer Funds</button>                
-            </form>
-            <button onClick={handleBackButtonClick}>Back</button>
+        <div>
+            {loading ? (
+                <p>Loading...</p>
+            ) : error ? (
+                <p>ERROR: {error.message}</p>
+            ) : userAccounts ? (
+            <div>
+                <h1>Transfer Funds</h1>             
+            <form onSubmit={handleSubmit} className='amount-form'>
+            <div> 
+                <label htmlFor="FromAccountID">Transfer From: </label>
+                <select
+                    type="text"
+                    id="FromAccountID"
+                    name="FromAccountID"
+                    value={formData.FromAccountID}
+                    onChange={handleInputChange}
+                    required
+                >
+                    <option value="" disabled>Select an Account</option>
+                    {createAccountList()};
+                </select>                    
+              </div>                     
+              <div> 
+                <label htmlFor="ToAccountID">Transfer To: </label>
+                <select
+                    type="text"
+                    id="ToAccountID"
+                    name="ToAccountID"
+                    value={formData.ToAccountID}
+                    onChange={handleInputChange}
+                    required
+                >
+                    <option value="" disabled>Select an Account</option>
+                    {createAccountList()};
+                </select>                    
+              </div>          
+              <div> 
+                <label htmlFor="Amount">Amount to Transfer</label>
+                <input
+                    type="numeric"
+                    id="Amount"
+                    name="Amount"
+                    value={formData.Amount}
+                    onChange={handleInputChange}
+                    required
+                />  
+              </div> 
+              <div>                         
+                <button type="submit">Transfer Funds</button>
+              </div>
+            </form> 
+            </div>               
+            ) : null}
+            <button onClick={handleBackButtonClick}>Back</button>            
         </div>
     )
 }

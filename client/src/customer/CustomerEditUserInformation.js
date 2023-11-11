@@ -220,7 +220,7 @@ function CustomerEditUserInformation() {
                 <div className="form-columns">
                     <label htmlFor="PhoneNumber" className="form-label">Phone Number</label>
                     <input
-                        type="tel"
+                        type="text"
                         id="PhoneNumber"
                         name="PhoneNumber"
                         value={formData.PhoneNumber}

@@ -24,8 +24,8 @@ function CustomerTransaction() {
     return (
         <div>
             <h1>Please select a transaction to perform.</h1>
-            <button onClick={handleCustomerTransferClick}>Transfer</button>
-            <button onClick={handleCustomerDepositClick}>Deposit</button>
+            <button onClick={handleCustomerTransferClick}>Transfer</button><br/>
+            <button onClick={handleCustomerDepositClick}>Deposit</button><br/>
             <button onClick={handleBackButtonClick}>Back</button>
         </div>
     )

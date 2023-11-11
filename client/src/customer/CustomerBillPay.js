@@ -10,21 +10,35 @@ function CustomerBillPay() {
         PayAmount:'',
     });
     const location = useLocation();
+    const navigate = useNavigate();        
     const user = location.state.user;
-    const [accounts, setAccounts] = useState([]);
+    const [userAccounts, setUserAccounts] = useState([]);
     const [error, setError] = useState(null);
-    const navigate = useNavigate();    
+    const [loading, setLoading] = useState(null);
+    
+    const createAccountList = (e) => {
+        let accountList = [];
+        userAccounts.map((account, index) => (
+            accountList.push(<option key={index} value={account.AccountID}>{account.AccountID}: {account.AccountName}</option>)
+        ));
+        return accountList;
+    }    
+        
+    const handleBackButtonClick = () => {
+        navigate('/Customer', {state: {user}})
+    }    
 
     useEffect(() => {
         axios.get('/customer/accounts', {withCredentials:true})
         .then((response) => {
             if(response.status === 200) {
-                setAccounts(response.data);
+                setUserAccounts(response.data);
             }
         }).catch((error) => {
             console.error('ERROR: ', error);
         });
     }, [])
+
     const handleInputChange = (e) => {
         const {name, value} = e.target;
         setFormData({
@@ -38,32 +52,49 @@ function CustomerBillPay() {
         setError(null);
     };
 
-    const handleBackButton = () => {
-        navigate('/Customer', {state: {user}})
-    }
-
     return (
-        <div className='container'>
-            <h1>This is a placeholder for the customer bill payment screen.</h1>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="PayTo">Pay To:</label>
-                </div>
-            </form>
-            <label>
-                Select Acount to Pay From
-                <select>
-                    <option value={formData.payto}>Pay To</option>
-                </select>
-                <form>
-                    <div>
-                        <label>Amount</label>
-                    </div>
-                </form>
-            </label>
-            <button type="submit">Pay Bill</button><br/>
-            <button onClick={handleBackButton}>Back</button>
-        </div>
-    )
+        <div>
+        {loading ? (
+            <p>Loading...</p>
+        ) : error ? (
+            <p>ERROR: {error.message}</p>
+        ) : userAccounts ? (
+        <div>
+            <h1>Transfer Funds</h1>             
+        <form onSubmit={handleSubmit} className='amount-form'>
+        <div> 
+            <label htmlFor="FromAccountID">Transfer From: </label>
+            <select
+                type="text"
+                id="FromAccountID"
+                name="FromAccountID"
+                value={formData.FromAccountID}
+                onChange={handleInputChange}
+                required
+            >
+                <option value="" disabled>Select an Account</option>
+                {createAccountList()};
+            </select>                    
+          </div>                            
+          <div> 
+            <label htmlFor="Amount">Amount to Transfer</label>
+            <input
+                type="numeric"
+                id="Amount"
+                name="Amount"
+                value={formData.Amount}
+                onChange={handleInputChange}
+                required
+            />  
+          </div> 
+          <div>                         
+            <button type="submit">Pay Bill</button>
+          </div>
+        </form> 
+        </div>               
+        ) : null}
+        <button onClick={handleBackButtonClick}>Back</button>            
+    </div>
+)
 }
 export default CustomerBillPay;

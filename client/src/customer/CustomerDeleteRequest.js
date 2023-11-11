@@ -48,6 +48,7 @@ function CustomerDeleteRequest() {
             .then((response) => {
                 if(response.status === 200) {
                     setAccountData(response.data);
+                    setLoading(false);
                 }
             }).catch((error) => {
                 setError(error);

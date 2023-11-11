@@ -20,10 +20,6 @@ function TellerMain() {
         navigate('/Teller/Customer', { state: { user }})
     }
 
-    const handleTellerCreateAccount = () => {
-        navigate('/Teller/CreateAccount', { state: { user }})
-    }
-
     const handleLogoutClick = () => {
         axios.post('/user/logout')
         .then((response) => {
@@ -64,7 +60,6 @@ function TellerMain() {
                 <p> This is the main teller page.</p>
                 <button onClick={handleTellerTransaction}>Show Transactions</button><br/>
                 <button onClick={handleTellerCustomer}>Search Customers</button><br/>
-                <button onClick={handleTellerCreateAccount}>Customer Account Requests</button><br/>
                 <button onClick={handleLogoutClick}>Logout</button>            
                </div>     
             ) : null}
