@@ -209,18 +209,20 @@ app.get('/user/password', async (req, res) => {
 });
 
 // GET: Get the User's Security Questions and Answers (Login Required)
-// Params: Email
+// Params: Email, Email2
 // Return: String (Password)
 app.get('/user/qa', async (req, res) => {
   // Check parameters
   let email = req.body.Email;
+  let email2 = req.body.Email;
 
-  if (!email)
-    return res.status(403).json({ error: "Empty values passed in for answers or question", param: email });
+  if (!email || !email2) return res.status(400).json({ error: "Empty values passed in for answers or question", param: req.body });
+
+  if (email != email2) return res.status(400).json({ error: "The Email and Confirmation Email do not match", param: req.body1})
 
   // Query User Security Questions and Answers
   let [userQA, err_userQA] = await database.getUserQuestionsAnswers(email);
-  if (err_userQA) return res.status(500).json({ error: "Failed to query UserID and Role", message: err_userQA.message, param: email });
+  if (err_userQA) return res.status(500).json({ error: "Failed to query UserID and Role", message: err_userQA.message, param: req.body });
 
   userQA = userQA[0];
   if (!userQA) return res.status(404).json({ error: `Security Questions/Answers Not Found For User Email ${email}`, Questions: userQA })
@@ -251,7 +253,7 @@ app.post('/user/password/reset', async (req, res) => {
   // Verify Answers
   if ((body.Question2 == userQA.Question1 && body.Answer2 != userQA.Answer1) ||
       (body.Question2 == userQA.Question2 && body.Answer2 != userQA.Answer2)) {
-    return res.status(400).json({ error: 'Unmatching Security Question 2', type: 'Question2', message: 'he selected Question2 does not have a matching answer', param: body, userQA: userQA});
+    return res.status(400).json({ error: 'Unmatching Security Question 2', type: 'Question2', message: 'The selected Question2 does not have a matching answer', param: body, userQA: userQA});
   }
 
   // Reset Password
