@@ -31,7 +31,7 @@ function CustomerViewAccountInformation() {
             })
         }      
         if (account) {
-            axios.get('/customer/account', {AccountID: account.AccountID, withCredentials:true})
+            axios.get('/customer/account', {AccountID: account.AccountID}, {withCredentials:true})
             .then((response) => {
                 if(response.status === 200) {
                     setAccountData(response.data);
