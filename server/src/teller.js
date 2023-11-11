@@ -109,7 +109,7 @@ router.get('/teller/customer/accounts', async (req, res) => {
     let customerID = req.body.UserID;
 
     // Query Customer Accounts
-    let [userData, err_userData] = await database.getAllUserAccounts(customerID);
+    let [userData, err_userData] = await database.getUserAccounts(customerID);
     if (err_userData) return res.status(500).json({ error: "Failed to query Teller information", message: err_userData.message });
 
     return res.status(200).json(userData);
