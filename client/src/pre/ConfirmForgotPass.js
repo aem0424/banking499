@@ -5,7 +5,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 function ConfirmForgotPass() {;
     const [formData, setFormData] = useState({
         Email: '',
-        ConfirmEmail: '',
+        //ConfirmEmail: '',
       });
       const [error, setError] = useState(null);
       const [user, setUser] = useState(null);
@@ -29,25 +29,25 @@ function ConfirmForgotPass() {;
   }
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(formData.Email !== formData.ConfirmEmail){
-      setError("Emails do not match.")
-    }else{
-      setError('');
-    }
-    
-    /*try {
-      const response = await axios.post('http://localhost:4000/admin/teller/update', formData, {withCredentials:true});
-  
-      if (response.status === 200) {
-        console.log('Teller Updated successfully:', response.data);
-        setSuccessMessage('Teller updated successfully');
-      } else {
-        console.error('Error updating teller:', response.statusText);
+    //if (formData.Email !== formData.ConfirmEmail) {
+      //setError('Emails do not match.');
+    //} else {
+      {try {
+        // Send a GET request to retrieve security questions and answers
+        const response = await axios.get('/user/qa', {
+          params: { Email: formData.Email },
+        });
+
+        if (response.status === 200) {
+          // If successful, navigate to the ForgotPass component with userQA data
+          navigate('/ForgotPass', { state: { userQA: response.data } });
+        } else {
+          console.error('Error retrieving security questions and answers:', response.statusText);
+        }
+      } catch (error) {
+        console.error('An error occurred:', error);
       }
-    } catch (error) {
-      console.error('An error occurred:', error);
-    }*/
-    console.log('Hi')
+    }
   };
 
   return (
@@ -65,7 +65,7 @@ function ConfirmForgotPass() {;
             required
           />
         </div>
-        <div>
+        {/*<div>
           <label htmlFor="ConfirmEmail">Confirm Email:</label>
           <input
             type="text"
@@ -75,7 +75,7 @@ function ConfirmForgotPass() {;
             onChange={handleInputChange}
             required
           />
-        </div>
+  </div>*/}
         <button type='submit' className='submit-button'>Update Password</button>
       </form>
       <div className="form-links">
