@@ -10,10 +10,12 @@ function ForgotPass() {;
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [successMessage, setSuccessMessage] = useState(null);
+  const {userQA} = location.state;
 
   const [formData, setFormData] = useState({
     Answer1: userData?.Answer1 || "",
     Answer2: userData?.Answer2 || "",
+    Password: "",
   });
 
   const handleInputChange = (e) => {
@@ -40,6 +42,35 @@ function ForgotPass() {;
     }
   }, [user]);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post('/user/password/reset', {
+        Email: userData.Email,
+        Question1: userQA.Question1,
+        Question2: userQA.Question2,
+        Answer1: formData.Answer1,
+        Answer2: formData.Answer2,
+        Password: formData.Password,
+      });
+
+      if (response.status === 200) {
+        setFormData({ Answer1: '', Answer2: '', Password: '' });
+        setError('');
+        // Password reset successful, display success message or navigate to another page
+        // Example: setSuccessMessage('Password reset successful');
+      } else {
+        console.error('Error resetting password:', response.statusText);
+        // Handle error condition
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+      // Handle error condition
+      setError('An error occurred while resetting the password.');
+    }
+  };
+
   const handleLoginClick = () => {
     navigate('/Login');
   };
@@ -48,23 +79,6 @@ function ForgotPass() {;
     navigate('/Register');
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    /*try {
-      const response = await axios.post('http://localhost:4000/admin/teller/update', formData, {withCredentials:true});
-  
-      if (response.status === 200) {
-        console.log('Teller Updated successfully:', response.data);
-        setSuccessMessage('Teller updated successfully');
-      } else {
-        console.error('Error updating teller:', response.statusText);
-      }
-    } catch (error) {
-      console.error('An error occurred:', error);
-    }*/
-    console.log('Hi')
-  };
 
   return (
     <div className='container'>
@@ -73,7 +87,7 @@ function ForgotPass() {;
       <form onSubmit={handleSubmit} className="register-form">
 <div className='form-columns'>
   <div className='form-group'>
-    <p>Security Question 1: {userData.Question1}</p>
+    <p>Security Question 1: {userQA.Question1}</p>
     <label htmlFor="Answer1" className='form-label'>Answer:</label>
     <input
         type="text"
@@ -86,7 +100,7 @@ function ForgotPass() {;
       />
     </div>
     <div className='form-group'>
-    <p>Security Question 2: {userData.Question2}</p>
+    <p>Security Question 2: {userQA.Question2}</p>
     <label htmlFor="Answer2" className='form-label'>Answer:</label>
     <input
         type="text"
@@ -98,6 +112,18 @@ function ForgotPass() {;
         className='form-input'
       />
     </div>
+    <div className='form-group'>
+            <label htmlFor="Password" className='form-label'>New Password:</label>
+            <input
+              type="password"
+              id="Password"
+              name="Password"
+              value={formData.Password}
+              onChange={handleInputChange}
+              required
+              className='form-input'
+            />
+          </div>
 </div>
 {successMessage && (<p className="success-message">{successMessage}</p>)}
         <button type='submit' className='submit-button'>Change Password</button>
