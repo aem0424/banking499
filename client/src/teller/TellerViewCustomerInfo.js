@@ -18,7 +18,7 @@ function TellerViewCustomerInfo() {
     }
 
     const handleViewAccountClick = (account) => {
-        navigate('/Teller/Customer/Account', {state: {user, account}});
+        navigate('/Teller/Customer/Account', {state: {user, account, customer}});
     }
 
     const handleTransactionClick = () => {
@@ -48,7 +48,7 @@ function TellerViewCustomerInfo() {
                     setLoading(false);
                 } else {              
                     setLoading(false);
-                    console.log('error:', error);                    
+                    console.log('error');                    
                 }
             })
             .catch ((error) => {

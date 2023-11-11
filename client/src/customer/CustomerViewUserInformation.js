@@ -12,8 +12,8 @@ function CustomerViewUserInformation() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const handleEditClick = () => {
-      navigate('/Customer/UserInfo/Edit', {state: {user}})
+    const handleEditClick = (customer) => {
+      navigate('/Customer/UserInfo/Edit', {state: {user, customerData: customer}})
     }
 
     const handleBackButtonClick = () => {
@@ -50,7 +50,7 @@ function CustomerViewUserInformation() {
             Phone Number: {userData.PhoneNumber}<br/>
             SSN: {userData.SSN}<br/>
             Date of Birth: {userData.DOB}<br/>
-            <button onClick={handleEditClick}>Edit User Information</button>
+            <button onClick={() => handleEditClick(userData)}>Edit User Information</button>
           </div>
         ) : null}
         <button onClick={handleBackButtonClick}>Back</button>        

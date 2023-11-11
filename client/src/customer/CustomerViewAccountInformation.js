@@ -14,7 +14,7 @@ function CustomerViewAccountInformation() {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-    const handleBackButtonClick = () => {
+    const handleBackButtonClick = (info) => {
         navigate('/Customer/AccountList', {state: {user}})
     }
 
@@ -67,7 +67,7 @@ function CustomerViewAccountInformation() {
                     Account Type: {accountData.AccountType}<br/>
                     Balance: {accountData.Balance}<br/>
                     Interest Rate: {accountData.InterestRate}<br/>
-                    History: {transactions}<br/>
+                    History: tba<br/>
                 </div>
             ): null }
             <button onClick={handleBackButtonClick}>Back</button>            
