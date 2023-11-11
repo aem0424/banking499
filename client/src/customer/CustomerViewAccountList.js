@@ -21,7 +21,7 @@ function CustomerViewAccountList() {
     }
 
     const handleDeleteRequest = (account) => {
-        navigate('/Customer/AccountList/Delete', {state: {user, accountData : account}})
+        navigate('/Customer/AccountInfo/Delete', {state: {user, accountData : account}})
     }   
 
     useEffect(() => {

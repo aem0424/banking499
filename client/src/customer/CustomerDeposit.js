@@ -12,6 +12,7 @@ function CustomerDeposit() {
     const [formData, setFormData] = useState({
         TransactionType:'Deposit',
         FromAccountID:'',
+        ToAccountID:'',
         Amount:'',
     });
     const [loading, setLoading] = useState(true);
@@ -27,10 +28,9 @@ function CustomerDeposit() {
 
     const createAccountList = (e) => {
         let accountList = [];
-        for(let i = 0; i < userAccounts.size; i++) {
-            console.log("test");
-            accountList.push(<option key={i} value={i}>{i}</option>)
-        }
+        userAccounts.map((account, index) => (
+            accountList.push(<option key={index} value={account.AccountID}>{account.AccountID}: {account.AccountName}</option>)
+        ));
         return accountList;
     }
 
@@ -39,6 +39,7 @@ function CustomerDeposit() {
         .then((response) => {
             if (response.status === 200) {
                 setUserAccounts(response.data);
+                console.log(userAccounts);
             }
             setLoading(false);            
         })
@@ -88,8 +89,7 @@ function CustomerDeposit() {
                 <p>ERROR: {error.message}</p>
             ) : userAccounts ? (
             <div>
-                <h1>This is a placeholder for the customer deposit screen. I may try to implement a dropdown that 
-                shows all of a customer's accounts instead of requiring them to type it out.</h1>             
+                <h1>Deposit Funds</h1>             
             <form onSubmit={handleSubmit} className='amount-form'>
               <div> 
                 <label htmlFor="FromAccountID">Account</label>
@@ -101,13 +101,14 @@ function CustomerDeposit() {
                     onChange={handleInputChange}
                     required
                 >
+                    <option value="" disabled>Select an Account</option>
                     {createAccountList()};
                 </select>                    
               </div>          
               <div> 
                 <label htmlFor="Amount">Amount to Deposit</label>
                 <input
-                    type="text"
+                    type="numeric"
                     id="Amount"
                     name="Amount"
                     value={formData.Amount}
