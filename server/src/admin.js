@@ -29,7 +29,7 @@ router.get('/admin/tellers/search', async (req, res) => {
   if (!req.session.user?.UserID || req.session.user?.Role != "Administrator")
     return res.status(401).json({ error: "User Is Not Logged In As Admin" });
 
-  let userText = req.body.Name
+  let userText = req.query.Name
 
   let [userData, err_userData] = await database.searchTellers(userText);
   if (err_userData) return res.status(500).json({ error: "Failed to search this teller", message: err_userData });
@@ -136,7 +136,7 @@ router.get('/admin/customers/search', async (req, res) => {
   if (!req.session.user?.UserID || req.session.user?.Role != "Administrator")
     return res.status(401).json({ error: "User Is Not Logged In As Admin" });
 
-  let userText = req.body.Name;
+  let userText = req.query.Name;
 
   let [userData, err_userData] = await database.searchCustomers(userText);
 
@@ -156,7 +156,7 @@ router.get('/admin/customer', async (req, res) => {
   let userRole = req.session.user?.Role;
   if (!userID || userRole != "Administrator") return res.status(401).json({ error: "User Is Not Logged In As Admin" });
 
-  let customerID = req.body.UserID;
+  let customerID = req.query.UserID;
  
   let [customerData, err_customerData] = await database.getUser(customerID);
   if (err_customerData) {
@@ -167,10 +167,10 @@ router.get('/admin/customer', async (req, res) => {
   return res.status(200).json(customerData);
 });
 
-// UPDATE: Update a Customer Information
+// POST: Update a Customer Information
 // Params: User{ UserID, Email*, FirstName, LastName, ... }
 // Return: Confirmation Message
-router.get('/admin/customer/update', async (req, res) => {
+router.post('/admin/customer/update', async (req, res) => {
   console.log("Getting a Customers List");
 
   let userID = req.session.user?.UserID;
@@ -221,7 +221,7 @@ router.get('/admin/customer/accounts', async (req, res) => {
   let userRole = req.session.user?.Role;
   if (!userID || userRole != "Administrator") return res.status(401).json({ error: "User Is Not Logged In As Admin" });
 
-  let customerID = req.body.UserID;
+  let customerID = req.query.UserID;
 
   let [accountData, err_accountData] = await database.getUserAccounts(customerID);
   if (err_accountData) return res.status(500).json({ error: "Failed to get the Customer's Accounts", message: err_accountData.message });
@@ -237,8 +237,8 @@ router.get('/admin/customer/accounts/search', async (req, res) => {
   let userRole = req.session.user?.Role;
   if (!userID || userRole != "Administrator") return res.status(401).json({ error: "User Is Not Logged In As Admin" });
 
-  let customerID = req.body.UserID;
-  let userText = req.body.AccountName;
+  let customerID = req.query.UserID;
+  let userText = req.query.AccountName;
 
   let [accountData, err_accountData] = await database.searchAccounts(customerID, userText);
   if (err_accountData) return res.status(500).json({ error: `Failed to search the Customer ${customerID}'s Accounts`, message: err_accountData.message });
@@ -254,8 +254,8 @@ router.get('/admin/customer/account', async (req, res) => {
   let userRole = req.session.user?.Role;
   if (!userID || userRole != "Administrator") return res.status(401).json({ error: "User Is Not Logged In As Admin" });
 
-  let customerID = req.body.UserID;
-  let accountID = req.body.AccountID;
+  let customerID = req.query.UserID;
+  let accountID = req.query.AccountID;
 
   let [accountData, err_accountData] = await database.getAccout(customerID, accountID);
   if (err_accountData) return res.status(500).json({ error: "Failed to get the Customer's Banking Account Information", message: err_accountData.message });

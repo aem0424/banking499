@@ -157,7 +157,7 @@ router.get('/customer/accounts/search', async (req, res) => {
 
     // Check If a session exsits for the user
 
-    let accountName = req.body.AccountName
+    let accountName = req.query.AccountName
 
     let [accountList, err_accountList] = await database.searchAccounts(userID, accountName);
     if (err_accountList) return res.status(500).json({ error: 'Failed to query Customer Accounts', message: err_accountList.message });

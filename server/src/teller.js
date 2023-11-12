@@ -68,7 +68,7 @@ router.get('/teller/customers/search', async (req, res) => {
     let tellerRole = req.session.user?.Role;
     if (!tellerID || tellerRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As Teller" });
 
-    let userText = user.body.Name
+    let userText = user.query.Name
 
     console.log("Searching for Customers");
     let [userData, err_userData] = await database.searchCustomers(userText);
@@ -86,7 +86,7 @@ router.get('/teller/customer', async (req, res) => {
     let tellerRole = req.session.user?.Role;
     if (!tellerID || tellerRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As Teller" });
 
-    let customerID = req.body.UserID;
+    let customerID = req.query.UserID;
     console.log(`Getting Customer ${customerID}'s Information`);
     // Query User Information
     let [userData, err_userData] = await database.getCustomer(customerID);
@@ -106,7 +106,7 @@ router.get('/teller/customer/accounts', async (req, res) => {
 
     if (!tellerID || tellerRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As Teller" });
 
-    let customerID = req.body.UserID;
+    let customerID = req.query.UserID;
 
     // Query Customer Accounts
     let [userData, err_userData] = await database.getUserAccounts(customerID);
@@ -125,8 +125,8 @@ router.get('/teller/customer/accounts/search', async (req, res) => {
     let tellerRole = req.session.user?.Role;
     if (!tellerID || tellerRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As Teller" });
 
-    let customerID = req.body.UserID;
-    let userText = req.body.AccountName;
+    let customerID = req.query.UserID;
+    let userText = req.query.AccountName;
 
     let [accountData, err_accountData] = await database.searchAccounts(customerID, userText);
     if (err_accountData) return res.status(500).json({ error: `Failed to search the Customer ${customerID}'s Accounts`, message: err_accountData.message });
@@ -143,8 +143,8 @@ router.get('/teller/customer/account', async (req, res) => {
     let tellerRole = req.session.user?.Role;
     if (!tellerID || tellerRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As Teller" });
 
-    let customerID = req.body.UserID;
-    let accountID = req.body.AccountID;
+    let customerID = req.query.UserID;
+    let accountID = req.query.AccountID;
 
     let [accountData, err_accountData] = await database.getAccout(customerID, accountID);
     if (err_accountData) return res.status(500).json({ error: "Failed to get the Customer's Banking Account Information", message: err_accountData.message });

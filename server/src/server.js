@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
 
 // -------------------- User ----------------------------
 // GET: Get User's Information (Login Require)
-// Params: UserID
+// Params: None
 // Return: User{ UserID, Role, Email, Password, FirstName, LastName, Phone Number, SSN, DOB, Street, Street2, City, State, ZIP }
 app.get('/user', async (req, res) => {
   let userID = req.session.user?.UserID;
@@ -96,16 +96,16 @@ app.get('/user/email', async (req, res) => {
   let userID = req.session.user?.UserID;
   let email = req.session.user?.Email;
   if (!userID) return res.status(401).json({ error: "User Is Not Logged In" });
-  
+
   return res.status(200).json(email);
 });
 
-// GET: Get the Current User's Address Information
-// Params: { UserID }
+// GET: Get the Current User's Address Information (Login Required)
+// Params: None 
 // Return: User{ Street, Street2, City, State, ZIP }
 app.get('/user/address', async (req, res) => {
 
-  let userID = req.body.UserID
+  let userID = req.session.user?.UserID;
   // Query User Information
   let [userData, err_userData] = await database.getUserAddress(userID);
   if (err_userData) {
@@ -208,13 +208,13 @@ app.get('/user/password', async (req, res) => {
   return res.status(200).json(password);
 });
 
-// GET: Get the User's Security Questions and Answers (Login Required)
-// Params: Email, Email2
+// GET: Get the User's Security Questions and Answers
+// Params: { Email, Email2 }
 // Return: String (Password)
 app.get('/user/qa', async (req, res) => {
   // Check parameters
-  let email = req.body.Email;
-  let email2 = req.body.Email;
+  let email = req.query.Email;
+  let email2 = req.query.Email;
 
   if (!email || !email2) return res.status(400).json({ error: "Empty values passed in for answers or question", param: req.body });
 
@@ -230,7 +230,7 @@ app.get('/user/qa', async (req, res) => {
 });
 
 // POST: Reset Password
-// Params: body.{ Email, Question1, Question2, Answer1, Answer2, Password }
+// Params: { Email, Question1, Question2, Answer1, Answer2, Password }
 // Return: Confirmation Message
 app.post('/user/password/reset', async (req, res) => {
   // Check parameters
@@ -270,7 +270,7 @@ app.post('/user/password/reset', async (req, res) => {
 // Params: { Role }  <= [Customer | Teller | Administrator]
 // Return: [User1{ UserID, Role, Email, Password, FirstName, LastName, Phone Number, SSN, DOB, Street, City, State, ZIP }, User2{...}, ...]
 app.get('/users', async (req, res) => {
-  let role = req.body.Role
+  let role = req.query.Role;
   console.log(`Getting All ${role}s`);
   const allowedRoles = ['Customer', 'Teller', 'Administrator'];
   if (!allowedRoles.includes(role)) {
@@ -311,12 +311,12 @@ app.get('/users/teller', async (req, res) => {
 });
 
 // GET: Search Users by their names
-// Params: { NameText } (First Name and/or Last Name)
+// Params: { Name } (First Name and/or Last Name)
 // Return: Users:[User1{...}, User2{...}, ...]
 app.get('/users/search', async (req, res) => {
   console.log("Searching for User");
 
-  let userText = req.body.NameText
+  let userText = req.query.Name
 
   let [userData, err_userData] = await database.searchUsers(userText);
 
@@ -326,13 +326,13 @@ app.get('/users/search', async (req, res) => {
 });
 
 // GET: Search Users in the selected Role by their names 
-// Params: { Role, NameText } (First Name and/or Last Name)
+// Params: { Role, Name } (First Name and/or Last Name)
 // Return: Users:[User1{...}, User2{...}, ...]
 app.get('/users/search/role', async (req, res) => {
   console.log("Searching for User");
 
-  let userRole = req.body.Role;
-  let userText = req.body.NameText;
+  let userRole = req.query.Role;
+  let userText = req.query.Name;
 
   let [userData, err_userData] = await database.searchUsersWithRole(userText, userRole);
 
