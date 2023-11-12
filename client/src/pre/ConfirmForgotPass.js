@@ -41,6 +41,7 @@ function ConfirmForgotPass() {;
         if (response.status === 200) {
           // If successful, navigate to the ForgotPass component with userQA data
           navigate('/ForgotPass', { state: { userQA: response.data } });
+          setUser(response.data);
         } else {
           console.error('Error retrieving security questions and answers:', response.statusText);
         }

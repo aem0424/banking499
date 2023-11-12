@@ -26,14 +26,37 @@ function Register() {
     Answer2: '',
   });
 
+  const [errors, setErrors] = useState({
+    Email: '',
+    Password: '',
+    FirstName: '',
+    LastName: '',
+    SSN: '',
+    PhoneNumber: '',
+    Street: '',
+    Street2: '',
+    City: '',
+    ZIP: '',
+  });
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     let error = '';
-    if (name === 'SSN' && value.length !== 9) {
+  
+    if (name === 'SSN' && isNaN(value) && value.length !== 9) {
       error = 'Invalid SSN.';
-    }
-    if (name === 'PhoneNumber' && value.length !== 10) {
+    } else if (name === 'PhoneNumber' && isNaN(value) && value.length !== 10) {
       error = 'Invalid Phone Number.';
+    } else if (name === 'Password' && value.length < 6) {
+      error = 'Must be at least 6 characters.';
+    } else if (['FirstName', 'LastName'].includes(name) && !/^[a-zA-Z]+$/.test(value)) {
+      error = `Invalid ${name === 'FirstName' ? 'First' : 'Last'} Name.`;
+    } else if (['Street', 'Street2', 'City'].includes(name) && !/^[a-zA-Z0-9\s,.'-]*$/.test(value)) {
+      error = `Invalid ${name}.`;
+    } else if (name === 'Email' && !/\S+@\S+\.\S+/.test(value)) {
+      error = 'Invalid Email.';
+    } else if (name === 'ZIP' && isNaN(value)) {
+      error = 'Invalid ZIP Code.';
     }
   
     setFormData({
@@ -41,7 +64,14 @@ function Register() {
       [name]: value,
       Role: 'Customer'
     });
+
+    setErrors({
+      ...errors,
+      [name]: error,
+    });
   };
+
+  const allFieldsValid = Object.values(errors).every((error) => error === '');
 
   const handleLoginClick = () => {
     navigate('/Login');
@@ -53,11 +83,15 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form Data:', formData);
+
+    if (!allFieldsValid) {
+      console.error('Please fill in all fields correctly before submitting.');
+      return;
+    }
 
     try {
       const response = await axios.put('/customer/register', formData);
-  
+
       if (response.status === 200) {
         console.log('Customer registered successfully:', response.data);
         setSuccessMessage('Customer registered successfully');
@@ -84,8 +118,9 @@ function Register() {
               value={formData.Email}
               onChange={handleInputChange}
               required
-              className='form-input'
+              className={`form-input ${errors.Email ? 'error' : ''}`}
             />
+              {errors.Email && <><br /><span className="error-message">{errors.Email}</span></>}
           </div>
           <div className='form-group'>
             <label htmlFor="Password" className='form-label'>Password:</label>
@@ -96,8 +131,9 @@ function Register() {
               value={formData.Password}
               onChange={handleInputChange}
               required
-              className='form-input'
+              className={`form-input ${errors.Password ? 'error' : ''}`}
             />
+              {errors.Password && <><br /><span className="error-message">{errors.Password}</span></>}
           </div>
           <div className='form-group'>
             <label htmlFor="FirstName" className='form-label'>First Name:</label>
@@ -108,8 +144,9 @@ function Register() {
               value={formData.FirstName}
               onChange={handleInputChange}
               required
-              className='form-input'
+              className={`form-input ${errors.FirstName ? 'error' : ''}`}
             />
+              {errors.FirstName && <><br /><span className="error-message">{errors.FirstName}</span></>}
           </div>
           <div className='form-group'>
             <label htmlFor="LastName" className='form-label'>Last Name:</label>
@@ -120,8 +157,9 @@ function Register() {
               value={formData.LastName}
               onChange={handleInputChange}
               required
-              className='form-input'
+              className={`form-input ${errors.LastName ? 'error' : ''}`}
             />
+              {errors.LastName && <><br /><span className="error-message">{errors.LastName}</span></>}
           </div>
           <div className='form-group'>
             <label htmlFor="SSN" className='form-label'>SSN:</label>
@@ -132,8 +170,9 @@ function Register() {
               value={formData.SSN}
               onChange={handleInputChange}
               required
-              className='form-input'
+              className={`form-input ${errors.SSN ? 'error' : ''}`}
             />
+              {errors.SSN && <><br /><span className="error-message">{errors.SSN}</span></>}
           </div>
           <div className='form-group'>
             <label htmlFor="PhoneNumber" className='form-label'>Phone Number:</label>
@@ -144,8 +183,9 @@ function Register() {
               value={formData.PhoneNumber}
               onChange={handleInputChange}
               required
-              className='form-input'
+              className={`form-input ${errors.PhoneNumber ? 'error' : ''}`}
             />
+              {errors.PhoneNumber && <><br /><span className="error-message">{errors.PhoneNumber}</span></>}
           </div>
         </div>
         <div className="form-columns">
@@ -170,8 +210,9 @@ function Register() {
               value={formData.Street}
               onChange={handleInputChange}
               required
-              className='form-input'
+              className={`form-input ${errors.Street ? 'error' : ''}`}
             />
+              {errors.Street && <><br /><span className="error-message">{errors.Street}</span></>}
           </div>
           <div className='form-group'>
             <label htmlFor="Street2" className='form-label'>Address Line 2:</label>
@@ -181,8 +222,9 @@ function Register() {
               name="Street2"
               value={formData.Street2}
               onChange={handleInputChange}
-              className='form-input'
+              className={`form-input ${errors.Street2 ? 'error' : ''}`}
             />
+              {errors.Street2 && <><br /><span className="error-message">{errors.Street2}</span></>}
           </div>
           <div className='form-group'>
             <label htmlFor="City" className='form-label'>City:</label>
@@ -193,8 +235,9 @@ function Register() {
               value={formData.City}
               onChange={handleInputChange}
               required
-              className='form-input'
+              className={`form-input ${errors.City ? 'error' : ''}`}
             />
+              {errors.City && <><br /><span className="error-message">{errors.City}</span></>}
           </div>
           <div className='form-group'>
             <label htmlFor="State" className='form-label'>State:</label>
@@ -267,8 +310,9 @@ function Register() {
               value={formData.ZIP}
               onChange={handleInputChange}
               required
-              className='form-input'
+              className={`form-input ${errors.ZIP ? 'error' : ''}`}
             />
+              {errors.ZIP && <><br /><span className="error-message">{errors.ZIP}</span></>}
           </div>
         </div>
           <div className="form-columns">
