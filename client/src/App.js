@@ -25,6 +25,7 @@ import TellerMain from ".//teller/TellerMain";
 import TellerTransaction from ".//teller/TellerTransaction";
 import TellerTransfer from ".//teller/TellerTransfer";
 import TellerViewAccount from ".//teller/TellerViewAccount";
+import TellerDeleteAccount from ".//teller/TellerDeleteAccount";
 import AdminCreateTeller from ".//admin/AdminCreateTeller";
 import AdminCustomerInfo from ".//admin/AdminCustomerInfo";
 import AdminCustomerList from ".//admin/AdminCustomerList";
@@ -85,6 +86,7 @@ function App() {
       <Route exact path="/Teller" element = {<TellerMain/>}/>
       <Route exact path="/Teller/Account" element = {<TellerViewAccount/>}/>
       <Route exact path="/Teller/Account/Edit" element = {<TellerEditAccount/>}/>
+      <Route exact path="/Teller/Account/Delete" element={<TellerDeleteAccount/>}/>
       <Route exact path="/Teller/Transaction" element = {<TellerTransaction/>}/>
       <Route exact path="/Teller/Transaction/Deposit" element = {<TellerDeposit/>}/>
       <Route exact path="/Teller/Transaction/Transfer" element = {<TellerTransfer/>}/>

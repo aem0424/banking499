@@ -13,18 +13,19 @@ function CustomerEditUserInformation() {
     const customerData = location.state.customerData;
 
     const [formData, setFormData] = useState({
-        Password: customerData?.Password || " ",
-        FirstName: customerData?.FirstName || " ",
-        LastName: customerData?.LastName || " ",
-        FullName: customerData?.FirstName + customerData?.LastName || " ",
-        Street: customerData?.Street || " ",
-        Street2: customerData?.Street2 || " ",
-        City: customerData?.City || " ",
-        State: customerData?.State || " ",
-        ZIP: customerData?.ZIP || " ",              
-        PhoneNumber: customerData?.PhoneNumber || " ",
-        SSN: customerData?.SSN || " ",
-        DOB: customerData?.DOB || " ",
+        Email: customerData?.Email || "",
+        Password: customerData?.Password || "",
+        FirstName: customerData?.FirstName || "",
+        LastName: customerData?.LastName || "",
+        FullName: customerData?.FirstName + customerData?.LastName || "",
+        Street: customerData?.Street || "",
+        Street2: customerData?.Street2 || "",
+        City: customerData?.City || "",
+        State: customerData?.State || "",
+        ZIP: customerData?.ZIP || "",              
+        PhoneNumber: customerData?.PhoneNumber || "",
+        SSN: customerData?.SSN || "",
+        DOB: customerData?.DOB || "",
     });
 
     const handleBackButtonClick = () => {
@@ -33,9 +34,6 @@ function CustomerEditUserInformation() {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        if (name === 'PhoneNumber' && value.length !== 10) {
-          setError('Invalid Phone Number.');
-        }
         setFormData({
           ...formData,
           [name]: value,
@@ -76,11 +74,6 @@ function CustomerEditUserInformation() {
       };
     return (
         <div className='container'>
-          {loading ? (
-            <p>Loading user data...</p>
-          ) : error ? (
-            <p>ERROR: {error.message}</p>
-          ) : userData ? (
             <div>
             <h1>Edit User Information</h1>
             <form onSubmit={handleSubmit} className="edit-form">
@@ -220,7 +213,7 @@ function CustomerEditUserInformation() {
                 <div className="form-columns">
                     <label htmlFor="PhoneNumber" className="form-label">Phone Number</label>
                     <input
-                        type="tel"
+                        type="text"
                         id="PhoneNumber"
                         name="PhoneNumber"
                         value={formData.PhoneNumber}
@@ -243,7 +236,6 @@ function CustomerEditUserInformation() {
                 <button type="submit" className="form-button">Make Edits</button><br/>
             </form>
            </div>
-          ): null}
           <button onClick={handleBackButtonClick}>Back</button>          
         </div>
     )

@@ -9,20 +9,17 @@ function CustomerViewAccountInformation() {
     const account = location.state.account;
     const [userData, setUserData] = useState(null);
     const [accountData, setAccountData] = useState(null);
+    const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-    const handleBackButtonClick = () => {
+    const handleBackButtonClick = (info) => {
         navigate('/Customer/AccountList', {state: {user}})
     }
 
-    const handleDeleteRequest = () => {
-        navigate('/Customer/Account/Delete', {state: {user, account}})
-    }
-
     useEffect(() => {
-        if (userData) {
+        if (user) {
             axios.get('/user', {})
             .then((response) => {
                 if (response.status === 200) {
@@ -32,12 +29,22 @@ function CustomerViewAccountInformation() {
                 setError(error);
                 setLoading(false);
             })
-        }
-        if (accountData) {
-            axios.get('/customer/account', accountData, {withCredentials:true})
+        }      
+        if (account) {
+            axios.get('/customer/account', {AccountID: account.AccountID}, {withCredentials:true})
             .then((response) => {
                 if(response.status === 200) {
                     setAccountData(response.data);
+                }
+            }).catch((error) => {
+                setError(error);
+                setLoading(false);
+            })
+        if (account) {
+            axios.get('/transactions/account', {AccountID: account.AccountID})
+            .then((response) => {
+                if(response.status === 200) {
+                    setTransactions(response.data);
                 }
                 setLoading(false);
             }).catch((error) => {
@@ -45,21 +52,22 @@ function CustomerViewAccountInformation() {
                 setLoading(false);
             })
         }
-    }, [userData, accountData]);
+        }
+    }, [user, account]);
 
     return (
         <div className='container'>
             {loading ? (
-                <p>Loading user data...</p>
+                <p>Loading account data...</p>
             ): error ? (
                 <p>ERROR: {error.message}</p>
             ): accountData ? (
                 <div>
-                    <p>Account Name: {accountData.AccountName}</p>
-                    <p>Account Type: {accountData.AccountType}</p>
-                    <p>Balance: {accountData.Balance}</p>
-                    <p>Interest Rate: {accountData.InterestRate}</p>
-                    <button onClick={handleDeleteRequest}>Delete Account</button><br/>                  
+                    Account Name: {accountData.AccountName}<br/>
+                    Account Type: {accountData.AccountType}<br/>
+                    Balance: {accountData.Balance}<br/>
+                    Interest Rate: {accountData.InterestRate}<br/>
+                    History: tba<br/>
                 </div>
             ): null }
             <button onClick={handleBackButtonClick}>Back</button>            

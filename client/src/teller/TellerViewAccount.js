@@ -7,23 +7,77 @@ function TellerViewAccount() {
     const navigate = useNavigate();
     const location = useLocation();
     const user = location.state.user;
+    const customer = location.state.customer;
+    const account = location.state.account;
     const [userData, setUserData] = useState(null);
+    const [accountData, setAccountData] = useState(null);
+    const [transactions, setTransactions] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const accountData = location.state.accountData;
 
     const handleBackButtonClick = () => {
-        navigate('/Teller/Customer', {state: {user}})
+        navigate('/Teller/Customer', {state: {user, customer}});
     }
+
+    const handleDeleteClick = () => {
+        navigate('/Teller/Account/Delete', {state: {user, customer, account}});
+    }
+
+    useEffect(() => {
+        if (user) {
+            axios.get('/user', {})
+            .then((response) => {
+                if (response.status === 200) {
+                    setUserData(response.data);
+                }
+            }).catch((error) => {
+                setError(error);
+                setLoading(false);
+            })
+        }      
+        if (account) {
+            axios.get('/customer/account', {AccountID: account.AccountID}, {withCredentials:true})
+            .then((response) => {
+                if(response.status === 200) {
+                    setAccountData(response.data);
+                }
+            }).catch((error) => {
+                setError(error);
+                setLoading(false);
+            })
+        if (account) {
+            axios.get('/transactions/account', {AccountID: account.AccountID})
+            .then((response) => {
+                if(response.status === 200) {
+                    setTransactions(response.data);
+                }
+                setLoading(false);
+            }).catch((error) => {
+                setError(error);
+                setLoading(false);
+            })
+        }
+        }
+    }, [user, account]);    
+
     return (
         <div className='container'>
-            <p>Account Name: {accountData.AccountName}</p>
-            <p>Account Type: {accountData.AccountType}</p>
-            <p>Account Owner:</p>
-            <p>Balance: {accountData.Balance}</p>
-            <p>Interest Rate: {accountData.InterestRate}</p>
-            <button onClick={handleBackButtonClick}>Back</button>
+            {loading ? (
+                <p>Loading account data...</p>
+            ): error ? (
+                <p>ERROR: {error.message}</p>
+            ): accountData ? (
+                <div>
+                    Account Name: {accountData.AccountName}<br/>
+                    Account Type: {accountData.AccountType}<br/>
+                    Balance: {accountData.Balance}<br/>
+                    Interest Rate: {accountData.InterestRate}<br/>
+                    History: tba<br/>
+                    <button onClick={handleDeleteClick}>Delete Account</button>                    
+                </div>
+            ): null }
+            <button onClick={handleBackButtonClick}>Back</button>            
         </div>
     )
-}
+}    
 export default TellerViewAccount;

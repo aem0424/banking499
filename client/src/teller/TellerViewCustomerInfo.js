@@ -5,15 +5,24 @@ import { useLocation, useNavigate } from 'react-router-dom'
 function TellerViewCustomerInfo() {
     const location = useLocation();
     const user = location.state.user;
-    const customerData = location.state.customerData;
+    const customer = location.state.customer;
     const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
+    const [customerData, setCustomerData] = useState(null);
+    const [customerAccounts, setCustomerAccounts] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [accounts, setAccounts] = useState([]);
 
     const handleBackButtonClick = () => {
         navigate('/Teller/Customer', {state: {user}})
+    }
+
+    const handleViewAccountClick = (account) => {
+        navigate('/Teller/Customer/Account', {state: {user, account, customer}});
+    }
+
+    const handleTransactionClick = () => {
+        navigate('/Teller/Transaction', {state: {user, customer}});
     }
 
     useEffect(() => {
@@ -31,10 +40,27 @@ function TellerViewCustomerInfo() {
             });
         }
 
+        if(customer) {
+            axios.get('/teller/customer', {UserID: customer.UserID})
+            .then((response) => {
+                if(response.status === 200) {
+                    setCustomerData(response.data);
+                    setLoading(false);
+                } else {              
+                    setLoading(false);
+                    console.log('error');                    
+                }
+            })
+            .catch ((error) => {
+                setError(error);
+                console.log('error', error);
+            });
+        }
+
         axios.get('/teller/customer/accounts')
         .then((response) => {
             if(response.status === 200) {
-                setAccounts(response.data);
+                setCustomerAccounts(response.data);
             }
             setLoading(false);
         })
@@ -42,7 +68,7 @@ function TellerViewCustomerInfo() {
         console.error('error: ', error);
         setLoading(false);
         })
-    }, [user]);
+    }, [user, customer]);
 
     return (
         <div className='container'>
@@ -52,17 +78,18 @@ function TellerViewCustomerInfo() {
                 <p>ERROR: {error.message}</p>
             ): customerData ? (
                 <div>
-                  <p>Name: {customerData.FirstName} {customerData.LastName}</p>
-                  <p>Address: {customerData.Street}, {customerData.Street2}</p>
-                  <p>Address: {customerData.City}, {customerData.State} {user.ZIP}</p>
-                  <p>Phone Number: {customerData.PhoneNumber}</p>
-                  <p>SSN {customerData.SSN}:</p>
-                  <p>Date of Birth: {customerData.DOB}</p>
+                  Name: {customerData.FirstName} {customerData.LastName}<br/>
+                  Address: {customerData.Street}, {customerData.Street2}<br/>
+                  Address: {customerData.City}, {customerData.State} {user.ZIP}<br/>
+                  Phone Number: {customerData.PhoneNumber}<br/>
+                  SSN: {customerData.SSN}<br/>
+                  Date of Birth: {customerData.DOB}<br/>
+                  <button onClick={handleTransactionClick}>Make a Transaction</button>
                   <h1>Accounts:</h1>
                   <ul>
-                    {accounts.map((account) => (
-                    <li key={account.accountId}>
-                        Account Type: {account.AccountType}, Account Name: {account.AccountName};
+                    {customerAccounts.map((account, index) => (
+                    <li key={index}>
+                        <button onClick={() => handleViewAccountClick(account)}>{account.AccountName}</button><br/>
                     </li>
                     ))}
                   </ul>

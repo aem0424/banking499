@@ -18,7 +18,7 @@ function TellerCustomerManage() {
     }
 
     const handleViewCustomerClick = (customer) => {
-        navigate('/Teller/Customer/UserInfo', {state: {user, customerData: customer}})
+        navigate('/Teller/Customer/UserInfo', {state: {user, customer}})
     }
 
     useEffect(() => {

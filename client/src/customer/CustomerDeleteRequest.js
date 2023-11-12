@@ -32,7 +32,7 @@ function CustomerDeleteRequest() {
     }
 
     useEffect(() => {
-        if (userData) {
+        if (user) {
             axios.get('/user', {})
             .then((response) => {
                 if (response.status === 200) {
@@ -43,18 +43,19 @@ function CustomerDeleteRequest() {
                 setLoading(false);
             })
         }
-        if (accountData) {
-            axios.get('/customer/account', accountData, {withCredentials:true})
+        if (account) {
+            axios.get('/customer/account', account, {withCredentials:true})
             .then((response) => {
                 if(response.status === 200) {
                     setAccountData(response.data);
+                    setLoading(false);
                 }
             }).catch((error) => {
                 setError(error);
                 setLoading(false);
             })
         }
-    }, [userData, accountData]);
+    }, [user, account]);
 
     return (
      <div className='container'>

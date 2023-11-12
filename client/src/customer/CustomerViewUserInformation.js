@@ -12,8 +12,8 @@ function CustomerViewUserInformation() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const handleEditClick = () => {
-      navigate('/Customer/UserInfo/Edit', {state: {user}})
+    const handleEditClick = (customer) => {
+      navigate('/Customer/UserInfo/Edit', {state: {user, customerData: customer}})
     }
 
     const handleBackButtonClick = () => {
@@ -44,13 +44,13 @@ function CustomerViewUserInformation() {
           <p>ERROR: {error.message}</p>
         ) : userData? (
           <div>
-            <p>Name: {userData.FirstName} {userData.LastName}</p><br/>
-            <p>Address: {userData.Street}, {userData.Street2}</p><br/>
-            <p>Address: {userData.City}, {userData.State} {userData.ZIP}</p>
-            <p>Phone Number: {userData.PhoneNumber}</p><br/>
-            <p>SSN: {userData.SSN}</p><br/>
-            <p>Date of Birth: {userData.DOB}</p><br/>
-            <button onClick={handleEditClick}>Edit User Information</button>
+            Name: {userData.FirstName} {userData.LastName}<br/>
+            Address: {userData.Street}, {userData.Street2}<br/>
+            Address: {userData.City}, {userData.State} {userData.ZIP}<br/>
+            Phone Number: {userData.PhoneNumber}<br/>
+            SSN: {userData.SSN}<br/>
+            Date of Birth: {userData.DOB}<br/>
+            <button onClick={() => handleEditClick(userData)}>Edit User Information</button>
           </div>
         ) : null}
         <button onClick={handleBackButtonClick}>Back</button>        

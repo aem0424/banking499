@@ -11,7 +11,7 @@ function CustomerDeposit() {
     const [userAccounts, setUserAccounts] = useState([]);
     const [formData, setFormData] = useState({
         TransactionType:'Deposit',
-        FromAccountID:'',
+        FromAccountID:'19',
         ToAccountID:'',
         Amount:'',
     });
@@ -68,13 +68,12 @@ function CustomerDeposit() {
         if(response.data) {
             console.log('success: ', response.data);
         } else {
-            console.log('error!');
+            console.log('error!', error);
         }
         } catch (error) {
             setError(error);
             console.log('error: ', error)
         }
-
     };
 
     const handleBackButtonClick = () => {
@@ -92,12 +91,12 @@ function CustomerDeposit() {
                 <h1>Deposit Funds</h1>             
             <form onSubmit={handleSubmit} className='amount-form'>
               <div> 
-                <label htmlFor="FromAccountID">Account</label>
+                <label htmlFor="ToAccountID">Account</label>
                 <select
                     type="text"
-                    id="FromAccountID"
-                    name="FromAccountID"
-                    value={formData.FromAccountID}
+                    id="ToAccountID"
+                    name="ToAccountID"
+                    value={formData.ToAccountID}
                     onChange={handleInputChange}
                     required
                 >
