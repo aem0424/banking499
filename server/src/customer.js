@@ -117,10 +117,9 @@ router.get('/customer/account', async (req, res) => {
     let userRole = req.session.user?.Role;
     if (!userID || userRole != "Customer") return res.status(401).json({ error: "User Not Logged In As Customer" });
 
-    let accountID = req.body.AccountID;
+    let accountID = req.query.AccountID;
     console.log(`Getting Account ${accountID} Information for User ${userID}`);
     let [accountData, err_accountData] = await database.getAccount(userID, accountID);
-
     if (err_accountData) return res.status(500).json({ error: `Failed to query an Account for User ${userID}`, message: err_accountData.message });
     
     // Parse Data

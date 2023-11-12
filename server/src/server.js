@@ -96,7 +96,7 @@ app.get('/user/email', async (req, res) => {
   let userID = req.session.user?.UserID;
   let email = req.session.user?.Email;
   if (!userID) return res.status(401).json({ error: "User Is Not Logged In" });
-
+  
   return res.status(200).json(email);
 });
 

@@ -16,7 +16,7 @@ router.get('/teller', async (req, res) => {
     // Query User Information
     let [userData, err_userData] = await database.getUser(userEmail);
     if (err_userData) return res.status(500).json({ error: "Failed to query Teller information", message: err_userData.message });
-    
+
     userData = userData[0];
     return res.status(200).json(userData);
 });
@@ -91,7 +91,7 @@ router.get('/teller/customer', async (req, res) => {
     // Query User Information
     let [userData, err_userData] = await database.getCustomer(customerID);
     if (err_userData) return res.status(500).json({ error: "Failed to query Teller information", message: err_userData.message });
-    
+
     userData = userData[0];
     return res.status(200).json(userData);
 });
@@ -142,23 +142,23 @@ router.get('/teller/customer/account', async (req, res) => {
     let tellerID = req.session.user?.UserID;
     let tellerRole = req.session.user?.Role;
     if (!tellerID || tellerRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As Teller" });
-  
+
     let customerID = req.body.UserID;
     let accountID = req.body.AccountID;
-  
+
     let [accountData, err_accountData] = await database.getAccout(customerID, accountID);
     if (err_accountData) return res.status(500).json({ error: "Failed to get the Customer's Banking Account Information", message: err_accountData.message });
 
     accountData = accountData[0];
     return res.status(200).json(accountData);
-  });
+});
 
 // PUT: Create a new Customer Account (Login Required)
 // Params: Account {AccountID, UserID, AccountName, AccountType, Balance, InterestRate}
 // Return: confirmation message
 router.put('/teller/customer/account/create', async (req, res) => {
     console.log(`Creating a new Account for Customer`);
-    
+
     let tellerID = req.session.user?.UserID;
     let tellerRole = req.session.user?.Role;
     if (!tellerID || tellerRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As Teller" });
@@ -169,7 +169,7 @@ router.put('/teller/customer/account/create', async (req, res) => {
     // Insert the Account
     let [accountData, err_accountData] = await database.insertAccount(account);
     if (err_accountData) return res.status(500).json({ error: `Failed to Insert the Account Data`, message: err_accountData.message });
-    
+
     accountData = accountData[0];
     return res.status(200).json({ message: "Account Creation Completed", data: accountData });
 });
@@ -221,7 +221,7 @@ router.delete('/teller/customer/account/delete', async (req, res) => {
     let [accountData, err_accountData] = await database.getAccount(customerID, accountID);
     if (err_account) return res.status(500).json({ error: `Failed to query the Account ${accountID} for Customer ${customerID}`, message: err_accountData.message, data: { TellerID: userID, AccountID: accountID, CustomerID: customerID } });
     // Parse Data
-    
+
     accountData = accountData[0];
     return res.status(200).json({ message: "Account Deletion Completed", data: accountData });
 });
