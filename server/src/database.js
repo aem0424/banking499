@@ -278,7 +278,7 @@ async function insertCustomer(customer) {
 // Update Customer
 // Params: UserID, User{Password, FirstName, LastName, PhoneNumber, Street, Street2, City, State, ZIP,DOB}
 // Return: User{Email, Password, FirstName, LastName, PhoneNumber, Street, Street2, City, State, ZIP, SSN, DOB} (Confirmation)
-async function updateCustomer(email, customer) {
+async function updateCustomer(userID, customer) {
     console.log(customer);
     const { data, error } = await supabase
     .from('User')
