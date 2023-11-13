@@ -309,10 +309,48 @@ router.get('/transactions/transfers', async (req, res) => {
     }
   });
   
-  
-  
   // ------------------------------------------------------
-  
+// ------------------------ BillPay -------------------------------
+
+// GET: Get All BillPay Accounts w/ UserID
+// Params: None (UserID passed by Session)
+// Return: Data {BillPayID, Name, Address, Amount, PayFromAccount, UserID, DueDate}
+router.get('/billpay/accounts', async (req, res) => {
+  // Check If the User is Logged In
+  let userID = req.session.user?.UserID;
+
+  console.log(`Getting User ${userID}'s BillPay Account(s)`);
+
+  // Query User Information
+  let [userData, err_userData] = await database.getBillPayAccounts(userID);
+  if (err_userData) {
+      return res.status(404).json({ error: `User ${userID} Has No BillPay Accounts`, message: err_userData.message });
+  }
+
+  // Parse Data
+  return res.status(200).json(userData);
+});
+
+
+// GET: Get Single BillPay Account by BillPayID
+// Params: BillPayID
+// Return: Whole Row from BillPayment table associated
+router.get('/billpay/account', async (req, res) => {
+  // Check If the User is Logged In
+
+  const billpayID = req.body.BillPayID;
+
+  console.log(`Getting User ${billpayID}'s BillPay Account(s)`);
+
+  // Query User Information
+  let [userData, err_userData] = await database.getBillPayAccount(billpayID);
+  if (err_userData) {
+      return res.status(404).json({ error: `No Account with ${billpayID}`, message: err_userData.message });
+  }
+
+  // Parse Data
+  return res.status(200).json(userData);
+});
 
 
 //export this router to use in our server.js
