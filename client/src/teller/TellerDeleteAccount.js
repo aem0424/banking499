@@ -60,7 +60,7 @@ function TellerDeleteAccount() {
     }, [user, account]);    
     
     return (
-        <div>
+        <div className='container'>
             <h1>Are you sure you want to delete this account?</h1>
             <button type='submit'>Yes</button><br/>
             <button onClick={handleNoClick}>No</button>
