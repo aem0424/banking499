@@ -387,7 +387,17 @@ router.post('/billpay/account', async (req, res) => {
 });
 
 
-
+router.get('/transaction/generateInterest', async (req, res) => {
+  let userRole = req.session.user?.Role;
+  if (userRole != "Administrator") return res.status(401).json({ error: "User Is Not Logged In As Admin" });
+  try {
+    const result = await database.generateInterest();
+    res.json({ success: true, result });
+  } catch (error) {
+    console.error('Error generating interest:', error.message);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
 
 
 
