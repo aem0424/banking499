@@ -736,8 +736,37 @@ async function insertTransaction(transaction) {
     }
   }
 
+// --------------------------- BillPayments Table -----------------------
 
-  
+
+// Get BillPay Account by BillPayID
+// Params: billPayID
+// Return: Entire BillPayment data
+async function getBillPayAccount(billPayID) {
+    console.log(billPayID);
+    let { data, error } = await supabase
+    .from('BillPayment')
+    .select('*')
+    .eq("BillPayID", billPayID);
+
+    return [ data, error ];
+}
+
+// Get All BillPay Accounts by UserID
+// Params: AccountName
+// Return: Entire Account data
+async function getBillPayAccounts(userID) {
+    let { data, error } = await supabase
+    .from('BillPayment')
+    .select('*')
+    .eq("UserID", userID)
+
+    console.log("Data:", data); // debugging
+    console.log("Error", error); // debugging
+    return [ data, error ];
+}
+
+
 
 
 module.exports = {
@@ -796,5 +825,9 @@ module.exports = {
     getTransactionWithdrawal,
     getTransactionTransfer,
     insertTransaction,
+
+    getBillPayAccount,
+    getBillPayAccounts,
+
     
 }
