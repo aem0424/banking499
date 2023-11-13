@@ -349,8 +349,48 @@ router.get('/billpay/account', async (req, res) => {
   }
 
   // Parse Data
-  return res.status(200).json(userData);
+  return res.status(200).json(userData[0]);
 });
+
+// POST: Insert BillPay Account
+// Params: BillPay{ Name, Address, Amount, PayFromAccount, DueDate } * UserID set by session
+// Return: BillPay{BillPayID, UserID, Name, Address, Amount, PayFromAccount, DueDate } (Confirmation)
+router.post('/billpay/account', async (req, res) => {
+  
+  // Check if the user is logged in
+  const userID = req.session.user?.UserID;
+  if (!userID) return res.status(401).json({ error: "User Is Not Logged" });
+
+  // Extract BillPay data from request body
+  const { Name, Address, Amount, PayFromAccount, DueDate } = req.body;
+
+  // Create BillPay object
+  const billpay = {
+      UserID: userID,
+      Name: Name,
+      Address: Address,
+      Amount: Amount,
+      PayFromAccount: PayFromAccount,
+      DueDate: DueDate, // format: 'YYYY-MM-DD'
+      BillType: 'Bill Pay'
+  };
+
+  // Insert BillPay Account
+  let [insertedData, error] = await database.insertBillPay(billpay);
+
+  if (error) {
+      return res.status(500).json({ error: 'Internal Server Error', message: error.message });
+  }
+
+  // Return the inserted data as confirmation
+  return res.status(201).json(insertedData[0]);
+});
+
+
+
+
+
+
 
 
 //export this router to use in our server.js

@@ -766,8 +766,24 @@ async function getBillPayAccounts(userID) {
     return [ data, error ];
 }
 
+// Insert BillPay Account
+// Params: BillPay{ Name, Address, Amount, PayFromAccount, DueDate } * BillPayID created by DB, UserID set by session
+// Return: BillPay{BillPayID, UserID, Name, Address, Amount, PayFromAccount, DueDate, BillType } (Confirmation)
+async function insertBillPay(account) {
+    const { data, error } = await supabase
+    .from('BillPayment')
+    .insert(account)
+    .select();
 
+    return [ data, error ];
+}
 
+async function insertCreditAccount(account) {
+    const { data, error } = await supabase
+    .from('BillPayment')
+    .insert(account)
+
+}
 
 module.exports = {
     getUser,
@@ -828,6 +844,7 @@ module.exports = {
 
     getBillPayAccount,
     getBillPayAccounts,
+    insertBillPay,
 
     
 }

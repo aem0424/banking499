@@ -171,6 +171,17 @@ router.put('/teller/customer/account/create', async (req, res) => {
     if (err_accountData) return res.status(500).json({ error: `Failed to Insert the Account Data`, message: err_accountData.message });
 
     accountData = accountData[0];
+
+    // Create Billable Info if it applies
+    if (accountData.AccountType == 'Credit Card') {
+        
+        let creditAccount = await buildCreditAccount(accountData)
+        let [creditAccountData, err_creditAccountData] = await database.insertBillPay(creditAccount);
+        if (err_creditAccountData) return res.status(500).json({ error: `Failed to Insert the Account Data into BillPayment`, message: err_accountData.message });
+        console.log('Credit Account Data:', creditAccountData);
+    }
+
+
     return res.status(200).json({ message: "Account Creation Completed", data: accountData });
 });
 
@@ -226,6 +237,30 @@ router.delete('/teller/customer/account/delete', async (req, res) => {
     return res.status(200).json({ message: "Account Deletion Completed", data: accountData });
 });
 
+// helper function for creating Bill Information for Credit Account
+async function buildCreditAccount(account){
+    const dueDate = createBillDate();
+    const billpay = {
+      UserID: account.UserID,
+      Name: account.AccountName,
+      Address: 'Credit',
+      Amount: account.Balance,
+      AccountReference: account.AccountID,
+      DueDate: dueDate,
+      BillType: 'Credit Card'
+    }
+    return billpay;
+  }
+
+// Function to format the date as 'YYYY-MM-DD'
+function createBillDate() {
+    const billdate = new Date();
+    billdate.setDate(billdate.getDate()+ 30);
+    const year = billdate.getFullYear();
+    const month = String(billdate.getMonth() + 1).padStart(2, '0');
+    const day = String(billdate.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
 
 
 //export this router to use in our index.js
