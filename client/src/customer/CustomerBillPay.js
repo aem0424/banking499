@@ -6,8 +6,11 @@ import './/css/CustomerBillPay.css';
 
 function CustomerBillPay() {
     const [formData, setFormData] = useState({
-        PayTo:'',
-        PayAmount:'',
+        Name:'',
+        Address:'',
+        Amount:'',
+        PayFromAccount:'',
+        DueDate:'',
     });
     const location = useLocation();
     const navigate = useNavigate();        
@@ -49,7 +52,17 @@ function CustomerBillPay() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(null);
+        try {
+            console.log(formData);
+            const response = await axios.post('/billpay/account', {params: formData}, {withCredentials: true});
+            if (response.status === 200) {
+                console.log('success', response.data);
+            } else {
+                console.error('error', response.status);
+            }
+        } catch (error) {
+            console.error('ERROR', error);
+        }
     };
 
     return (
@@ -60,15 +73,37 @@ function CustomerBillPay() {
             <p>ERROR: {error.message}</p>
         ) : userAccounts ? (
         <div>
-            <h1>Transfer Funds</h1>             
+            <h1>Pay Bill</h1>             
         <form onSubmit={handleSubmit} className='amount-form'>
         <div> 
-            <label htmlFor="FromAccountID">Transfer From: </label>
+            <label htmlFor="Name">Payee Name:</label>
+            <input
+                type="text"
+                id="Name"
+                name="Name"
+                value={formData.Name}
+                onChange={handleInputChange}
+                required
+            />  
+          </div>         
+          <div> 
+            <label htmlFor="Address">Payee Address:</label>
+            <input
+                type="text"
+                id="Address"
+                name="Address"
+                value={formData.Address}
+                onChange={handleInputChange}
+                required
+            />  
+          </div>                          
+        <div> 
+            <label htmlFor="PayFromAccount">Pay From:</label>
             <select
                 type="text"
-                id="FromAccountID"
-                name="FromAccountID"
-                value={formData.FromAccountID}
+                id="PayFromAccount"
+                name="PayFromAccount"
+                value={formData.PayFromAccount}
                 onChange={handleInputChange}
                 required
             >
@@ -77,7 +112,7 @@ function CustomerBillPay() {
             </select>                    
           </div>                            
           <div> 
-            <label htmlFor="Amount">Amount to Transfer</label>
+            <label htmlFor="Amount">Amount to Transfer:</label>
             <input
                 type="numeric"
                 id="Amount"
@@ -87,6 +122,17 @@ function CustomerBillPay() {
                 required
             />  
           </div> 
+          <div> 
+            <label htmlFor="DueDate">Due Date:</label>
+            <input
+                type="date"
+                id="DueDate"
+                name="DueDate"
+                value={formData.DueDate}
+                onChange={handleInputChange}
+                required
+            />  
+          </div>           
           <div>                         
             <button type="submit">Pay Bill</button>
           </div>
