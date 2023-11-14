@@ -66,13 +66,14 @@ router.put('/customer/register', async (req, res) => {
 // return: Confirmation Message
 router.post('/customer/update', async (req, res) => {
     // Check If User is Logged In
-    let userID = req.session.user?.Email;
+    let userID = req.session.user?.UserID;
+    console.log(userID);
     let userRole = req.session.user?.Role;
     if (!userID || userRole != "Customer") return res.status(401).json({ error: "User Is Not Logged In As Customer" });
 
 
     let customer = req.body;
-    console.log(`Updating Customer Information of ${Email}`);
+    console.log(`Updating Customer Information of ${userID}`);
 
     // Check the user body
     if (!customer) return res.status(400).json({ error: "Empty json passed in body", data: customer });
