@@ -18,6 +18,7 @@ function CustomerBillPay() {
     const [userAccounts, setUserAccounts] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(null);
+    const [success, setSuccess] = useState(false);
     
     const createAccountList = (e) => {
         let accountList = [];
@@ -55,8 +56,9 @@ function CustomerBillPay() {
         try {
             console.log(formData);
             const response = await axios.post('/billpay/account', formData, {withCredentials: true});
-            if (response.status === 200) {
+            if (response.status === 201) {
                 console.log('success', response.data);
+                setSuccess(true);
             } else {
                 console.error('error', response.status);
             }
@@ -71,6 +73,8 @@ function CustomerBillPay() {
             <p>Loading...</p>
         ) : error ? (
             <p>ERROR: {error.message}</p>
+        ) : success ? (
+            <p>Success!</p>
         ) : userAccounts ? (
         <div>
             <h1>Pay Bill</h1>             

@@ -8,7 +8,6 @@ function TellerDeleteAccount() {
     const navigate = useNavigate();
     const user = location.state.user;
     const account = location.state.account;
-    const customer = location.state.customer;
     const [userData, setUserData] = useState(null);
     const [customerData, setCustomerData] = useState(null);
     const [accountData, setAccountData] = useState(null);
@@ -62,7 +61,7 @@ function TellerDeleteAccount() {
     return (
         <div className='container'>
             <h1>Are you sure you want to delete this account?</h1>
-            <button type='submit'>Yes</button><br/>
+            <button onClick={handleSubmit}>Yes</button><br/>
             <button onClick={handleNoClick}>No</button>
         </div>
     )

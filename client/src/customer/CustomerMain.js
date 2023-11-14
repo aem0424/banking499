@@ -44,7 +44,7 @@ function CustomerMain() {
         axios.get('/user', {})
           .then((response) => {
             if (response.status === 200) {
-              setUserData(response.data);
+              setUserData(response.data);           
               setLoading(false);
             }
           })

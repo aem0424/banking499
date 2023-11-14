@@ -17,6 +17,7 @@ function CustomerDeposit() {
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(false);
 
     const handleInputChange = (e) => {
         const {name, value} = e.target;
@@ -39,7 +40,6 @@ function CustomerDeposit() {
         .then((response) => {
             if (response.status === 200) {
                 setUserAccounts(response.data);
-                console.log(userAccounts);
             }
             setLoading(false);            
         })
@@ -67,6 +67,7 @@ function CustomerDeposit() {
 
         if(response.data) {
             console.log('success: ', response.data);
+            setSuccess(true);
         } else {
             console.log('error!', error);
         }
@@ -86,6 +87,8 @@ function CustomerDeposit() {
                 <p>Loading...</p>
             ) : error ? (
                 <p>ERROR: {error.message}</p>
+            ) : success ? (
+                <p>Success!</p>
             ) : userAccounts ? (
             <div>
                 <h1>Deposit Funds</h1>             
