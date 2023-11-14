@@ -54,7 +54,7 @@ function CustomerBillPay() {
         e.preventDefault();
         try {
             console.log(formData);
-            const response = await axios.post('/billpay/account', {params: formData}, {withCredentials: true});
+            const response = await axios.post('/billpay/account', formData, {withCredentials: true});
             if (response.status === 200) {
                 console.log('success', response.data);
             } else {
