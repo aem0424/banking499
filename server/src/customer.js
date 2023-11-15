@@ -214,7 +214,8 @@ router.get('/transactions', async (req, res) => {
 // Params: AccountID
 // Return: Entire Transaction row data
 router.get('/transactions/account', async (req, res) => {
-    const accountID = String(req.body.AccountID);
+    const accountID = String(req.query.AccountID);
+    console.log(accountID);
     if (!accountID) {
       return res.status(400).json({ error: "AccountID is missing from the request body" });
     }
