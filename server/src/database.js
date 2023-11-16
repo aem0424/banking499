@@ -766,7 +766,6 @@ module.exports = {
     insertUser,
     updateUser,
     deleteUser,
-    encryptPassword,
 
     getCustomers,
     getCustomer,

@@ -360,6 +360,7 @@ app.get('/users/search/role', async (req, res) => {
 });
 
 
+// API Call used to encrypt passwords (No longer needed)
 // app.post('/users/password/encrypt', async (req, res)=> {
 //   console.log("Encrypting All User Passwords");
 
