@@ -68,7 +68,7 @@ router.get('/teller/customers/search', async (req, res) => {
     let tellerRole = req.session.user?.Role;
     if (!tellerID || tellerRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As Teller" });
 
-    let userText = user.query.Name
+    let userText = req.query.Name
 
     console.log("Searching for Customers");
     let [userData, err_userData] = await database.searchCustomers(userText);
