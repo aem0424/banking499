@@ -20,6 +20,10 @@ function CustomerViewAccountList() {
         navigate('/Customer', {state: {user}});
     }
 
+    const handleViewInformationClick = (account) => {
+        navigate('/Customer/AccountInfo', {state: {user, account}})
+    }       
+
     const handleInputChange = (e) => {
         const {name, value} = e.target;
         setFormData({
@@ -50,10 +54,6 @@ function CustomerViewAccountList() {
         console.log('error', error);
     }
     };
-
-    const handleViewInformationClick = (account) => {
-        navigate('/Customer/AccountInfo', {state: {user, account}})
-    }   
 
     useEffect(() => {
         axios.get('/customer/accounts', {withCredentials:true})

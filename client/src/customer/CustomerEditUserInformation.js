@@ -17,6 +17,7 @@ function CustomerEditUserInformation() {
         Password: customerData?.Password || "",
         FirstName: customerData?.FirstName || "",
         LastName: customerData?.LastName || "",
+        FullName: customerData?.FullName || "",
         Street: customerData?.Street || "",
         Street2: customerData?.Street2 || "",
         City: customerData?.City || "",
@@ -56,6 +57,7 @@ function CustomerEditUserInformation() {
 
       const handleSubmit = async (e) => {
         e.preventDefault();
+        formData.FullName = formData.FirstName + ' ' + formData.LastName;
     
         try {
           const response = await axios.post('/customer/update', formData, {withCredentials:true});

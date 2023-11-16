@@ -58,8 +58,8 @@ function TellerMain() {
                <div> 
                 <h1>Welcome, {userData.FirstName} {userData.LastName}!</h1>
                 <p> This is the main teller page.</p>
-                <button onClick={handleTellerTransaction}>Show Transactions</button><br/>
-                <button onClick={handleTellerCustomer}>Search Customers</button><br/>
+                <button onClick={handleTellerTransaction}>View Transactions</button><br/>
+                <button onClick={handleTellerCustomer}>View Customers/Accounts</button><br/>
                 <button onClick={handleLogoutClick}>Logout</button>            
                </div>     
             ) : null}
