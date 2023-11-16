@@ -51,6 +51,9 @@ router.put('/customer/register', async (req, res) => {
     if (userData) {
         return res.status(401).json({ error: `The email is already in use by ${userData.FirstName} ${userData.LastName}` });
     }
+    
+    // Make a FullName data
+
 
     // Insert user information
     let [customerData, err_customerData] = await database.insertCustomer(user);

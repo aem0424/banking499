@@ -219,11 +219,19 @@ router.delete('/teller/customer/account/delete', async (req, res) => {
     let accountID = req.body.AccountName;
 
     let [accountData, err_accountData] = await database.getAccount(customerID, accountID);
-    if (err_account) return res.status(500).json({ error: `Failed to query the Account ${accountID} for Customer ${customerID}`, message: err_accountData.message, data: { TellerID: userID, AccountID: accountID, CustomerID: customerID } });
-    // Parse Data
+    if (err_accountData) return res.status(500).json({ error: `Failed to query the Account ${accountID} for Customer ${customerID}`, message: err_accountData.message, data: { TellerID: userID, AccountID: accountID, CustomerID: customerID } });
 
+    if (accountData.Balance != 0) {
+        return res.status(400).json( { error: `Account Balance Is Not $0`, message: `The Account ${accountID}'s balance is ${accountData.Balance}. The account balance must be $0 in order to delete the account`, data: accountData});
+    }
+    
+    let [deletionData, err_deletionData] = await database.deleteAccount(accountID, customerID);
+    if (err_deletionData) return res.status(500).json({ error: `Failed to delete the Account ${accountID} for Customer ${customerID}`, message: err_deletionData.message, data: { TellerID: userID, AccountID: accountID, CustomerID: customerID } });
+
+
+    // Parse Data
     accountData = accountData[0];
-    return res.status(200).json({ message: "Account Deletion Completed", data: accountData });
+    return res.status(200).json({ message: "Account Deletion Completed", data: deletionData });
 });
 
 

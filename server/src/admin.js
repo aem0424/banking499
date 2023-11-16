@@ -310,11 +310,20 @@ router.delete('/admin/customer/account/delete', async (req, res) => {
   let accountID = req.body.AccountID;
   let customerID = req.body.UserID;
 
-  let [accountData, err_accountData] = await database.deleteAccount(accountID, customerID);
-  if (err_accountData) return res.status(500).json({ error: "Failed to delete the Customer's Banking Account Information", message: err_accountData.message, userData: req.body });
+  // Check if the account balance is 0
+  let [accountData, err_accountData] = await database.getAccount(customerID, accountID);
+  
+  if (err_accountData) return res.status(500).json({ error: `Failed to query the Account ${accountID} for Customer ${customerID}`, message: err_accountData.message, data: accountData });
 
-  accountData = accountData[0];
-  return res.status(200).json({message:"Deleted the Customer's Account Information Successfully", data: accountData});
+  if (accountData.Balance != 0) {
+    return res.status(400).json( { error: `Account Balance Is Not $0`, message: `The Account ${accountID}'s balance is ${accountData.Balance}. The account balance must be $0 in order to delete the account`, data: accountData});
+}
+
+  let [deletionData, err_deletionData] = await database.deleteAccount(accountID, customerID);
+  if (err_deletionData) return res.status(500).json({ error: "Failed to delete the Customer's Banking Account Information", message: err_deletionData.message, userData: req.body });
+
+  deletionData = deletionData[0];
+  return res.status(200).json({message:"Deleted the Customer's Account Information Successfully", data: deletionData});
 });
 
 

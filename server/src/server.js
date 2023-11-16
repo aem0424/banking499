@@ -3,7 +3,7 @@ const session = require('express-session');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const database = require('./database.js');
-const encryption = require('../encryption.js');
+const encryption = require('./encryption.js');
 const customerRoute = require('./customer.js');
 const tellerRoute = require('./teller.js');
 const adminRoute = require('./admin.js');
@@ -214,7 +214,7 @@ app.get('/user/password', async (req, res) => {
 app.get('/user/qa', async (req, res) => {
   // Check parameters
   let email = req.query.Email;
-  let email2 = req.query.Email;
+  let email2 = req.query.Email2;
 
   if (!email || !email2) return res.status(400).json({ error: "Empty values passed in for answers or question", param: req.body });
 
