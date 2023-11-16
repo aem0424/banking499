@@ -224,8 +224,10 @@ router.get('/admin/customer/accounts', async (req, res) => {
   let customerID = req.query.UserID;
 
   let [accountData, err_accountData] = await database.getUserAccounts(customerID);
-  if (err_accountData) return res.status(500).json({ error: "Failed to get the Customer's Accounts", message: err_accountData.message });
-
+  if (err_accountData) {
+    console.error('Database Error:', err_accountData);
+  return res.status(500).json({ error: "Failed to get the Customer's Accounts", message: err_accountData.message });
+  }
   return res.status(200).json(accountData);
 });
 

@@ -9,15 +9,20 @@ function CustomerViewAccountList() {
     const user = location.state.user;
     const [formData, setFormData] = useState({
         AccountName: '',
-    })
+    });
     const [userAccounts, setUserAccounts] = useState([]);
+    const [searchAccounts, setSearchAccounts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
+    const [searchFound, setSearchFound] = useState(false);
 
     const handleBackButtonClick = () => {
         navigate('/Customer', {state: {user}});
     }
+
+    const handleViewInformationClick = (account) => {
+        navigate('/Customer/AccountInfo', {state: {user, account}})
+    }       
 
     const handleInputChange = (e) => {
         const {name, value} = e.target;
@@ -29,17 +34,16 @@ function CustomerViewAccountList() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const {AccountName} = formData;
         setError(null);
-
+        formData.AccountName = formData.AccountName.replace(/\s/g,"&");
+        console.log(formData);
         try {
-            const response = await axios.get('/customer/accounts/search', {
-                AccountName,
-        });
-        console.log(AccountName);
+            const response = await axios.get('/customer/accounts/search', 
+            {params: {AccountName: formData.AccountName}});
         if(response.data) {
             console.log('success:', response.data);
-            navigate('/Customer/AccountInfo', {state: {user}})
+            setSearchAccounts(response.data);
+            setSearchFound(true);
         }
         else {
             console.log('error!', error)
@@ -50,10 +54,6 @@ function CustomerViewAccountList() {
         console.log('error', error);
     }
     };
-
-    const handleViewInformationClick = (account) => {
-        navigate('/Customer/AccountInfo', {state: {user, account}})
-    }   
 
     useEffect(() => {
         axios.get('/customer/accounts', {withCredentials:true})
@@ -76,6 +76,17 @@ function CustomerViewAccountList() {
                 <p>Loading...</p>
             ) : error ? (
                 <p>ERROR: {error.message}</p>
+            ) : searchFound ? (
+                <div>
+                    <ul>
+                        {searchAccounts.map((account, index) => (
+                            <li key={index}>
+                                <button onClick={() => handleViewInformationClick(account)}>{account.AccountName}</button><br/>
+                                </li>
+                            
+                         ))}
+                    </ul>
+                </div>
             ) : userAccounts ? (
                 <div>
                     <ul>
@@ -91,7 +102,7 @@ function CustomerViewAccountList() {
                             <label htmlFor="AccountName">Search Account by Name</label>
                             <input
                                 type="text"
-                                id="AccountNane"
+                                id="AccountName"
                                 name="AccountName"
                                 value={formData.AccountName}
                                 onChange={handleInputChange}

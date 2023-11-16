@@ -661,105 +661,92 @@ async function insertTransaction(transaction) {
     const currentTimeStamp = new Date().toISOString();
 
     try {
-        // Insert the transaction for 'AccountID'
-        const { data: insertedTransactionFrom, error: transactionErrorFrom } = await client
-            .from('Transaction')
-            .upsert([{
-                "TransactionType": transaction.TransactionType,
-                "AccountID": transaction.FromAccountID,
-                "Amount": transaction.Amount,
-                "Timestamp": currentTimeStamp
-            }], { onConflict: ['TransactionID'] });
-
-        if (transactionErrorFrom) {
-            return [null, transactionErrorFrom];
-        }
-
-        // Insert the transaction for 'ToAccountID'
-        const { data: insertedTransactionTo, error: transactionErrorTo } = await client
-            .from('Transaction')
-            .upsert([{
-                "TransactionType": transaction.TransactionType,
-                "AccountID": transaction.ToAccountID,
-                "Amount": -transaction.Amount,
-                "Timestamp": currentTimeStamp
-            }], { onConflict: ['TransactionID'] });
-
-        if (transactionErrorTo) {
-            return [null, transactionErrorTo];
-        }
-
-        const transactionData = {
-            "TransactionType": transaction.TransactionType,
-            "AccountID": transaction.FromAccountID,
-            "ToAccountID": transaction.ToAccountID,
-            "Amount": transaction.Amount,
-            "Timestamp": currentTimeStamp
-        };
-
-        // Retrieve the current 'ToAccountID' balance
-        const { data: toAccountData, error: toAccountError } = await client
-            .from('Account')
-            .select('Balance')
-            .eq('AccountID', transaction.ToAccountID);
-
-        if (toAccountError) {
-            return [null, toAccountError];
-        }
-
-        // Update the 'ToAccountID' balance by adding the transaction amount
-        const updatedToAccountBalance = toAccountData[0].Balance + transaction.Amount;
-        const { data: toAccountUpdateData, error: toAccountUpdateError } = await client
-            .from('Account')
-            .update({ Balance: updatedToAccountBalance })
-            .eq('AccountID', transaction.ToAccountID);
-
-        if (toAccountUpdateError) {
-            return [null, toAccountUpdateError];
-        }
-
-        // Retrieve the current 'AccountID' balance
-        const { data: fromAccountData, error: fromAccountError } = await client
-            .from('Account')
-            .select('Balance')
-            .eq('AccountID', transaction.FromAccountID);
-
-        if (fromAccountError) {
-            return [null, fromAccountError];
-        }
-
-        // Update the 'FromAccountID' balance by subtracting the transaction amount
-        const updatedFromAccountBalance = fromAccountData[0].Balance - transaction.Amount;
-        const { data: fromAccountUpdateData, error: fromAccountUpdateError } = await client
-            .from('Account')
-            .update({ Balance: updatedFromAccountBalance })
-            .eq('AccountID', transaction.FromAccountID);
-
-        if (fromAccountUpdateError) {
-            return [null, fromAccountUpdateError];
-        }
-
-        return [transactionData, null];
+      // Insert the transaction for 'AccountID'
+      const { data: insertedTransactionFrom, error: transactionErrorFrom } = await client
+        .from('Transaction')
+        .upsert([{
+          "TransactionType": transaction.TransactionType,
+          "AccountID": transaction.FromAccountID,
+          "Amount": -transaction.Amount,
+          "Timestamp": currentTimeStamp
+        }], { onConflict: ['TransactionID'] });
+  
+      if (transactionErrorFrom) {
+        return [null, transactionErrorFrom];
+      }
+  
+      // Insert the transaction for 'ToAccountID'
+      const { data: insertedTransactionTo, error: transactionErrorTo } = await client
+        .from('Transaction')
+        .upsert([{
+          "TransactionType": transaction.TransactionType,
+          "AccountID": transaction.ToAccountID,
+          "Amount": transaction.Amount,
+          "Timestamp": currentTimeStamp
+        }], { onConflict: ['TransactionID'] });
+  
+      if (transactionErrorTo) {
+        return [null, transactionErrorTo];
+      }
+  
+      const transactionData = {
+        "TransactionType": transaction.TransactionType,
+        "AccountID": transaction.FromAccountID,
+        "ToAccountID": transaction.ToAccountID,
+        "Amount": transaction.Amount,
+        "Timestamp": currentTimeStamp
+      };
+  
+      // Retrieve the current 'ToAccountID' balance
+      const { data: toAccountData, error: toAccountError } = await client
+        .from('Account')
+        .select('Balance')
+        .eq('AccountID', transaction.ToAccountID);
+  
+      if (toAccountError) {
+        return [null, toAccountError];
+      }
+  
+      // Update the 'ToAccountID' balance by adding the transaction amount
+      const updatedToAccountBalance = toAccountData[0].Balance + transaction.Amount;
+      const { data: toAccountUpdateData, error: toAccountUpdateError } = await client
+        .from('Account')
+        .update({ Balance: updatedToAccountBalance })
+        .eq('AccountID', transaction.ToAccountID);
+  
+      if (toAccountUpdateError) {
+        return [null, toAccountUpdateError];
+      }
+  
+      // Retrieve the current 'AccountID' balance
+      const { data: fromAccountData, error: fromAccountError } = await client
+        .from('Account')
+        .select('Balance')
+        .eq('AccountID', transaction.FromAccountID);
+  
+      if (fromAccountError) {
+        return [null, fromAccountError];
+      }
+  
+      // Update the 'FromAccountID' balance by subtracting the transaction amount
+      const updatedFromAccountBalance = fromAccountData[0].Balance - transaction.Amount;
+      const { data: fromAccountUpdateData, error: fromAccountUpdateError } = await client
+        .from('Account')
+        .update({ Balance: updatedFromAccountBalance })
+        .eq('AccountID', transaction.FromAccountID);
+  
+      if (fromAccountUpdateError) {
+        return [null, fromAccountUpdateError];
+      }
+  
+      return [transactionData, null];
     } catch (error) {
         return [null, error];
     }
 }
 
 
-
-// Encrypt All User Passwords
-// Params: { UserID, Password, PasswordOriginal }
-// Return: 
-async function encryptPassword(password) {
-    let { data, error } = await supabase
-        .from('User')
-        .update(password)
-        .eq('UserID', password.UserID)
-        .select();
-
-    return [data, error];
-}
-
+  
 
 
 module.exports = {
@@ -820,5 +807,5 @@ module.exports = {
     getTransactionWithdrawal,
     getTransactionTransfer,
     insertTransaction,
-
+    
 }

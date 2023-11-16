@@ -19,7 +19,7 @@ function TellerEditAccount() {
         AccountType: account?.AccountType || " ",
     })
     return (
-        <div>
+        <div className='container'>
             <h1>placeholder</h1>
         </div>
     )

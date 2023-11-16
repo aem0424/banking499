@@ -29,7 +29,7 @@ function AdminCustomerInfo() {
 
       useEffect(() => {
         if (user) {
-          axios.get('/user', {})
+          axios.get('/user')
             .then((response) => {
               if (response.status === 200) {
                 setUserData(response.data);
@@ -42,18 +42,25 @@ function AdminCustomerInfo() {
             });
         }
       
-        axios.get('/admin/customer/accounts')
-          .then((response) => {
-            if (response.status === 200) {
-              setAccounts(response.data);
+        if (customerData && customerData.UserID) {
+          axios.get('/admin/customer/accounts', {
+            params: {
+              UserID: customerData.UserID
             }
-            setLoading(false);
           })
-          .catch((error) => {
-            console.error('Error fetching accounts:', error);
-            setLoading(false);
-          });
-      }, [user]);
+            .then((response) => {
+              if (response.status === 200) {
+                setAccounts(response.data);
+                setLoading(false);
+              }
+            })
+            .catch((error) => {
+              console.error('Error fetching accounts:', error);
+              setError(error);
+              setLoading(false);
+            });
+        }
+      }, [user, customerData]);
     
       const handleAdminMainClick = () => {
         navigate('/Admin', { state: { user } });
@@ -88,7 +95,7 @@ function AdminCustomerInfo() {
                 <tr key={account.accountId}>
                   <td>{account.AccountType}</td>
                   <td>{account.AccountName}</td>
-                  <td>${account.Balance.toFixed(2)}</td>
+                  <td>{account.Balance.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</td>
                 </tr>
                 ))}
               </tbody>

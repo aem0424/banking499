@@ -44,7 +44,10 @@ function CustomerViewAccountInformation() {
                 setLoading(false);
             })
         if (account) {
-            axios.get('/transactions/account', {AccountID: account.AccountID})
+            console.log(account);
+            axios.get('/transactions/account', {
+                params: {AccountID: account.AccountID},
+                })
             .then((response) => {
                 if(response.status === 200) {
                     setTransactions(response.data);
@@ -68,9 +71,31 @@ function CustomerViewAccountInformation() {
                 <div>
                     Account Name: {accountData.AccountName}<br/>
                     Account Type: {accountData.AccountType}<br/>
-                    Balance: {accountData.Balance}<br/>
-                    Interest Rate: {accountData.InterestRate}<br/>
-                    History: tba<br/>
+                    Balance: {accountData.Balance.toLocaleString('en-US', { style: 'currency', currency: 'USD'})}<br/>
+                    Interest Rate: {accountData.InterestRate}%<br/>
+                    <div>
+                        <h2>Transaction History:</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Transaction Type</th>
+                                    <th>Amount</th>
+                                    <th>Date/Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {transactions.map((transaction) => (
+                                    <tr key={transaction.TransactionID}>
+                                        <td>{transaction.TransactionID}</td>
+                                        <td>{transaction.TransactionType}</td>
+                                        <td>{transaction.Amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</td>
+                                        <td>{transaction.Timestamp}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             ): null }
             <button onClick={handleBackButtonClick}>Back</button>            

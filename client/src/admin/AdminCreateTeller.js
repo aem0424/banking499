@@ -34,15 +34,42 @@ function AdminCreateTeller() {
       Question2: '',
       Answer2: '',
     });
+
+    const [errors, setErrors] = useState({
+      Email: '',
+      Password: '',
+      FirstName: '',
+      LastName: '',
+      PhoneNumber: '',
+    });
   
     const handleInputChange = (e) => {
       const { name, value } = e.target;
+      let error = '';
+    
+      if (name === 'PhoneNumber' && isNaN(value) && value.length !== 10) {
+        error = 'Invalid Phone Number.';
+      } else if (name === 'Password' && value.length < 6) {
+        error = 'Must be at least 6 characters.';
+      } else if (['FirstName', 'LastName'].includes(name) && !/^[a-zA-Z]+$/.test(value)) {
+        error = `Invalid ${name === 'FirstName' ? 'First' : 'Last'} Name.`;
+      } else if (name === 'Email' && !/\S+@\S+\.\S+/.test(value)) {
+        error = 'Invalid Email.';
+      }
+    
       setFormData({
         ...formData,
         [name]: value,
-        Role: "Teller"
+        Role: 'Teller'
+      });
+  
+      setErrors({
+        ...errors,
+        [name]: error,
       });
     };
+
+    const allFieldsValid = Object.values(errors).every((error) => error === '');
 
     const handleAdminMainClick = () => {
       navigate('/Admin', { state: { user } });
@@ -67,6 +94,11 @@ function AdminCreateTeller() {
     const handleSubmit = async (e) => {
       e.preventDefault();
       console.log('Form Data:', formData);
+
+      if (!allFieldsValid) {
+        console.error('Please fill in all fields correctly before submitting.');
+        return;
+      }
   
       try {
         const response = await axios.put('/admin/teller/register', formData);
@@ -97,9 +129,10 @@ function AdminCreateTeller() {
                 value={formData.Email}
                 onChange={handleInputChange}
                 required
-                className='form-input'
-              />
-            </div>
+                className={`form-input ${errors.Email ? 'error' : ''}`}
+                />
+                  {errors.Email && <><br /><span className="error-message">{errors.Email}</span></>}
+              </div>
             <div className='form-group'>
               <label htmlFor="Password" className='form-label'>Password:</label>
               <input
@@ -109,9 +142,10 @@ function AdminCreateTeller() {
                 value={formData.Password}
                 onChange={handleInputChange}
                 required
-                className='form-input'
-              />
-            </div>
+                className={`form-input ${errors.Password ? 'error' : ''}`}
+                />
+                  {errors.Password && <><br /><span className="error-message">{errors.Password}</span></>}
+              </div>
             <div className='form-group'>
               <label htmlFor="FirstName" className='form-label'>First Name:</label>
               <input
@@ -121,9 +155,10 @@ function AdminCreateTeller() {
                 value={formData.FirstName}
                 onChange={handleInputChange}
                 required
-                className='form-input'
-              />
-            </div>
+                className={`form-input ${errors.FirstName ? 'error' : ''}`}
+                />
+                  {errors.FirstName && <><br /><span className="error-message">{errors.FirstName}</span></>}
+              </div>
             <div className='form-group'>
               <label htmlFor="LastName" className='form-label'>Last Name:</label>
               <input
@@ -133,9 +168,10 @@ function AdminCreateTeller() {
                 value={formData.LastName}
                 onChange={handleInputChange}
                 required
-                className='form-input'
-              />
-            </div>
+                className={`form-input ${errors.LastName ? 'error' : ''}`}
+                />
+                  {errors.LastName && <><br /><span className="error-message">{errors.LastName}</span></>}
+              </div>
             {/*
             <div className='form-group'>
               <label htmlFor="SSN" className='form-label'>SSN:</label>
@@ -159,9 +195,10 @@ function AdminCreateTeller() {
                 value={formData.PhoneNumber}
                 onChange={handleInputChange}
                 required
-                className='form-input'
-              />
-            </div>
+                className={`form-input ${errors.PhoneNumber ? 'error' : ''}`}
+                />
+                  {errors.PhoneNumber && <><br /><span className="error-message">{errors.PhoneNumber}</span></>}
+              </div>
           </div>
 
           {/*

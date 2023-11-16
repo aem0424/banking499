@@ -43,12 +43,15 @@ function AdminTellerDelete() {
 
   const handleAdminTellerDeleteClick = async (e) => {
     e.preventDefault();
-    
+  
     try {
-      const response = await axios.delete('http://localhost:4000/admin/teller/delete', tellerData.UserID, {withCredentials:true});
+      const response = await axios.delete('/admin/teller/delete', {
+        data: { UserID: tellerData.UserID },
+        withCredentials: true,
+      });
   
       if (response.status === 200) {
-        console.log('Teller Updated successfully:', response.data);
+        console.log('Teller deleted successfully:', response.data);
         setSuccessMessage('Teller deleted successfully');
       } else {
         console.error('Error deleting teller:', response.statusText);

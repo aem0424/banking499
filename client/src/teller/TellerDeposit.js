@@ -81,7 +81,7 @@ function TellerDeposit() {
     };    
 
     return (
-        <div>
+        <div className='container'>
             {loading ? (
                 <p>Loading...</p>
             ) : error ? (

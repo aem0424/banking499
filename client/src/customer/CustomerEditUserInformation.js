@@ -17,14 +17,13 @@ function CustomerEditUserInformation() {
         Password: customerData?.Password || "",
         FirstName: customerData?.FirstName || "",
         LastName: customerData?.LastName || "",
-        FullName: customerData?.FirstName + customerData?.LastName || "",
+        FullName: customerData?.FullName || "",
         Street: customerData?.Street || "",
         Street2: customerData?.Street2 || "",
         City: customerData?.City || "",
         State: customerData?.State || "",
         ZIP: customerData?.ZIP || "",              
         PhoneNumber: customerData?.PhoneNumber || "",
-        SSN: customerData?.SSN || "",
         DOB: customerData?.DOB || "",
     });
 
@@ -49,7 +48,7 @@ function CustomerEditUserInformation() {
                 setLoading(false);
               }
             })
-            .catch((error) => {
+            .catch((error) => {           
               setError(error);
               setLoading(false);
             });
@@ -58,11 +57,11 @@ function CustomerEditUserInformation() {
 
       const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Form Data:', formData);
+        formData.FullName = formData.FirstName + ' ' + formData.LastName;
     
         try {
           const response = await axios.post('/customer/update', formData, {withCredentials:true});
-      
+
           if (response.status === 200) {
             console.log('Customer updated successfully:', response.data);
           } else {

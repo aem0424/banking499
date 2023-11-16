@@ -13,8 +13,8 @@ function ForgotPass() {;
   const {userQA} = location.state;
 
   const [formData, setFormData] = useState({
-    Answer1: userData?.Answer1 || "",
-    Answer2: userData?.Answer2 || "",
+    Answer1: "",
+    Answer2: "",
     Password: "",
   });
 
@@ -41,6 +41,17 @@ function ForgotPass() {;
         });
     }
   }, [user]);
+  
+  useEffect(() => {
+    if (userData) {
+      setFormData({
+        Answer1: userData.Answer1 || "",
+        Answer2: userData.Answer2 || "",
+        Password: "",
+      });
+    }
+  }, [userData]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();

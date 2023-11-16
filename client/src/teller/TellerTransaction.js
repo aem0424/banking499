@@ -23,7 +23,7 @@ function TellerTransaction() {
     }
 
     return (
-        <div>
+        <div className='container'>
             <h1>Please select a transaction to perform on the selected account.</h1>
             <button onClick={handleTellerTransfer}>Transfer</button>
             <button onClick={handleTellerDeposit}>Deposit</button><br/>  

@@ -13,7 +13,7 @@ function TellerTransfer() {
         navigate('/Teller/Transaction', {state: {user}})
     }
     return (
-        <div>
+        <div className='container'>
             <form>Amount to Transfer</form>
             <button>Transfer Funds</button><br/>
             <button onClick={handleBackButtonClick}>Back</button> 

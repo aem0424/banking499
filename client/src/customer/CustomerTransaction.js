@@ -22,7 +22,7 @@ function CustomerTransaction() {
     }
 
     return (
-        <div>
+        <div className='container'>
             <h1>Please select a transaction to perform.</h1>
             <button onClick={handleCustomerTransferClick}>Transfer</button><br/>
             <button onClick={handleCustomerDepositClick}>Deposit</button><br/>
