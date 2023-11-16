@@ -887,6 +887,7 @@ module.exports = {
     getBillPayAccount,
     getBillPayAccounts,
     insertBillPay,
+    generateInterest,
 
     
 }

@@ -7,6 +7,7 @@ const encryption = require('../encryption.js');
 const customerRoute = require('./customer.js');
 const tellerRoute = require('./teller.js');
 const adminRoute = require('./admin.js');
+const transactionRoute = require('./transaction.js');
 
 const app = express();
 const PORT = 4000;
@@ -32,6 +33,7 @@ app.use(sessionMiddleware);
 app.use(customerRoute, sessionMiddleware);
 app.use(tellerRoute, sessionMiddleware);
 app.use(adminRoute, sessionMiddleware);
+app.use(transactionRoute, sessionMiddleware);
 
 app.get('/', (req, res) => {
   res.send('Home Route');
