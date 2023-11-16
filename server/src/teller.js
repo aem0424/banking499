@@ -14,7 +14,7 @@ router.get('/teller', async (req, res) => {
     if (!userID) return res.status(401).json({ error: "User Is Not Logged In" });
 
     // Query User Information
-    let [userData, err_userData] = await database.getUser(userEmail);
+    let [userData, err_userData] = await database.getUser(userID);
     if (err_userData) return res.status(500).json({ error: "Failed to query Teller information", message: err_userData.message });
 
     userData = userData[0];

@@ -168,7 +168,7 @@ router.get('/admin/customer', async (req, res) => {
 });
 
 // POST: Update a Customer Information
-// Params: User{ UserID, Email*, FirstName, LastName, ... }
+// Params: User{ UserID*, Email, FirstName, LastName, ... }
 // Return: Confirmation Message
 router.post('/admin/customer/update', async (req, res) => {
   console.log("Getting a Customers List");

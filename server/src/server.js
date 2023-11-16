@@ -1,9 +1,13 @@
 const express = require('express');
 const session = require('express-session');
 const cors = require('cors');
+const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const bodyParser = require('body-parser');
+require('dotenv').config(); // Load environment variables from .env file
+
+
 const database = require('./database.js');
-const encryption = require('./encryption.js');
 const customerRoute = require('./customer.js');
 const tellerRoute = require('./teller.js');
 const adminRoute = require('./admin.js');
@@ -147,18 +151,31 @@ app.post('/user/login', async (req, res) => {
   let email = req.body.Email;
   let password = req.body.Password;
 
+  console.log(`User Logging in with Email: ${email}, Password: ${password}`)
+
   if (!email || !password) {
     return res.status(401).json({ error: "Empty values passed in for email or password" });
   }
 
   // Query UserID
-  let [userData, err_userData] = await database.getUserIDFromLogin(email, password);
+  let [userData, err_userData] = await database.getUserPassword(email);
   if (err_userData) {
-    return res.status(401).json({ error: "Failed to get User Login Information", message: err_userData.message });
+    return res.status(500).json({ error: "Failed to get User Login Information", message: err_userData.message });
   }
+  userData = userData[0];
+
+  // Verify Hashed Password
+  // Remove Pepper
+  let pepper = process.env.PASSWORD_PEPPER;
+  userData.Password = userData.Password.slice(0, -pepper.length);
+
+  if (!await bcrypt.compare(password, userData.Password)) {
+    return res.status(400).json({ error: "Incorrect Password", message: "Incorrect Password was entered.", data: req.body, password: userData.Password});
+  }
+
   // Parse UserID
-  userID = userData[0]?.UserID;
-  userRole = userData[0]?.Role;
+  userID = userData.UserID;
+  userRole = userData.Role;
 
   // Verify Data
   if (!userID) {
@@ -173,7 +190,6 @@ app.post('/user/login', async (req, res) => {
     Token: 'Token',
   };
 
-  console.log(req.session.user);
   return res.status(200).json({ message: `Login successful as UserID: ${userID}    Role: ${userRole}`, token: req.session.user?.Token });
 });
 
@@ -341,6 +357,39 @@ app.get('/users/search/role', async (req, res) => {
   return res.status(200).json(userData);
 });
 
+
+// app.post('/users/password/encrypt', async (req, res)=> {
+//   console.log("Encrypting All User Passwords");
+
+//   // Get all original passwords
+//   let [users, err_users] = await database.getAllUsers();
+//   if(err_users) return res.status(500).json({ error: 'Failed to get all user info'});
+  
+//   // Encrypt Passwords
+//   let passwords = [];
+//   let salt = await bcrypt.genSalt(10);
+//   let pepper = process.env.PASSWORD_PEPPER;
+//   for (const user of users) {
+//     let hashedPassword = await bcrypt.hash(user.Password, salt);
+
+//     let password = {UserID: user.UserID, PasswordOriginal: user.Password, Password: hashedPassword + pepper};
+
+//     passwords.push(password);
+//     let [encryptionData, err_encryptionData] = await database.encryptPassword(password);
+//     if(err_encryptionData) return res.status(500).json({ error: 'Failed to encrypt all user passwords', message: err_encryptionData, data: password});
+//     console.log(encryptionData);
+//   }
+
+//   // console.log(passwords);
+
+//   return res.status(200).json({message:"Encryption Successful", data: encryptionData});
+// });
+
+app.get('/pepper', async (req, res) => {
+  let pepper = process.env.PASSWORD_PEPPER;
+  console.log(pepper);
+  return res.status(200).json({pepper: pepper});
+});
 
 
 app.listen(PORT, () => {

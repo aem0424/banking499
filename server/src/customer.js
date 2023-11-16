@@ -1,4 +1,7 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
+require('dotenv').config(); // Load environment variables from .env file
+
 const router = express.Router();
 const database = require('./database.js');
 
@@ -53,12 +56,25 @@ router.put('/customer/register', async (req, res) => {
     }
     
     // Make a FullName data
+    user.FullName = user.FirstName + " " + user.LastName;
 
+    // Encrypt Password
+    try {
+      user.PasswordOriginal = user.Password;
+      let salt = await bcrypt.genSalt(10);
+      let peper = process.env.PASSWORD_PEPPER;
+
+      let hashedPassword = await bcrypt.hash(user.Password, salt) + peper;
+      user.Password = hashedPassword;
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Failed to encrypt password"});
+    }
 
     // Insert user information
     let [customerData, err_customerData] = await database.insertCustomer(user);
     if (err_userData) {
-        return res.status(401).json({ error: "Failed to add the Customer", message: err_customerData.message });
+        return res.status(500).json({ error: "Failed to add the Customer", message: err_customerData.message });
     }
     customerData = customerData[0];
     return res.status(200).json({ message: `Registration successful as UserID: ${customerData.UserID}` });
@@ -69,13 +85,13 @@ router.put('/customer/register', async (req, res) => {
 // return: Confirmation Message
 router.post('/customer/update', async (req, res) => {
     // Check If User is Logged In
-    let userID = req.session.user?.Email;
+    let userID = req.session.user?.UserID;
     let userRole = req.session.user?.Role;
     if (!userID || userRole != "Customer") return res.status(401).json({ error: "User Is Not Logged In As Customer" });
 
 
     let customer = req.body;
-    console.log(`Updating Customer Information of ${Email}`);
+    console.log(`Updating Customer Information`);
 
     // Check the user body
     if (!customer) return res.status(400).json({ error: "Empty json passed in body", data: customer });
@@ -84,7 +100,7 @@ router.post('/customer/update', async (req, res) => {
     let [userData, err_userData] = await database.updateCustomer(userID, customer);
     if (err_userData) return res.status(500).json({ error: "Database Insertion Failed", message: err_userData.message });
     userData = userData[0];
-    return res.status(200).json({ message: `Customer Information Update Successful as UserID: ${userData.FirstName} ${userData.LastName}  ${userData.UserID}`, data: userData});
+    return res.status(200).json({ message: `Customer Information Update Successful as: ${userData.FirstName} ${userData.LastName}  ${userData.UserID}`, data: userData});
 });
 
 // DELETE: Delete a Customer (include {withCredentials:true})
