@@ -4,14 +4,19 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 function TellerViewCustomerInfo() {
     const location = useLocation();
+    const navigate = useNavigate();    
     const user = location.state && location.state.user;
     const customer = location.state.customer;
-    const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        AccountName:'',
+    });
     const [userData, setUserData] = useState(null);
     const [customerData, setCustomerData] = useState(null);
     const [customerAccounts, setCustomerAccounts] = useState(null);
+    const [searchAccounts, setSearchAccounts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [searchFound, setSearchFound] = useState(false);
 
       // Check if user is null, redirect to "/"
   useEffect(() => {
@@ -24,13 +29,44 @@ function TellerViewCustomerInfo() {
         navigate('/Teller/Customer', {state: {user}})
     }
 
-    const handleViewAccountClick = (account) => {
-        navigate('/Teller/Customer/Account', {state: {user, account, customer}});
+    const handleEditAccountClick = (account) => {
+        navigate('/Teller/Account/Edit', {state: {user, customer, account}});
     }
 
     const handleTransactionClick = () => {
         navigate('/Teller/Transaction', {state: {user, customer}});
     }
+
+    const handleInputChange = (e) => {
+        const {name, value} = e.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };    
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError(null);
+        formData.AccountName = formData.AccountName.replace(/\s/g,"&");
+        console.log(formData);
+        try {
+            const response = await axios.get('/teller/customer/accounts/search', 
+            {params: {AccountName: formData.AccountName}});
+        if(response.data) {
+            console.log('success:', response.data);
+            setSearchAccounts(response.data);
+            setSearchFound(true);
+        }
+        else {
+            console.log('error!', error)
+            setError(error);
+        }
+    } catch (error) {
+        setError(error);
+        console.log('error', error);
+    }
+    };    
 
     useEffect(() => {
         if(user) {
@@ -47,34 +83,24 @@ function TellerViewCustomerInfo() {
             });
         }
 
-        if(customer) {
-            axios.get('/teller/customer', {UserID: customer.UserID})
-            .then((response) => {
-                if(response.status === 200) {
-                    setCustomerData(response.data);
-                    setLoading(false);
-                } else {              
-                    setLoading(false);
-                    console.log('error');                    
+        if (customer) {
+            axios.get('/teller/customer/accounts', {
+                params: {
+                    UserID: customer.UserID
                 }
             })
-            .catch ((error) => {
+            .then((response) => {
+                if (response.status === 200) {
+                    setCustomerAccounts(response.data);
+                    setLoading(false);
+                }
+            })
+            .catch((error) => {
+                console.error('error', error);
                 setError(error);
-                console.log('error', error);
-            });
+                setLoading(false);
+            })
         }
-
-        axios.get('/teller/customer/accounts')
-        .then((response) => {
-            if(response.status === 200) {
-                setCustomerAccounts(response.data);
-            }
-            setLoading(false);
-        })
-    .catch((error) => {
-        console.error('error: ', error);
-        setLoading(false);
-        })
     }, [user, customer]);
 
     return (
@@ -83,24 +109,104 @@ function TellerViewCustomerInfo() {
                 <p>Loading...</p>
             ): error ? (
                 <p>ERROR: {error.message}</p>
-            ): customerData ? (
+            ) : searchFound ? (
                 <div>
-                  Name: {customerData.FirstName} {customerData.LastName}<br/>
-                  Address: {customerData.Street}, {customerData.Street2}<br/>
-                  Address: {customerData.City}, {customerData.State} {user.ZIP}<br/>
-                  Phone Number: {customerData.PhoneNumber}<br/>
-                  SSN: {customerData.SSN}<br/>
-                  Date of Birth: {customerData.DOB}<br/>
-                  <button onClick={handleTransactionClick}>Make a Transaction</button>
-                  <h1>Accounts:</h1>
-                  <ul>
-                    {customerAccounts.map((account, index) => (
-                    <li key={index}>
-                        <button onClick={() => handleViewAccountClick(account)}>{account.AccountName}</button><br/>
-                    </li>
-                    ))}
-                  </ul>
-                </div>
+                <form onSubmit={handleSubmit} className='search-form'>
+                        <div>
+                            <label htmlFor="AccountName">Search Account by Name</label>
+                            <input
+                                type="text"
+                                id="AccountName"
+                                name="AccountName"
+                                value={formData.AccountName}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <button type="submit">Search</button>
+                        </div>
+                </form>                        
+                  Name: {customer.FirstName} {customer.LastName}<br/>
+                  Address: {customer.Street}, {customer.Street2}<br/>
+                  Address: {customer.City}, {customer.State} {customer.ZIP}<br/>
+                  Phone Number: {customer.PhoneNumber}<br/>
+                  SSN: {customer.SSN}<br/>
+                  Date of Birth: {customer.DOB}<br/>
+                  <div>
+              <h2>Customer Accounts</h2>
+              <table className='striped-table'>
+               <thead>
+                <tr>
+                  <th>Account Type</th>
+                  <th>Account Name</th>
+                  <th>Balance</th>
+                  <th>Interest Rate</th>
+                </tr>
+                </thead>
+            <tbody>
+              {searchAccounts.map((account, index) => (
+                <tr key={index}>
+                  <td>{account.AccountType}</td>
+                  <td>{account.AccountName}</td>
+                  <td>{account.Balance.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</td>
+                  <td>{account.InterestRate}</td>
+                  <td><button onClick={() => handleEditAccountClick(account)}>Edit</button></td>
+                </tr>
+                ))}
+              </tbody>
+              </table>
+             </div>                               
+            </div>
+            ): customer ? (
+                <div>
+             <form onSubmit={handleSubmit} className='search-form'>
+                        <div>
+                            <label htmlFor="AccountName">Search Account by Name</label>
+                            <input
+                                type="text"
+                                id="AccountName"
+                                name="AccountName"
+                                value={formData.AccountName}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <button type="submit">Search</button>
+                        </div>
+             </form>                          
+                  Name: {customer.FirstName} {customer.LastName}<br/>
+                  Address: {customer.Street}, {customer.Street2}<br/>
+                  Address: {customer.City}, {customer.State} {customer.ZIP}<br/>
+                  Phone Number: {customer.PhoneNumber}<br/>
+                  SSN: {customer.SSN}<br/>
+                  Date of Birth: {customer.DOB}<br/>
+                  <div>
+              <h2>Customer Accounts</h2>
+              <table className='striped-table'>
+               <thead>
+                <tr>
+                  <th>Account Type</th>
+                  <th>Account Name</th>
+                  <th>Balance</th>
+                  <th>Interest Rate</th>
+                </tr>
+                </thead>
+            <tbody>
+              {customerAccounts.map((account, index) => (
+                <tr key={index}>
+                  <td>{account.AccountType}</td>
+                  <td>{account.AccountName}</td>
+                  <td>{account.Balance.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</td>
+                  <td>{account.InterestRate}</td>
+                  <td><button onClick={() => handleEditAccountClick(account)}>Edit</button></td>
+                </tr>
+                ))}
+              </tbody>
+              </table>
+             </div>                         
+            </div>
             ) : null}
             <button onClick={handleBackButtonClick}>Back</button>            
         </div>
