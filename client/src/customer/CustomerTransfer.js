@@ -7,7 +7,7 @@ import './/css/CustomerTransfer.css';
 function CustomerTransfer() {
     const navigate = useNavigate();
     const location = useLocation();
-    const user = location.state.user;
+    const user = location.state && location.state.user;
     const [userAccounts, setUserAccounts] = useState([]);
     const [formData, setFormData] = useState({
         TransactionType:'Transfer',
@@ -17,6 +17,13 @@ function CustomerTransfer() {
     });
     const [loading, setLoading] = useState(true);    
     const [error, setError] = useState(null);
+
+      // Check if user is null, redirect to "/"
+  useEffect(() => {
+    if (!user) {
+      navigate('/Login');
+    }
+  }, [user, navigate]);
 
     const handleInputChange = (e) => {
         const {name, value} = e.target;

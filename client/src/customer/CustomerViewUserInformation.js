@@ -6,11 +6,17 @@ import './/css/CustomerViewUserInformation.css';
 
 function CustomerViewUserInformation() {
     const location = useLocation();
-    const user = location.state.user;
+    const user = location.state && location.state.user;
     const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    useEffect(() => {
+      if (!user) {
+        navigate('/Login');
+      }
+    }, [user, navigate]);
 
     const handleEditClick = (customer) => {
       navigate('/Customer/UserInfo/Edit', {state: {user, customerData: customer}})

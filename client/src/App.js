@@ -35,9 +35,10 @@ import AdminTellerDelete from ".//admin/AdminTellerDelete"
 import AdminTellerList from ".//admin/AdminTellerList";
 import AdminTellerMain from ".//admin/AdminTellerMain";
 import TellerViewCustomerInfo from "./teller/TellerViewCustomerInfo";
-import ProtectedRoute from './pre/ProtectedRoute';
-import Unauthorized from './/pre/Unauthorized'
 import {Route, Routes} from 'react-router-dom';
+import PrivateRouteAdmin from './/pre/PrivateRouteAdmin'
+import PrivateRouteCustomer from './/pre/PrivateRouteCustomer'
+import PrivateRouteTeller from './/pre/PrivateRouteTeller'
 
 
 
@@ -54,54 +55,42 @@ function App() {
       <Route exact path="/ConfirmForgotPass" element ={<ConfirmForgotPass/>}/>
       <Route exact path="/Login" element ={<Login setUser={setUser}/>}/>
       <Route exact path="/Register" element ={<Register/>}/>
-      <Route exact path="/Customer" element ={<CustomerMain user={user}/>}/>
-      <Route exact path="/Customer/Transaction" element ={<CustomerTransaction user={user}/>}/>
-      <Route exact path="/Customer/Transaction/Transfer" element ={<CustomerTransfer user={user}/>}/>
-      <Route exact path="/Customer/Transaction/Deposit" element ={<CustomerDeposit user={user}/>}/>
-      <Route exact path="/Customer/PayBill" element ={<CustomerBillPay user={user}/>}/>
-      <Route exact path="/Customer/CreateAccount" element ={<CustomerCreateAccount user={user}/>}/>
-      <Route exact path="/Customer/UserInfo" element ={<CustomerViewUserInformation user={user}/>}/>
-      <Route exact path="/Customer/UserInfo/Edit" element ={<CustomerEditUserInformation user={user}/>}/>
-      <Route exact path="/Customer/AccountInfo" element ={<CustomerViewAccountInformation user={user}/>}/>
-      <Route exact path="/Customer/AccountList" element ={<CustomerViewAccountList user={user}/>}/>
-      <Route exact path="/Teller" element = {<TellerMain user={user}/>}/>
-      <Route exact path="/Teller/Account" element = {<TellerViewAccount user={user}/>}/>
-      <Route exact path="/Teller/Account/Edit" element = {<TellerEditAccount user={user}/>}/>
-      <Route exact path="/Teller/Transaction" element = {<TellerTransaction user={user}/>}/>
-      <Route exact path="/Teller/Transaction/Deposit" element = {<TellerDeposit user={user}/>}/>
-      <Route exact path="/Teller/Transaction/Transfer" element = {<TellerTransfer user={user}/>}/>
-      <Route exact path="/Teller/CreateAccount" element = {<TellerCreateAccount user={user}/>}/>
-      <Route exact path="/Teller/Customer" element = {<TellerCustomerManage user={user}/>}/>
-      <Route exact path="/Teller/Customer/UserInfo" element = {<TellerViewCustomerInfo user={user}/>}/>
-      <Route exact path="/Customer/Transaction" element ={<CustomerTransaction/>}/>
-      <Route exact path="/Customer/Transaction/Transfer" element ={<CustomerTransfer/>}/>
-      <Route exact path="/Customer/Transaction/Deposit" element ={<CustomerDeposit/>}/>
-      <Route exact path="/Customer/PayBill" element ={<CustomerBillPay/>}/>
-      <Route exact path="/Customer/CreateAccount" element ={<CustomerCreateAccount/>}/>
-      <Route exact path="/Customer/UserInfo" element ={<CustomerViewUserInformation/>}/>
-      <Route exact path="/Customer/UserInfo/Edit" element ={<CustomerEditUserInformation/>}/>
-      <Route exact path="/Customer/AccountInfo" element ={<CustomerViewAccountInformation/>}/>
-      <Route exact path="/Customer/AccountInfo/Delete" element={<CustomerDeleteRequest/>}/>
-      <Route exact path="/Customer/AccountList" element ={<CustomerViewAccountList/>}/>
-      <Route exact path="/Teller" element = {<TellerMain/>}/>
-      <Route exact path="/Teller/Account" element = {<TellerViewAccount/>}/>
-      <Route exact path="/Teller/Account/Edit" element = {<TellerEditAccount/>}/>
-      <Route exact path="/Teller/Account/Delete" element={<TellerDeleteAccount/>}/>
-      <Route exact path="/Teller/Transaction" element = {<TellerTransaction/>}/>
-      <Route exact path="/Teller/Transaction/Deposit" element = {<TellerDeposit/>}/>
-      <Route exact path="/Teller/Transaction/Transfer" element = {<TellerTransfer/>}/>
-      <Route exact path="/Teller/CreateAccount" element = {<TellerCreateAccount/>}/>
-      <Route exact path="/Teller/Customer" element = {<TellerCustomerManage/>}/>
-      <Route exact path="/Admin" element = {<AdminMain user={user}/>}/>
-      <Route exact path="/Admin/Teller" element = {<AdminTellerMain user={user}/>}/>
-      <Route exact path="/Admin/Teller/CreateTeller" element = {<AdminCreateTeller user={user}/>}/>
-      <Route path="/Admin/Teller/EditTeller/:id" element={<AdminTellerEdit user={user}/>} />
-      <Route exact path="/Admin/Teller/Delete" element = {<AdminTellerDelete user={user}/>}/>
-      <Route exact path="/Admin/Teller/TellerList" element = {<AdminTellerList user={user}/>}/>
-      <Route exact path="/Admin/Customer" element = {<AdminCustomerList user={user}/>}/>
-      <Route exact path="/Admin/Customer/Info" element = {<AdminCustomerInfo user={user}/>}/>
+      <Route element = {<PrivateRouteCustomer />}>
+        <Route exact path="/Customer" element ={<CustomerMain user={user}/>}/>
+        <Route exact path="/Customer/Transaction" element ={<CustomerTransaction user={user}/>}/>
+        <Route exact path="/Customer/Transaction/Transfer" element ={<CustomerTransfer user={user}/>}/>
+        <Route exact path="/Customer/Transaction/Deposit" element ={<CustomerDeposit user={user}/>}/>
+        <Route exact path="/Customer/PayBill" element ={<CustomerBillPay user={user}/>}/>
+        <Route exact path="/Customer/CreateAccount" element ={<CustomerCreateAccount user={user}/>}/>
+        <Route exact path="/Customer/UserInfo" element ={<CustomerViewUserInformation user={user}/>}/>
+        <Route exact path="/Customer/UserInfo/Edit" element ={<CustomerEditUserInformation user={user}/>}/>
+        <Route exact path="/Customer/AccountInfo" element ={<CustomerViewAccountInformation user={user}/>}/>
+        <Route exact path="/Customer/AccountList" element ={<CustomerViewAccountList user={user}/>}/>
+        <Route exact path="/Customer/AccountInfo/Delete" element={<CustomerDeleteRequest user={user}/>}/>
+      </Route>
+      <Route element = {<PrivateRouteTeller />}>
+        <Route exact path="/Teller" element = {<TellerMain user={user}/>}/>
+        <Route exact path="/Teller/Account" element = {<TellerViewAccount user={user}/>}/>
+        <Route exact path="/Teller/Account/Edit" element = {<TellerEditAccount user={user}/>}/>
+        <Route exact path="/Teller/Transaction" element = {<TellerTransaction user={user}/>}/>
+        <Route exact path="/Teller/Transaction/Deposit" element = {<TellerDeposit user={user}/>}/>
+        <Route exact path="/Teller/Transaction/Transfer" element = {<TellerTransfer user={user}/>}/>
+        <Route exact path="/Teller/CreateAccount" element = {<TellerCreateAccount user={user}/>}/>
+        <Route exact path="/Teller/Customer" element = {<TellerCustomerManage user={user}/>}/>
+        <Route exact path="/Teller/Customer/UserInfo" element = {<TellerViewCustomerInfo user={user}/>}/>
+        <Route exact path="/Teller/Account/Delete" element = {<TellerDeleteAccount user={user}/>}/>
+      </Route>
+      <Route element = {<PrivateRouteAdmin />}>
+        <Route exact path="/Admin" element = {<AdminMain user={user}/>}/>
+        <Route exact path="/Admin/Teller" element = {<AdminTellerMain user={user}/>}/>
+        <Route exact path="/Admin/Teller/CreateTeller" element = {<AdminCreateTeller user={user}/>}/>
+        <Route path="/Admin/Teller/EditTeller/:id" element={<AdminTellerEdit user={user}/>} />
+        <Route exact path="/Admin/Teller/Delete" element = {<AdminTellerDelete user={user}/>}/>
+        <Route exact path="/Admin/Teller/TellerList" element = {<AdminTellerList user={user}/>}/>
+        <Route exact path="/Admin/Customer" element = {<AdminCustomerList user={user}/>}/>
+        <Route exact path="/Admin/Customer/Info" element = {<AdminCustomerInfo user={user}/>}/>
+      </Route>
       <Route exact path="/" element ={<Login/>}/>
-      <Route exact path="/Unauthorized" element ={<Unauthorized/>}/>
      </Routes>
     </div>
   );

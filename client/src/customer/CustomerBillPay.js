@@ -14,11 +14,18 @@ function CustomerBillPay() {
     });
     const location = useLocation();
     const navigate = useNavigate();        
-    const user = location.state.user;
+    const user = location.state && location.state.user;
     const [userAccounts, setUserAccounts] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(null);
     const [success, setSuccess] = useState(false);
+
+      // Check if user is null, redirect to "/"
+  useEffect(() => {
+    if (!user) {
+      navigate('/Login');
+    }
+  }, [user, navigate]);
     
     const createAccountList = (e) => {
         let accountList = [];

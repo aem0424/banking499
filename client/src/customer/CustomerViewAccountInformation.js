@@ -5,7 +5,7 @@ import './/css/CustomerViewAccountInformation.css';
 
 function CustomerViewAccountInformation() {
     const location = useLocation();
-    const user = location.state.user;
+    const user = location.state && location.state.user;
     const account = location.state.account;
     const [userData, setUserData] = useState(null);
     const [accountData, setAccountData] = useState(null);
@@ -13,6 +13,13 @@ function CustomerViewAccountInformation() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+
+      // Check if user is null, redirect to "/"
+  useEffect(() => {
+    if (!user) {
+      navigate('/Login');
+    }
+  }, [user, navigate]);
 
     const handleBackButtonClick = (info) => {
         navigate('/Customer/AccountList', {state: {user}})

@@ -5,7 +5,7 @@ import './/css/CustomerEditUserInformation.css';
 
 function CustomerEditUserInformation() {
     const location = useLocation();
-    const user = location.state.user;
+    const user = location.state && location.state.user;
     const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -26,6 +26,13 @@ function CustomerEditUserInformation() {
         PhoneNumber: customerData?.PhoneNumber || "",
         DOB: customerData?.DOB || "",
     });
+
+      // Check if user is null, redirect to "/"
+  useEffect(() => {
+    if (!user) {
+      navigate('/Login');
+    }
+  }, [user, navigate]);
 
     const handleBackButtonClick = () => {
       navigate('/Customer/UserInfo', { state : { user }})
