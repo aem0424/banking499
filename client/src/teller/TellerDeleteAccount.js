@@ -7,6 +7,7 @@ function TellerDeleteAccount() {
     const location = useLocation();
     const navigate = useNavigate();
     const user = location.state.user;
+    const customer = location.state.customer;
     const account = location.state.account;
     const [userData, setUserData] = useState(null);
     const [customerData, setCustomerData] = useState(null);
@@ -15,13 +16,15 @@ function TellerDeleteAccount() {
     const [error, setError] = useState(null);
 
     const handleNoClick = () => {
-        navigate('/Teller/Customer', {state: { user }});
+        navigate('/Teller/Customer/UserInfo', {state: { user, customer }});
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.delete('/teller/customer/account/delete', {UserID: customerData.UserID, AccountID: account.AccountID})
+            const response = await axios.delete('/teller/customer/account/delete', 
+            {data: {UserID: customer.UserID, AccountID: account.AccountID}},
+        {withCredentials: true})
             if(response.status === 200) {
                 console.log('success', response.data);
             } else {
@@ -44,19 +47,7 @@ function TellerDeleteAccount() {
                 setLoading(false);
             })
         }
-        if (account) {
-            axios.get('/teller/customer/account', account, {withCredentials:true})
-            .then((response) => {
-                if(response.status === 200) {
-                    setAccountData(response.data);
-                    setLoading(false);
-                }
-            }).catch((error) => {
-                setError(error);
-                setLoading(false);
-            })
-        }
-    }, [user, account]);    
+    }, [user]);    
     
     return (
         <div className='container'>

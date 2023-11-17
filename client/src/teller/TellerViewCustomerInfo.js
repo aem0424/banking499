@@ -26,6 +26,10 @@ function TellerViewCustomerInfo() {
         navigate('/Teller/Account/Edit', {state: {user, customer, account}});
     }
 
+    const handleDeleteAccountClick = (account) => {
+        navigate('/Teller/Account/Delete', {state: {user, customer, account}});
+    }
+
     const handleTransactionClick = () => {
         navigate('/Teller/Transaction', {state: {user, customer}});
     }
@@ -194,6 +198,7 @@ function TellerViewCustomerInfo() {
                   <td>{account.Balance.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</td>
                   <td>{account.InterestRate}</td>
                   <td><button onClick={() => handleEditAccountClick(account)}>Edit</button></td>
+                  <td><button onClick={() => handleDeleteAccountClick(account)}>Delete</button></td>
                 </tr>
                 ))}
               </tbody>

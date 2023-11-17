@@ -78,6 +78,7 @@ function App() {
         <Route exact path="/Teller/CreateAccount" element = {<TellerCreateAccount user={user}/>}/>
         <Route exact path="/Teller/Customer" element = {<TellerCustomerManage user={user}/>}/>
         <Route exact path="/Teller/Customer/UserInfo" element = {<TellerViewCustomerInfo user={user}/>}/>
+        <Route exact path="/Teller/Account/Delete" element = {<TellerDeleteAccount user={user}/>}/>
       </Route>
       <Route element = {<PrivateRouteAdmin />}>
         <Route exact path="/Admin" element = {<AdminMain user={user}/>}/>
