@@ -2,17 +2,6 @@ const express = require('express');
 const router = express.Router();
 const database = require('./database.js');
 
-// Basing calcs on a Simple interest formula where the assumption is that all %interest rates
-// are given in APR format. Note: This in function works as compounding interest since we add it in monthly
-// looking into writing a compound projection if we have time
-
-// $1,000 Balance x 12% APR (.12) x .083 (1 Year / 12 Months = .083) = 9.96
-
-// Compounded: Yearly = 1
-//             Monthly = .083
-//             Daily   = .0027
-
-
 
 // ------------------------ Transaction -------------------------------
 // ------------------------ Get API Endpoints 
@@ -135,7 +124,7 @@ router.get('/transactions/transfers', async (req, res) => {
   });
 
 
-  
+
 // ------------------------ Helper Functions
 async function insertTransferTransaction(transaction) {
   const currentTimeStamp = new Date().toISOString();
@@ -266,20 +255,7 @@ router.post('/billpay/account', async (req, res) => {
   return res.status(201).json(insertedData[0]);
 });
 
-
-router.get('/transaction/generateInterest', async (req, res) => {
-  let userRole = req.session.user?.Role;
-  if (userRole != "Administrator") return res.status(401).json({ error: "User Is Not Logged In As Admin" });
-  try {
-    const result = await database.generateInterest();
-    res.json({ success: true, result });
-  } catch (error) {
-    console.error('Error generating interest:', error.message);
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-
-
-//export this router to use in our server.js
-module.exports = router;
+module.exports = {
+  router: router,
+  insertTransferTransaction: insertTransferTransaction
+};
