@@ -693,7 +693,54 @@ async function updateAccountBalance(accountID, amount) {
   }
   
 
+// --------------------------- BillPayments Table -----------------------
 
+
+// Get BillPay Account by BillPayID
+// Params: billPayID
+// Return: Entire BillPayment data
+async function getBillPayAccount(billPayID) {
+    console.log(billPayID);
+    let { data, error } = await supabase
+    .from('BillPayment')
+    .select('*')
+    .eq("BillPayID", billPayID);
+
+    return [ data, error ];
+}
+
+// Get All BillPay Accounts by UserID
+// Params: AccountName
+// Return: Entire Account data
+async function getBillPayAccounts(userID) {
+    let { data, error } = await supabase
+    .from('BillPayment')
+    .select('*')
+    .eq("UserID", userID)
+
+    console.log("Data:", data); // debugging
+    console.log("Error", error); // debugging
+    return [ data, error ];
+}
+
+// Insert BillPay Account
+// Params: BillPay{ Name, Address, Amount, PayFromAccount, DueDate } * BillPayID created by DB, UserID set by session
+// Return: BillPay{BillPayID, UserID, Name, Address, Amount, PayFromAccount, DueDate, BillType } (Confirmation)
+async function insertBillPay(account) {
+    const { data, error } = await supabase
+    .from('BillPayment')
+    .insert(account)
+    .select();
+
+    return [ data, error ];
+}
+
+async function insertCreditAccount(account) {
+    const { data, error } = await supabase
+    .from('BillPayment')
+    .insert(account)
+
+}
   
 
 
@@ -755,5 +802,11 @@ module.exports = {
     getTransactionTransfer,
     insertTransactionForAccount,
     updateAccountBalance,
+
+    getBillPayAccount,
+    getBillPayAccounts,
+    insertBillPay,
+    insertCreditAccount,
+
     
 }
