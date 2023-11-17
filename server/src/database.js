@@ -429,7 +429,8 @@ async function getAccount(userID, accountID) {
         .from('Account')
         .select('*')
         .eq("UserID", userID)
-        .eq("AccountID", accountID);
+        .eq("AccountID", accountID)
+        .eq("Activated", true);
 
     return [data, error];
 }
@@ -440,7 +441,8 @@ async function getAccount(userID, accountID) {
 async function getAccounts() {
     let { data, error } = await supabase
         .from('Account')
-        .select('*');
+        .select('*')
+        .eq("Activated", true);
 
     return [data, error];
 }
@@ -452,7 +454,8 @@ async function getUserAccounts(userID) {
     let { data, error } = await supabase
         .from('Account')
         .select()
-        .eq("UserID", userID);
+        .eq("UserID", userID)
+        .eq("Activated", true);
 
     return [data, error];
 }
@@ -464,7 +467,8 @@ async function getAccountIDFromUserID(userID) {
     let { data, error } = await supabase
         .from('Account')
         .select('AccountID')
-        .eq("UserID", userID);
+        .eq("UserID", userID)
+        .eq("Activated", true);
 
     return [data, error];
 }
@@ -475,7 +479,8 @@ async function getAccountIDFromUserID(userID) {
 async function searchAccounts(userID, accountName) {
     let { data, error } = await supabase
         .from('Account')
-        .select('UserID', userID)
+        .eq('UserID', userID)
+        .eq("Activated", true)
         .textSearch('AccountName', accountName)
         .select();
 
@@ -500,7 +505,18 @@ async function insertAccount(account) {
 async function deleteAccount(accountID, userID) {
     const { data, error } = await supabase
         .from('Account')
-        .update({ Activated: false, Deleted: true })
+        .update({ Activated: false})
+        .eq("AccountID", accountID)
+        .eq("UserID", userID)
+        .select();
+
+    return [data, error];
+}
+
+async function activateAccount(accountID, userID) {
+    const { data, error } = await supabase
+        .from('Account')
+        .update({ Activated: true})
         .eq("AccountID", accountID)
         .eq("UserID", userID)
         .select();
@@ -529,6 +545,7 @@ async function updateAccountName(accountID, accountName) {
         .from('Account')
         .update({ AccountName: accountName })
         .eq("AccountID", accountID)
+        .eq("Activated", true)
         .select();
 
     return [data, error];
@@ -793,6 +810,7 @@ module.exports = {
     deleteAccount,
     updateAccount,
     updateAccountName,
+    activateAccount,
 
     // getNotification,
     // getNotifications,

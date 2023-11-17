@@ -146,7 +146,7 @@ router.get('/teller/customer/account', async (req, res) => {
     let customerID = req.query.UserID;
     let accountID = req.query.AccountID;
 
-    let [accountData, err_accountData] = await database.getAccout(customerID, accountID);
+    let [accountData, err_accountData] = await database.getAccount(customerID, accountID);
     if (err_accountData) return res.status(500).json({ error: "Failed to get the Customer's Banking Account Information", message: err_accountData.message });
 
     accountData = accountData[0];
@@ -221,18 +221,17 @@ router.delete('/teller/customer/account/delete', async (req, res) => {
     let userID = req.session.user?.UserID;
     let userRole = req.session.user?.Role;
 
-
     if (!userID || userRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As A Teller" });
-
 
     // Check if the Account Already Exists
     let customerID = req.body.UserID;
-    let accountID = req.body.AccountName;
+    let accountID = req.body.AccountID;
 
     let [accountData, err_accountData] = await database.getAccount(customerID, accountID);
     if (err_accountData) return res.status(500).json({ error: `Failed to query the Account ${accountID} for Customer ${customerID}`, message: err_accountData.message, data: { TellerID: userID, AccountID: accountID, CustomerID: customerID } });
-
-    if (accountData.Balance != 0) {
+    accountData = accountData[0];
+    
+    if (accountData.Balance != 0.0) {
         return res.status(400).json( { error: `Account Balance Is Not $0`, message: `The Account ${accountID}'s balance is ${accountData.Balance}. The account balance must be $0 in order to delete the account`, data: accountData});
     }
     
@@ -244,6 +243,31 @@ router.delete('/teller/customer/account/delete', async (req, res) => {
     accountData = accountData[0];
     return res.status(200).json({ message: "Account Deletion Completed", data: deletionData });
 });
+
+
+// POST: Activate a deleted Customer Account
+// Params: { UserID, AccountID }
+// Return: Confirmation Message
+router.post('/teller/customer/account/activate', async (req, res) => {
+    console.log(`Activating an Account for Customer`);
+    // Check If User is Logged In
+    let userID = req.session.user?.UserID;
+    let userRole = req.session.user?.Role;
+    if (!userID || userRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As A Teller" });
+
+
+    // Get Parameters
+    let customerID = req.body.UserID;
+    let accountID = req.body.AccountID;
+    
+    let [activationData, err_activationData] = await database.activateAccount(accountID, customerID);
+    if (err_activationData) return res.status(500).json({ error: `Failed to reactivate the Account ${accountID} for Customer ${customerID}`, message: err_activationData.message, data: { TellerID: userID, AccountID: accountID, CustomerID: customerID } });
+
+    // Parse Data
+    activationData = activationData[0];
+    return res.status(200).json({ message: "Account Deletion Completed", data: activationData });
+});
+
 
 // helper function for creating Bill Information for Credit Account
 async function buildCreditAccount(account){
