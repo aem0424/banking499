@@ -26,7 +26,7 @@ function TellerEditAccount() {
     const [success, setSuccess] = useState(false);
 
     const handleBackButtonClick = () => {
-        navigate('/Customer/UserInfo', { state : { user }})
+        navigate('/Teller/Customer/UserInfo', { state : { user }})
       };
   
       const handleInputChange = (e) => {
