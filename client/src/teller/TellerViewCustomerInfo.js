@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 function TellerViewCustomerInfo() {
     const location = useLocation();
     const navigate = useNavigate();    
-    const user = location.state.user;
+    const user = location.state && location.state.user;
     const customer = location.state.customer;
     const [formData, setFormData] = useState({
         AccountName:'',
@@ -17,6 +17,13 @@ function TellerViewCustomerInfo() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchFound, setSearchFound] = useState(false);
+
+      // Check if user is null, redirect to "/"
+  useEffect(() => {
+    if (!user) {
+      navigate('/Login');
+    }
+  }, [user, navigate]);
 
     const handleBackButtonClick = () => {
         navigate('/Teller/Customer', {state: {user}})

@@ -5,7 +5,7 @@ import './/css/CustomerDeleteRequest.css';
 
 function CustomerDeleteRequest() {
     const location = useLocation();
-    const user = location.state.user;
+    const user = location.state && location.state.user;
     const account = location.state.account;
     const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
@@ -16,6 +16,13 @@ function CustomerDeleteRequest() {
     const handleNo = () => {
         navigate('/Customer/AccountInfo')
     }
+
+      // Check if user is null, redirect to "/"
+  useEffect(() => {
+    if (!user) {
+      navigate('/Login');
+    }
+  }, [user, navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

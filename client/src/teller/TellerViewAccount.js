@@ -6,7 +6,7 @@ import './/css/TellerViewAccount.css';
 function TellerViewAccount() {
     const navigate = useNavigate();
     const location = useLocation();
-    const user = location.state.user;
+    const user = location.state && location.state.user;
     const customer = location.state.customer;
     const account = location.state.account;
     const [userData, setUserData] = useState(null);
@@ -14,6 +14,12 @@ function TellerViewAccount() {
     const [transactions, setTransactions] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    useEffect(() => {
+        if (!user) {
+          navigate('/Login');
+        }
+      }, [user, navigate]);
 
     const handleBackButtonClick = () => {
         navigate('/Teller/Customer', {state: {user, customer}});

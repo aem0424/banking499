@@ -6,14 +6,20 @@ import './/css/TellerDeleteAccount.css';
 function TellerDeleteAccount() {
     const location = useLocation();
     const navigate = useNavigate();
-    const user = location.state.user;
-    const customer = location.state.customer;
+    const user = location.state && location.state.user;
     const account = location.state.account;
     const [userData, setUserData] = useState(null);
     const [customerData, setCustomerData] = useState(null);
     const [accountData, setAccountData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+      // Check if user is null, redirect to "/"
+  useEffect(() => {
+    if (!user) {
+      navigate('/Login');
+    }
+  }, [user, navigate]);
 
     const handleNoClick = () => {
         navigate('/Teller/Customer/UserInfo', {state: { user, customer }});

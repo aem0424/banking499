@@ -7,10 +7,16 @@ import './/css/TellerMain.css';
 function TellerMain() {
     const location = useLocation();
     const navigate = useNavigate();
-    const user = location.state.user;
+    const user = location.state && location.state.user;
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    useEffect(() => {
+        if (!user) {
+          navigate('/Login');
+        }
+      }, [user, navigate]);
 
     const handleTellerTransaction = () => {
         navigate('/Teller/Transaction', { state: { user }})

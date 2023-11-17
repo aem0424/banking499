@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useNavigate, useLocation } from 'react-router-dom';
 import './/css/CustomerCreateAccount.css';
@@ -7,7 +7,7 @@ import './/css/CustomerCreateAccount.css';
 function CustomerCreateAccount() {
     const navigate = useNavigate();
     const location = useLocation();
-    const user = location.state.user;
+    const user = location.state && location.state.user;
     const [formData, setFormData] = useState({
         AccountName: '',
         AccountType:'',
@@ -17,7 +17,13 @@ function CustomerCreateAccount() {
     const handleBackButtonClick = () => {
       navigate('/Customer/AccountList', {state:{user}})
     }
-    
+      // Check if user is null, redirect to "/"
+  useEffect(() => {
+    if (!user) {
+      navigate('/Login');
+    }
+  }, [user, navigate]);
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({

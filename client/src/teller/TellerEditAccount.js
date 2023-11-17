@@ -7,7 +7,7 @@ import './/css/TellerEditAccount.css';
 function TellerEditAccount() {
     const navigate = useNavigate();
     const location = useLocation();
-    const user = location.state.user;  
+    const user = location.state && location.state.user;
     const customer = location.state.customer; 
     const account = location.state.account;
     const [userData, setUserData] = useState(null);
@@ -23,6 +23,13 @@ function TellerEditAccount() {
         AccountType: account?.AccountType || "",
         InterestRate: account?.InterestRate || "",
     });
+
+      // Check if user is null, redirect to "/"
+  useEffect(() => {
+    if (!user) {
+      navigate('/Login');
+    }
+  }, [user, navigate]);
     const [success, setSuccess] = useState(false);
 
     const handleBackButtonClick = () => {

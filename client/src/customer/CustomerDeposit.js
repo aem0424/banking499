@@ -7,7 +7,7 @@ import './/css/CustomerDeposit.css';
 function CustomerDeposit() {
     const navigate = useNavigate();
     const location = useLocation();
-    const user = location.state.user;
+    const user = location.state && location.state.user;
     const [userAccounts, setUserAccounts] = useState([]);
     const [formData, setFormData] = useState({
         TransactionType:'Deposit',
@@ -18,6 +18,13 @@ function CustomerDeposit() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
+
+      // Check if user is null, redirect to "/"
+  useEffect(() => {
+    if (!user) {
+      navigate('/Login');
+    }
+  }, [user, navigate]);
 
     const handleInputChange = (e) => {
         const {name, value} = e.target;

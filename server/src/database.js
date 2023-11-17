@@ -653,99 +653,94 @@ async function getTransactionTransfer(accountID) {
     return [data, error];
 }
 
-// Insert Transaction and update Account Balances
-// Params: Transaction { TransactionType, AccountID, ToAccountID, Amount }
-// Return: Transaction { TransactionType, AccountID, ToAccountID, Amount, Timestamp } (Confirmation)
-async function insertTransaction(transaction) {
-    const client = supabase; // Using the default client (not within a transaction)
-    const currentTimeStamp = new Date().toISOString();
-
-    try {
-      // Insert the transaction for 'AccountID'
-      const { data: insertedTransactionFrom, error: transactionErrorFrom } = await client
-        .from('Transaction')
-        .upsert([{
-          "TransactionType": transaction.TransactionType,
-          "AccountID": transaction.FromAccountID,
-          "Amount": -transaction.Amount,
-          "Timestamp": currentTimeStamp
-        }], { onConflict: ['TransactionID'] });
+async function insertTransactionForAccount(
+    transactionType,
+    accountID,
+    amount,
+    timestamp
+  ) {
+    return supabase
+      .from('Transaction')
+      .upsert(
+        [
+          {
+            TransactionType: transactionType,
+            AccountID: accountID,
+            Amount: amount,
+            Timestamp: timestamp,
+          },
+        ],
+        { onConflict: ['TransactionID'] }
+      );
+  }
   
-      if (transactionErrorFrom) {
-        return [null, transactionErrorFrom];
-      }
+async function updateAccountBalance(accountID, amount) {
+    const { data: accountData, error: accountError } = await supabase
+      .from('Account')
+      .select('Balance')
+      .eq('AccountID', accountID);
   
-      // Insert the transaction for 'ToAccountID'
-      const { data: insertedTransactionTo, error: transactionErrorTo } = await client
-        .from('Transaction')
-        .upsert([{
-          "TransactionType": transaction.TransactionType,
-          "AccountID": transaction.ToAccountID,
-          "Amount": transaction.Amount,
-          "Timestamp": currentTimeStamp
-        }], { onConflict: ['TransactionID'] });
-  
-      if (transactionErrorTo) {
-        return [null, transactionErrorTo];
-      }
-  
-      const transactionData = {
-        "TransactionType": transaction.TransactionType,
-        "AccountID": transaction.FromAccountID,
-        "ToAccountID": transaction.ToAccountID,
-        "Amount": transaction.Amount,
-        "Timestamp": currentTimeStamp
-      };
-  
-      // Retrieve the current 'ToAccountID' balance
-      const { data: toAccountData, error: toAccountError } = await client
-        .from('Account')
-        .select('Balance')
-        .eq('AccountID', transaction.ToAccountID);
-  
-      if (toAccountError) {
-        return [null, toAccountError];
-      }
-  
-      // Update the 'ToAccountID' balance by adding the transaction amount
-      const updatedToAccountBalance = toAccountData[0].Balance + transaction.Amount;
-      const { data: toAccountUpdateData, error: toAccountUpdateError } = await client
-        .from('Account')
-        .update({ Balance: updatedToAccountBalance })
-        .eq('AccountID', transaction.ToAccountID);
-  
-      if (toAccountUpdateError) {
-        return [null, toAccountUpdateError];
-      }
-  
-      // Retrieve the current 'AccountID' balance
-      const { data: fromAccountData, error: fromAccountError } = await client
-        .from('Account')
-        .select('Balance')
-        .eq('AccountID', transaction.FromAccountID);
-  
-      if (fromAccountError) {
-        return [null, fromAccountError];
-      }
-  
-      // Update the 'FromAccountID' balance by subtracting the transaction amount
-      const updatedFromAccountBalance = fromAccountData[0].Balance - transaction.Amount;
-      const { data: fromAccountUpdateData, error: fromAccountUpdateError } = await client
-        .from('Account')
-        .update({ Balance: updatedFromAccountBalance })
-        .eq('AccountID', transaction.FromAccountID);
-  
-      if (fromAccountUpdateError) {
-        return [null, fromAccountUpdateError];
-      }
-  
-      return [transactionData, null];
-    } catch (error) {
-        return [null, error];
+    if (accountError) {
+      return [null, accountError];
     }
+  
+    const updatedBalance = accountData[0].Balance + amount;
+  
+    return supabase
+      .from('Account')
+      .update({ Balance: updatedBalance })
+      .eq('AccountID', accountID);
+  }
+  
+
+// --------------------------- BillPayments Table -----------------------
+
+
+// Get BillPay Account by BillPayID
+// Params: billPayID
+// Return: Entire BillPayment data
+async function getBillPayAccount(billPayID) {
+    console.log(billPayID);
+    let { data, error } = await supabase
+    .from('BillPayment')
+    .select('*')
+    .eq("BillPayID", billPayID);
+
+    return [ data, error ];
 }
 
+// Get All BillPay Accounts by UserID
+// Params: AccountName
+// Return: Entire Account data
+async function getBillPayAccounts(userID) {
+    let { data, error } = await supabase
+    .from('BillPayment')
+    .select('*')
+    .eq("UserID", userID)
 
+    console.log("Data:", data); // debugging
+    console.log("Error", error); // debugging
+    return [ data, error ];
+}
+
+// Insert BillPay Account
+// Params: BillPay{ Name, Address, Amount, PayFromAccount, DueDate } * BillPayID created by DB, UserID set by session
+// Return: BillPay{BillPayID, UserID, Name, Address, Amount, PayFromAccount, DueDate, BillType } (Confirmation)
+async function insertBillPay(account) {
+    const { data, error } = await supabase
+    .from('BillPayment')
+    .insert(account)
+    .select();
+
+    return [ data, error ];
+}
+
+async function insertCreditAccount(account) {
+    const { data, error } = await supabase
+    .from('BillPayment')
+    .insert(account)
+
+}
   
 
 
@@ -805,6 +800,13 @@ module.exports = {
     getTransactionDeposit,
     getTransactionWithdrawal,
     getTransactionTransfer,
-    insertTransaction,
+    insertTransactionForAccount,
+    updateAccountBalance,
+
+    getBillPayAccount,
+    getBillPayAccounts,
+    insertBillPay,
+    insertCreditAccount,
+
     
 }

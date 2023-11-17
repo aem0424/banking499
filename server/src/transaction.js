@@ -15,7 +15,7 @@ const database = require('./database.js');
 
 
 // ------------------------ Transaction -------------------------------
-
+// ------------------------ Get API Endpoints 
 // GET: Get a Transaction by TransactionID
 // Params: TransactionID
 // Return: Entire Transaction row data
@@ -72,8 +72,6 @@ router.get('/transactions/deposits', async (req, res) => {
     return res.status(200).json(depositData);
 });
 
-  
-
 
 // GET: Get Withdrawal Transaction by AccountID
 // Params: AccountID
@@ -112,7 +110,7 @@ router.get('/transactions/transfers', async (req, res) => {
 });
 
 
-
+// ------------------------ POST API Endpoints 
 // POST: Insert a Transaction
 // Params: Transaction { TransactionType, FromAccountID, ToAccountID, Amount }
 // Return: Transaction { TransactionType, FromAccountID, ToAccountID, Amount, Timestamp } (Confirmation)
@@ -123,7 +121,7 @@ router.get('/transactions/transfers', async (req, res) => {
       // Validate the 'transaction' here
   
       // Perform the insertion of the transaction
-      let [insertedTransaction, error] = await database.insertTransaction(transaction);
+      let [insertedTransaction, error] = await insertTransferTransaction(transaction);
   
       if (error) {
         return res.status(500).json({ error: "Failed to insert the transaction", message: error.message });
@@ -136,6 +134,59 @@ router.get('/transactions/transfers', async (req, res) => {
     }
   });
 
+
+  
+// ------------------------ Helper Functions
+async function insertTransferTransaction(transaction) {
+  const currentTimeStamp = new Date().toISOString();
+
+  try {
+    const insertedFromTransaction = await database.insertTransactionForAccount(
+      transaction.TransactionType,
+      transaction.FromAccountID,
+      -transaction.Amount,
+      currentTimeStamp
+    );
+
+    const insertedToTransaction = await database.insertTransactionForAccount(
+      transaction.TransactionType,
+      transaction.ToAccountID,
+      transaction.Amount,
+      currentTimeStamp
+    );
+
+    const toAccountUpdateResult = await database.updateAccountBalance(
+      transaction.ToAccountID,
+      transaction.Amount
+    );
+
+    const fromAccountUpdateResult = await database.updateAccountBalance(
+      transaction.FromAccountID,
+      -transaction.Amount
+    );
+
+    if (
+      insertedFromTransaction[1] ||
+      insertedToTransaction[1] ||
+      toAccountUpdateResult[1] ||
+      fromAccountUpdateResult[1]
+    ) {
+      return [null, 'Error in transaction processing'];
+    }
+
+    const transactionData = {
+      TransactionType: transaction.TransactionType,
+      AccountID: transaction.FromAccountID,
+      ToAccountID: transaction.ToAccountID,
+      Amount: transaction.Amount,
+      Timestamp: currentTimeStamp,
+    };
+
+    return [transactionData, null];
+  } catch (error) {
+    return [null, error];
+  }
+}
 
 
 
