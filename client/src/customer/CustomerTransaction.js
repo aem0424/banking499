@@ -7,7 +7,14 @@ import './/css/CustomerTransaction.css';
 function CustomerTransaction() {
     const location = useLocation();
     const navigate = useNavigate();
-    const user = location.state.user;
+    const user = location.state && location.state.user;
+
+      // Check if user is null, redirect to "/"
+  useEffect(() => {
+    if (!user) {
+      navigate('/Login');
+    }
+  }, [user, navigate]);
 
     const handleCustomerTransferClick = () => {
         navigate('/Customer/Transaction/Transfer', {state: {user}});

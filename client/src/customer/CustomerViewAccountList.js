@@ -6,7 +6,7 @@ import './/css/CustomerViewAccountList.css';
 function CustomerViewAccountList() {
     const navigate = useNavigate();
     const location = useLocation();
-    const user = location.state.user;
+    const user = location.state && location.state.user;
     const [formData, setFormData] = useState({
         AccountName: '',
     });
@@ -15,6 +15,12 @@ function CustomerViewAccountList() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchFound, setSearchFound] = useState(false);
+
+    useEffect(() => {
+        if (!user) {
+          navigate('/Login');
+        }
+      }, [user, navigate]);
 
     const handleBackButtonClick = () => {
         navigate('/Customer', {state: {user}});

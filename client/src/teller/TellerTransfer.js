@@ -7,7 +7,13 @@ import './/css/TellerTransfer.css';
 function TellerTransfer() {
     const navigate = useNavigate();
     const location = useLocation();
-    const user = location.state.user;    
+    const user = location.state && location.state.user; 
+    
+    useEffect(() => {
+        if (!user) {
+          navigate('/Login');
+        }
+      }, [user, navigate]);
 
     const handleBackButtonClick = () => {
         navigate('/Teller/Transaction', {state: {user}})

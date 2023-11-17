@@ -6,7 +6,7 @@ import './/css/TellerDeposit.css';
 function TellerDeposit() {
     const navigate = useNavigate();
     const location = useLocation();
-    const user = location.state.user;   
+    const user = location.state && location.state.user; 
     const customer = location.state.customer;
     const [customerAccounts, setCustomerAccounts] = useState([]);
     const [formData, setFormData] = useState({
@@ -17,6 +17,12 @@ function TellerDeposit() {
     })
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
+
+    useEffect(() => {
+        if (!user) {
+          navigate('/Login');
+        }
+      }, [user, navigate]);
     
     const handleBackButtonClick = () => {
         navigate('/Teller/Transaction', {state: {user}})
