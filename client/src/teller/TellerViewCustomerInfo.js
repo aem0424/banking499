@@ -41,6 +41,10 @@ function TellerViewCustomerInfo() {
         navigate('/Teller/Transaction', {state: {user, customer}});
     }
 
+    const handleViewAccountClick = (account) => {
+        navigate('/Teller/Account', {state: {user, customer, account}});
+    }
+
     const handleInputChange = (e) => {
         const {name, value} = e.target;
         setFormData({
@@ -163,8 +167,16 @@ function TellerViewCustomerInfo() {
              </div>                               
             </div>
             ): customer ? (
-                <div>
-             <form onSubmit={handleSubmit} className='search-form'>
+                <div>                      
+                  Name: {customer.FirstName} {customer.LastName}<br/>
+                  Address: {customer.Street}, {customer.Street2}<br/>
+                  Address: {customer.City}, {customer.State} {customer.ZIP}<br/>
+                  Phone Number: {customer.PhoneNumber}<br/>
+                  SSN: {customer.SSN}<br/>
+                  Date of Birth: {customer.DOB}<br/>
+                  <div>
+              <h2>Customer Accounts</h2>
+              <form onSubmit={handleSubmit} className='search-form'>
                         <div>
                             <label htmlFor="AccountName">Search Account by Name</label>
                             <input
@@ -179,15 +191,7 @@ function TellerViewCustomerInfo() {
                         <div>
                             <button type="submit">Search</button>
                         </div>
-             </form>                          
-                  Name: {customer.FirstName} {customer.LastName}<br/>
-                  Address: {customer.Street}, {customer.Street2}<br/>
-                  Address: {customer.City}, {customer.State} {customer.ZIP}<br/>
-                  Phone Number: {customer.PhoneNumber}<br/>
-                  SSN: {customer.SSN}<br/>
-                  Date of Birth: {customer.DOB}<br/>
-                  <div>
-              <h2>Customer Accounts</h2>
+             </form>                  
               <table className='striped-table'>
                <thead>
                 <tr>
@@ -204,13 +208,15 @@ function TellerViewCustomerInfo() {
                   <td>{account.AccountName}</td>
                   <td>{account.Balance.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</td>
                   <td>{account.InterestRate}</td>
+                  <td><button onClick={() => handleViewAccountClick(account)}>Transactions</button></td>
                   <td><button onClick={() => handleEditAccountClick(account)}>Edit</button></td>
                   <td><button onClick={() => handleDeleteAccountClick(account)}>Delete</button></td>
                 </tr>
                 ))}
               </tbody>
               </table>
-             </div>                         
+             </div>     
+             <button onClick={handleTransactionClick}>Make Transaction</button><br/>                                 
             </div>
             ) : null}
             <button onClick={handleBackButtonClick}>Back</button>            

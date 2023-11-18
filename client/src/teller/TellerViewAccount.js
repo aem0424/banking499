@@ -25,10 +25,6 @@ function TellerViewAccount() {
         navigate('/Teller/Customer', {state: {user, customer}});
     }
 
-    const handleDeleteClick = () => {
-        navigate('/Teller/Account/Delete', {state: {user, customer, account}});
-    }
-
     useEffect(() => {
         if (user) {
             axios.get('/user', {})
@@ -41,8 +37,8 @@ function TellerViewAccount() {
                 setLoading(false);
             })
         }      
-        if (account) {
-            axios.get('/customer/account', {AccountID: account.AccountID}, {withCredentials:true})
+        if (customer && account) {
+            axios.get('/teller/customer/account', {params: {UserID: customer.UserID, AccountID: account.AccountID}})
             .then((response) => {
                 if(response.status === 200) {
                     setAccountData(response.data);
@@ -51,9 +47,10 @@ function TellerViewAccount() {
                 setError(error);
                 setLoading(false);
             })
-        if (account) {
-            axios.get('/transactions/account', {AccountID: account.AccountID})
+        if (customer && account) {
+            axios.get('/transactions/account', {params: {AccountID: account.AccountID}})
             .then((response) => {
+                console.log(response);
                 if(response.status === 200) {
                     setTransactions(response.data);
                 }
@@ -64,7 +61,7 @@ function TellerViewAccount() {
             })
         }
         }
-    }, [user, account]);    
+    }, [user, customer, account]);    
 
     return (
         <div className='container'>
@@ -76,14 +73,35 @@ function TellerViewAccount() {
                 <div>
                     Account Name: {accountData.AccountName}<br/>
                     Account Type: {accountData.AccountType}<br/>
-                    Balance: {accountData.Balance}<br/>
-                    Interest Rate: {accountData.InterestRate}<br/>
-                    History: tba<br/>
-                    <button onClick={handleDeleteClick}>Delete Account</button>                    
+                    Balance: {accountData.Balance.toLocaleString('en-US', { style: 'currency', currency: 'USD'})}<br/>
+                    Interest Rate: {accountData.InterestRate}%<br/>
+                    <div>
+                        <h2>Transaction History:</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Transaction Type</th>
+                                    <th>Amount</th>
+                                    <th>Date/Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {transactions.map((transaction) => (
+                                    <tr key={transaction.TransactionID}>
+                                        <td>{transaction.TransactionID}</td>
+                                        <td>{transaction.TransactionType}</td>
+                                        <td>{transaction.Amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</td>
+                                        <td>{transaction.Timestamp}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             ): null }
             <button onClick={handleBackButtonClick}>Back</button>            
         </div>
     )
-}    
+}
 export default TellerViewAccount;

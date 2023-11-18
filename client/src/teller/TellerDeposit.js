@@ -25,7 +25,7 @@ function TellerDeposit() {
       }, [user, navigate]);
     
     const handleBackButtonClick = () => {
-        navigate('/Teller/Transaction', {state: {user}})
+        navigate('/Teller/Transaction', {state: {user, customer}})
     }
 
     const handleInputChange = (e) => {
@@ -45,8 +45,9 @@ function TellerDeposit() {
     }    
 
     useEffect(() => {
-        axios.get('/teller/customer/accounts', {UserID: customer.UserID, withCredentials:true})
+        axios.get('/teller/customer/accounts', {params: {UserID: customer.UserID}})
         .then((response) => {
+            console.log(response);
             if (response.status === 200) {
                 setCustomerAccounts(response.data);
                 console.log(customer);

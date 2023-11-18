@@ -7,6 +7,7 @@ function TellerDeleteAccount() {
     const location = useLocation();
     const navigate = useNavigate();
     const user = location.state && location.state.user;
+    const customer = location.state.customer;
     const account = location.state.account;
     const [userData, setUserData] = useState(null);
     const [customerData, setCustomerData] = useState(null);

@@ -17,15 +17,15 @@ function TellerTransaction() {
       }, [user, navigate]);
 
     const handleTellerTransfer = () => {
-        navigate('/Teller/Transaction/Transfer', { state: { user }});
+        navigate('/Teller/Transaction/Transfer', { state: { user, customer }});
     }
 
     const handleTellerDeposit = () => {
-        navigate('/Teller/Transaction/Deposit', {state: { user }});
+        navigate('/Teller/Transaction/Deposit', {state: { user, customer }});
     }
 
     const handleBackButtonClick = () => {
-        navigate('/Teller', {state: { user }})
+        navigate('/Teller/Customer', {state: { user }})
     }
 
     return (
