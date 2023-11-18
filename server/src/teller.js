@@ -173,12 +173,14 @@ router.put('/teller/customer/account/create', async (req, res) => {
     accountData = accountData[0];
 
     // Create Billable Info if it applies
-    if (accountData.AccountType == 'Credit Card') {
+    if (accountData.AccountType === 'Credit Card'|| accountData.AccountType === 'Home Mortgage Loan') {
         
-        let creditAccount = await buildCreditAccount(accountData)
+        let creditAccount = await buildCreditAccount(accountData);
+        console.log(creditAccount); //debug
         let [creditAccountData, err_creditAccountData] = await database.insertBillPay(creditAccount);
-        if (err_creditAccountData) return res.status(500).json({ error: `Failed to Insert the Account Data into BillPayment`, message: err_accountData.message });
-        console.log('Credit Account Data:', creditAccountData);
+        if (err_creditAccountData) return res.status(500).json({ error: `Failed to Insert the Account Data into BillPayment`, message: err_creditAccountData.message || 'Unknown error' });
+
+        console.log('Credit Account Data:', creditAccountData); // debug
     }
 
 
@@ -272,14 +274,15 @@ router.post('/teller/customer/account/activate', async (req, res) => {
 // helper function for creating Bill Information for Credit Account
 async function buildCreditAccount(account){
     const dueDate = createBillDate();
+    console.log(account.AccountType)
     const billpay = {
       UserID: account.UserID,
       Name: account.AccountName,
-      Address: 'Credit',
+      Address: 'default',
       Amount: account.Balance,
       AccountReference: account.AccountID,
       DueDate: dueDate,
-      BillType: 'Credit Card'
+      BillType: account.AccountType
     }
     return billpay;
   }

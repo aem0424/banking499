@@ -281,6 +281,23 @@ router.post('/billpay/account', async (req, res) => {
   return res.status(201).json(insertedData[0]);
 });
 
+// GET: Get a List of Customer Accounts with BillPayment Info (include {withCredentials:true})
+// Params: None
+// Return: [ Account1 {AccountID, UserID, AccountName, AccountType, Balance, InterestRate, Activated, Deleted}, Account2{...}, ... ]
+router.get('/billpay/customer/accounts', async (req, res) => {
+  // Check If User is Logged In
+  let userID = req.session.user?.UserID;
+  // let userRole = req.session.user?.Role;
+  // if (!userID || userRole != "Customer") return res.status(401).json({ error: "User Is Not Logged In As Customer" });
+
+  console.log(`Getting Bank Accounts List for User ${userID}`);
+
+  let [accountList, err_accountList] = await database.getUserAccountsBillpayIncluded(userID);
+  if (err_accountList) return res.status(500).json({ error: 'Failed to query Customer Accounts', message: err_accountList.message });
+
+  return res.status(200).json(accountList);
+});
+
 module.exports = {
   router: router,
   insertTransferTransaction: insertTransferTransaction

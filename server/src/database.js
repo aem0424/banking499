@@ -769,9 +769,27 @@ async function insertCreditAccount(account) {
     const { data, error } = await supabase
     .from('BillPayment')
     .insert(account)
+    return [data, error ];
 
 }
   
+
+// Get User Accounts and include Billpayment info
+// Params: UserID
+// Return: Entire Account data with left join on BillPayments table for Credit Card accounts
+async function getUserAccountsBillpayIncluded(userID) {
+    let { data, error } = await supabase
+        .from('Account')
+        .select('*, BillPayment(*)') // Make sure to close the parenthesis for BillPayment
+        .eq("UserID", userID)
+        .eq("Activated", true);
+        
+    return [data, error];
+}
+
+
+
+
 
 
 module.exports = {
@@ -840,5 +858,6 @@ module.exports = {
     insertBillPay,
     insertCreditAccount,
 
+    getUserAccountsBillpayIncluded,
     
 }
