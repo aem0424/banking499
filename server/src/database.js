@@ -155,8 +155,8 @@ async function getUserAddress(userID) {
 async function searchUsers(nameText) {
     const { data, error } = await supabase
         .from('User')
-        .textSearch('FullName', nameText)
-        .select();
+        .select()
+        .textSearch('FullName', nameText);
 
     return [data, error];
 }
@@ -164,9 +164,9 @@ async function searchUsers(nameText) {
 async function searchUsersWithRole(nameText, role) {
     const { data, error } = await supabase
         .from('User')
-        .textSearch('FullName', nameText)
+        .select()
         .eq('Role', role)
-        .select();
+        .textSearch('FullName', nameText);
 
     return [data, error];
 }
@@ -492,10 +492,10 @@ async function getBalanceFromAccountID(accountID) {
 async function searchAccounts(userID, accountName) {
     let { data, error } = await supabase
         .from('Account')
+        .select()
         .eq('UserID', userID)
         .eq("Activated", true)
-        .textSearch('AccountName', accountName)
-        .select();
+        .textSearch('AccountName', accountName);
 
     return [data, error];
 }
