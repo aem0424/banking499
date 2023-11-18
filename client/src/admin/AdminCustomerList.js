@@ -88,6 +88,9 @@ function AdminCustomerList() {
         ) : (
           <div>
           <h1>Customer List</h1>
+          {customers.length === 0 ? (
+            <p style={{color:'red'}}>No Customers Found</p>
+          ): (
           <table className='striped-table'>
         <thead>
               {/*<tr>
@@ -97,8 +100,8 @@ function AdminCustomerList() {
         </thead>
         <tbody>
           {customers
-            .slice(startIndex,endIndex)
             .sort((a, b) => a.LastName.localeCompare(b.LastName))
+            .slice(startIndex,endIndex)
             .map((customer, index) => (
               <tr key={startIndex + index}>
                 <td>
@@ -111,12 +114,13 @@ function AdminCustomerList() {
             ))}
         </tbody>
       </table>
-      {startIndex > 0 && (
+          )}
+            {startIndex > 0 && (
               <button onClick={handleLoadPrevious} className='form-button'>Load Previous Customers</button>
             )}
-      {endIndex < customers.length && (
-            <button onClick={handleLoadMore} className='form-button'>Load Next Customers</button>
-          )}
+            {endIndex < customers.length && (
+              <button onClick={handleLoadMore} className='form-button'>Load Next Customers</button>
+            )}
           <button onClick={handleAdminMainClick} className='form-button'>Admin Main</button>
           <button onClick={handleLogoutClick} className='logout-button'>Logout</button>
         </div>

@@ -76,6 +76,20 @@ function CustomerViewAccountList() {
         });
     }, [user]);
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+  
+    const handleLoadMore = () => {
+      setCurrentPage(currentPage + 1);
+    };
+  
+    const handleLoadPrevious = () => {
+      setCurrentPage(currentPage - 1);
+    };
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = currentPage * itemsPerPage;
+
     return (
         <div className='container'>
             {loading ? (
@@ -84,6 +98,7 @@ function CustomerViewAccountList() {
                 <p>ERROR: {error.message}</p>
             ) : searchFound ? (
                 <div>
+                    {searchAccounts.length > 0 ?( 
                     <ul>
                         {searchAccounts.map((account, index) => (
                             <li key={index}>
@@ -92,20 +107,48 @@ function CustomerViewAccountList() {
                             
                          ))}
                     </ul>
+                    ) : (
+                        <p style={{color:'red'}}>No Active Accounts</p>
+                    )}
                 </div>
-            ) : userAccounts ? (
+            ) : userAccounts.length > 0 ? (
                 <div>
-                    <ul>
-                        {userAccounts.map((account, index) => (
-                            <li key={index}>
-                                <button onClick={() => handleViewInformationClick(account)}>{account.AccountName}</button><br/>
-                                </li>
+                    <h2>Account List</h2>
+                    <table className='striped-table'>
+                        <thead>
+                            <tr>
+                            <th>Account Type</th>
+                            <th>Account Name</th>
+                            <th>Balance</th>
+                            <th></th>
+                            </tr>
+                        </thead>
+                    <tbody>
+                        {userAccounts
+                            .sort((a, b) => a.AccountType.localeCompare(b.AccountType))
+                            .slice(startIndex,endIndex)
+                            .map((account, index) => (
+                            <tr key={index}>
+                                <td>{account.AccountType}</td>
+                                <td>{account.AccountName}</td>
+                                <td>{account.Balance.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</td>
+                                <td>
+                                    <button onClick={() => handleViewInformationClick(account)}>View</button><br/>
+                                </td>
+                            </tr>
                             
                          ))}
-                    </ul>
+                    </tbody>
+                    </table>
+                    {startIndex > 0 && (
+                        <button onClick={handleLoadPrevious} className='form-button'>Load Previous Accounts</button>
+                    )}
+                    {endIndex < userAccounts.length && (
+                        <button onClick={handleLoadMore} className='form-button'>Load More Accounts</button>
+                    )}
                     <form onSubmit={handleSubmit} className='search-form'>
                         <div>
-                            <label htmlFor="AccountName">Search Account by Name</label>
+                            <label htmlFor="AccountName" className='form-label'>Search Account by Name</label>
                             <input
                                 type="text"
                                 id="AccountName"
@@ -116,12 +159,14 @@ function CustomerViewAccountList() {
                             />
                         </div>
                         <div>
-                            <button type="submit">Search</button>
+                            <button type="submit" className='submit-button'>Search</button>
                         </div>
                     </form>
                 </div>
-            ) : null}
-            <button onClick={handleBackButtonClick}>Back</button>            
+            ) : (
+                <p style={{color:'red'}}>No Active Accounts</p>
+            )}
+            <button onClick={handleBackButtonClick} className='form-button'>Back</button>            
         </div>
     )
 }

@@ -94,10 +94,10 @@ function CustomerTransfer() {
                 <p>ERROR: {error.message}</p>
             ) : userAccounts ? (
             <div>
-                <h1>Transfer Funds</h1>             
-            <form onSubmit={handleSubmit} className='amount-form'>
-            <div> 
-                <label htmlFor="FromAccountID">Transfer From: </label>
+                <h2>Transfer Funds</h2>
+            <form onSubmit={handleSubmit} className='register-form'>
+            <div className='form-group'> 
+                <label htmlFor="FromAccountID" className='form-label'>Transfer From: </label>
                 <select
                     type="text"
                     id="FromAccountID"
@@ -110,8 +110,8 @@ function CustomerTransfer() {
                     {createAccountList()};
                 </select>                    
               </div>                     
-              <div> 
-                <label htmlFor="ToAccountID">Transfer To: </label>
+              <div className='form-group'> 
+                <label htmlFor="ToAccountID" className='form-label'>Transfer To: </label>
                 <select
                     type="text"
                     id="ToAccountID"
@@ -124,8 +124,8 @@ function CustomerTransfer() {
                     {createAccountList()};
                 </select>                    
               </div>          
-              <div> 
-                <label htmlFor="Amount">Amount to Transfer</label>
+              <div className='form-group'> 
+                <label htmlFor="Amount" className='form-label'>Amount to Transfer</label>
                 <input
                     type="numeric"
                     id="Amount"
@@ -136,12 +136,12 @@ function CustomerTransfer() {
                 />  
               </div> 
               <div>                         
-                <button type="submit">Transfer Funds</button>
+                <button type="submit" className='submit-button'>Transfer Funds</button>
               </div>
             </form> 
             </div>               
             ) : null}
-            <button onClick={handleBackButtonClick}>Back</button>            
+            <button onClick={handleBackButtonClick} className='form-button'>Back</button>            
         </div>
     )
 }

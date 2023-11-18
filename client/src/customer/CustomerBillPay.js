@@ -85,9 +85,10 @@ function CustomerBillPay() {
         ) : userAccounts ? (
         <div>
             <h1>Pay Bill</h1>             
-        <form onSubmit={handleSubmit} className='amount-form'>
-        <div> 
-            <label htmlFor="Name">Payee Name:</label>
+        <form onSubmit={handleSubmit} className='register-form'>
+            <div className='form-columns'>
+        <div className="form-group">
+            <label htmlFor="Name" className='form-label'>Payee Name:</label>
             <input
                 type="text"
                 id="Name"
@@ -97,8 +98,8 @@ function CustomerBillPay() {
                 required
             />  
           </div>         
-          <div> 
-            <label htmlFor="Address">Payee Address:</label>
+          <div className="form-group">
+            <label htmlFor="Address" className='form-label'>Payee Address:</label>
             <input
                 type="text"
                 id="Address"
@@ -107,9 +108,11 @@ function CustomerBillPay() {
                 onChange={handleInputChange}
                 required
             />  
-          </div>                          
-        <div> 
-            <label htmlFor="PayFromAccount">Pay From:</label>
+          </div>  
+          </div>
+          <div className='form-columns'>
+          <div className="form-group">
+            <label htmlFor="PayFromAccount" className='form-label'>Pay From:</label>
             <select
                 type="text"
                 id="PayFromAccount"
@@ -122,8 +125,8 @@ function CustomerBillPay() {
                 {createAccountList()};
             </select>                    
           </div>                            
-          <div> 
-            <label htmlFor="Amount">Amount to Transfer:</label>
+          <div className="form-group">
+            <label htmlFor="Amount" className='form-label'>Amount to Transfer:</label>
             <input
                 type="numeric"
                 id="Amount"
@@ -133,8 +136,8 @@ function CustomerBillPay() {
                 required
             />  
           </div> 
-          <div> 
-            <label htmlFor="DueDate">Due Date:</label>
+          <div className="form-group">
+            <label htmlFor="DueDate" className='form-label'>Due Date:</label>
             <input
                 type="date"
                 id="DueDate"
@@ -143,14 +146,15 @@ function CustomerBillPay() {
                 onChange={handleInputChange}
                 required
             />  
+          </div>
           </div>           
           <div>                         
-            <button type="submit">Pay Bill</button>
+            <button type="submit" className='submit-button'>Pay Bill</button>
           </div>
         </form> 
         </div>               
         ) : null}
-        <button onClick={handleBackButtonClick}>Back</button>            
+        <button onClick={handleBackButtonClick} className='form-button'>Back</button>            
     </div>
 )
 }

@@ -90,6 +90,9 @@ function AdminCustomerInfo() {
             
             <div>
               <h2>Customer Accounts</h2>
+              {accounts.length === 0 ? (
+                <p style={{color: 'red' }}>No Active Accounts</p>
+              ) : (
               <table className='striped-table'>
                <thead>
                 <tr>
@@ -108,6 +111,7 @@ function AdminCustomerInfo() {
                 ))}
               </tbody>
               </table>
+              )}
             </div>
             <button onClick={handleAdminMainClick} className='form-button'>Admin Main</button>
             <button onClick={handleLogoutClick} className='logout-button'>Logout</button>

@@ -31,9 +31,9 @@ function CustomerTransaction() {
     return (
         <div className='container'>
             <h1>Please select a transaction to perform.</h1>
-            <button onClick={handleCustomerTransferClick}>Transfer</button><br/>
-            <button onClick={handleCustomerDepositClick}>Deposit</button><br/>
-            <button onClick={handleBackButtonClick}>Back</button>
+            <button onClick={handleCustomerTransferClick} className='form-button'>Transfer</button>
+            <button onClick={handleCustomerDepositClick} className='form-button'>Deposit</button>
+            <button onClick={handleBackButtonClick} className='form-button'>Back</button>
         </div>
     )
 }

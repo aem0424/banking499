@@ -81,9 +81,10 @@ function CustomerEditUserInformation() {
     return (
         <div className='container'>
             <div>
-            <h1>Edit User Information</h1>
+            <h2>Edit User Information</h2>
             <form onSubmit={handleSubmit} className="edit-form">
                 <div className="form-columns">
+                  <div className='form-group'>
                     <label htmlFor="FirstName" className="form-label">First Name</label>
                     <input
                         type="text"
@@ -95,7 +96,7 @@ function CustomerEditUserInformation() {
                         className="form-input"
                     />
                 </div>
-                <div className="form-columns">
+                <div className="form-group">
                     <label htmlFor="LastName" className="form-label">Last Name</label>
                     <input
                         type="text"
@@ -107,7 +108,7 @@ function CustomerEditUserInformation() {
                         className="form-input"
                     />                    
                 </div>
-                <div className="form-columns">
+                <div className="form-group">
                     <label htmlFor="Street" className="form-label">Address</label>
                     <input
                         type="text"
@@ -119,7 +120,7 @@ function CustomerEditUserInformation() {
                         className="form-input"
                     />                         
                 </div>
-                <div className="form-columns">
+                <div className="form-group">
                     <label htmlFor="Street2" className="form-label">Address 2</label>
                     <input
                         type="text"
@@ -131,7 +132,9 @@ function CustomerEditUserInformation() {
                         className="form-input"
                     />                         
                 </div>
+                </div>
                 <div className="form-columns">
+                  <div className='form-group'>
                     <label htmlFor="City" className="form-label">City</label>
                     <input
                         type="text"
@@ -143,7 +146,7 @@ function CustomerEditUserInformation() {
                         className="form-input"
                     />                                       
                 </div>
-                <div className="form-columns">
+                <div className="group">
                     <label htmlFor="State" className="form-label">State</label>
                     <select
                        id="State"
@@ -204,7 +207,7 @@ function CustomerEditUserInformation() {
                   <option value="Wyoming">Wyoming</option>
             </select>                    
                 </div>
-                <div className="form-columns">
+                <div className="form-group">
                     <label htmlFor="ZIP" className="form-label">ZIP Code</label>
                     <input
                         type="text"
@@ -216,7 +219,7 @@ function CustomerEditUserInformation() {
                         className="form-input"
                     />   
                 </div>
-                <div className="form-columns">
+                <div className="form-group">
                     <label htmlFor="PhoneNumber" className="form-label">Phone Number</label>
                     <input
                         type="text"
@@ -228,7 +231,7 @@ function CustomerEditUserInformation() {
                         className="form-input"
                     />                       
                 </div>
-                <div className="form-columns">
+                <div className="form-group">
                     <label htmlFor="DOB" className="form-label">Date of Birth</label>
                     <input
                         type="date"
@@ -239,10 +242,11 @@ function CustomerEditUserInformation() {
                         required
                     />             
                 </div>
-                <button type="submit" className="form-button">Make Edits</button><br/>
+                </div>
+                <button type="submit" className="submit-button">Make Edits</button><br/>
             </form>
            </div>
-          <button onClick={handleBackButtonClick}>Back</button>          
+          <button onClick={handleBackButtonClick} className='form-button'>Back</button>          
         </div>
     )
 }

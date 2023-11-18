@@ -70,11 +70,11 @@ function CustomerMain() {
           ) : userData ? (
             <div>
              <h1>Welcome, {userData.FirstName} {userData.LastName}!</h1>
-             <button onClick={handleCustomerBillPayClick}>Pay Bill</button><br/>
-             <button onClick={handleCustomerViewUserInformationClick}>User Information</button><br/>
-             <button onClick={handleCustomerTransactionClick}>Transfer/Deposit</button><br/>
-             <button onClick={handleCustomerAccountsClick}>Accounts</button>
-             <button onClick={handleLogoutClick}>Log Out</button>
+             <button onClick={handleCustomerBillPayClick} className='form-button'>Pay Bill</button><br/>
+             <button onClick={handleCustomerViewUserInformationClick} className='form-button'>User Information</button><br/>
+             <button onClick={handleCustomerTransactionClick} className='form-button'>Transfer/Deposit</button><br/>
+             <button onClick={handleCustomerAccountsClick} className='form-button'>Accounts</button><br/>
+             <button onClick={handleLogoutClick} className='logout-button'>Log Out</button>
            </div> 
           ) : null}
         </div>

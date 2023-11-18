@@ -21,3 +21,7 @@ body {
     max-width: 1000px;
     width: 100%;
   }
+
+  .info p::first-word {
+    font-weight: bold;
+  }

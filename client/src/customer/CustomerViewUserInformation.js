@@ -49,17 +49,22 @@ function CustomerViewUserInformation() {
         ) : error ? (
           <p>ERROR: {error.message}</p>
         ) : userData? (
-          <div>
-            Name: {userData.FirstName} {userData.LastName}<br/>
-            Address: {userData.Street}, {userData.Street2}<br/>
-            Address: {userData.City}, {userData.State} {userData.ZIP}<br/>
-            Phone Number: {userData.PhoneNumber}<br/>
-            SSN: {userData.SSN}<br/>
-            Date of Birth: {userData.DOB}<br/>
-            <button onClick={() => handleEditClick(userData)}>Edit User Information</button>
+          <div className='info'>
+            <h2>Customer Information</h2>
+            <p><strong>Name:</strong> {userData.FirstName} {userData.LastName}</p>
+            <p><strong>Address Line 1:</strong> {userData.Street}</p>
+            <p><strong>Address Line 2:</strong> {userData.Street2}</p>
+            <p><strong>City:</strong> {userData.City}</p>
+            <p><strong>State:</strong> {userData.State}</p>
+            <p><strong>ZIP:</strong> {userData.ZIP}</p>
+            <p><strong>Phone Number:</strong> {userData.PhoneNumber}</p>
+            <p><strong>SSN:</strong> {userData.SSN}</p>
+            <p><strong>Date of Birth:</strong> {userData.DOB}</p>
+            <button onClick={() => handleEditClick(userData)} className='form-button'>Edit User Information</button>
+            <button onClick={handleBackButtonClick} className='form-button'>Back</button>      
           </div>
         ) : null}
-        <button onClick={handleBackButtonClick}>Back</button>        
+  
         </div>
     )
 }

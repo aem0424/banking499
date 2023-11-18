@@ -97,6 +97,9 @@ function AdminTellerList() {
         ) : (
           <div>
           <h1>Teller List</h1>
+          {tellers.length === 0 ? (
+            <p style={{color:'red'}}>No Tellers Found</p>
+          ) : (
           <table className='striped-table'>
             <thead>
               {/*<tr>
@@ -107,8 +110,8 @@ function AdminTellerList() {
             </thead>
             <tbody>
               {tellers
-              .slice(startIndex,endIndex)
               .sort((a,b) => a.LastName.localeCompare(b.LastName))
+              .slice(startIndex,endIndex)
               .map((teller, index) => (
                 <tr key={startIndex + index}>
                   <td>
@@ -124,6 +127,7 @@ function AdminTellerList() {
               ))}
             </tbody>
           </table>
+          )}
           {startIndex > 0 && (
               <button onClick={handleLoadPrevious} className='form-button'>Load Previous Tellers</button>
             )}
