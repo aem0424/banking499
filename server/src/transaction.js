@@ -233,7 +233,7 @@ router.get('/billpay/accounts', async (req, res) => {
 router.get('/billpay/account', async (req, res) => {
   // Check If the User is Logged In
 
-  const billpayID = req.body.BillPayID;
+  const billpayID = req.query.BillPayID;
 
   console.log(`Getting User ${billpayID}'s BillPay Account(s)`);
 
