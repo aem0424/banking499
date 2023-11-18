@@ -10,6 +10,10 @@ function TellerCreateAccount() {
     const user = location.state && location.state.user;  
     const customer = location.state.customer;
     const [formData, setFormData] = useState({
+        UserID: customer?.UserID,
+        Balance: 0,
+        InterestRate: 1,
+        Activated:true,
         AccountName: '',
         AccountType: '',
     })
@@ -36,7 +40,7 @@ function TellerCreateAccount() {
     const handleSubmit = async(e) => {
         e.preventDefault();
         try {
-          const response = await axios.put('/customer/account/create', formData)
+          const response = await axios.put('/teller/customer/account/create', formData)
           if (response.status === 200) {
             console.log('Account creation requested successful:', response.data)
           }

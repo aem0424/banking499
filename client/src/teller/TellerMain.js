@@ -18,10 +18,6 @@ function TellerMain() {
         }
       }, [user, navigate]);
 
-    const handleTellerTransaction = () => {
-        navigate('/Teller/Transaction', { state: { user }})
-    }
-
     const handleTellerCustomer = () => {
         navigate('/Teller/Customer', { state: { user }})
     }
@@ -64,7 +60,6 @@ function TellerMain() {
                <div> 
                 <h1>Welcome, {userData.FirstName} {userData.LastName}!</h1>
                 <p> This is the main teller page.</p>
-                <button onClick={handleTellerTransaction}>View Transactions</button><br/>
                 <button onClick={handleTellerCustomer}>View Customers/Accounts</button><br/>
                 <button onClick={handleLogoutClick}>Logout</button>            
                </div>     

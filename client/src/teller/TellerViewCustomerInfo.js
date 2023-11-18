@@ -33,6 +33,10 @@ function TellerViewCustomerInfo() {
         navigate('/Teller/Account/Edit', {state: {user, customer, account}});
     }
 
+    const handleCreateAccountClick = () => {
+        navigate('/Teller/Account/Create', {state: {user, customer}});
+    }
+
     const handleDeleteAccountClick = (account) => {
         navigate('/Teller/Account/Delete', {state: {user, customer, account}});
     }
@@ -216,6 +220,7 @@ function TellerViewCustomerInfo() {
               </tbody>
               </table>
              </div>     
+             <button onClick={handleCreateAccountClick}>New Account</button>
              <button onClick={handleTransactionClick}>Make Transaction</button><br/>                                 
             </div>
             ) : null}
