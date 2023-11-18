@@ -108,7 +108,7 @@ function CustomerViewAccountList() {
                          ))}
                     </ul>
                     ) : (
-                        <p style={{color:'red'}}>No Active Accounts</p>
+                        <p style={{color:'red'}}>No Accounts Found</p>
                     )}
                 </div>
             ) : userAccounts.length > 0 ? (
