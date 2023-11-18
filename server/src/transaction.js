@@ -9,7 +9,7 @@ const database = require('./database.js');
 // Params: TransactionID
 // Return: Entire Transaction row data
 router.get('/transactions', async (req, res) => {
-    const transactionID = req.body.TransactionID;
+    const transactionID = req.query.TransactionID;
     if (!transactionID) {
       return res.status(401).json({ error: "Transaction ID is missing from the request body" });
     }
@@ -28,7 +28,7 @@ router.get('/transactions', async (req, res) => {
 // Params: AccountID
 // Return: Entire Transaction row data
 router.get('/transactions/account', async (req, res) => {
-    const accountID = String(req.body.AccountID);
+    const accountID = req.query.AccountID;
     console.log(accountID);
     if (!accountID) {
       return res.status(400).json({ error: "AccountID is missing from the request body" });
@@ -47,7 +47,7 @@ router.get('/transactions/account', async (req, res) => {
 // Params: AccountID
 // Return: Entire Transaction row data
 router.get('/transactions/deposits', async (req, res) => {
-    const accountID = String(req.body.AccountID);
+    const accountID = req.query.AccountID;
     if (!accountID) {
       return res.status(400).json({ error: "AccountID is missing from the request body" });
     }
@@ -66,7 +66,7 @@ router.get('/transactions/deposits', async (req, res) => {
 // Params: AccountID
 // Return: Entire Withdrawal Transaction row data
 router.get('/transactions/withdrawals', async (req, res) => {
-    const accountID = String(req.body.AccountID);
+    const accountID = req.query.AccountID;
     if (!accountID) {
       return res.status(400).json({ error: "AccountID is missing from the request body" });
     }
@@ -84,7 +84,7 @@ router.get('/transactions/withdrawals', async (req, res) => {
 // Params: AccountID
 // Return: Entire Transfer Transaction row data
 router.get('/transactions/transfers', async (req, res) => {
-    const accountID = String(req.body.AccountID);
+    const accountID = req.query.AccountID;
     if (!accountID) {
       return res.status(400).json({ error: "AccountID is missing from the request body" });
     }
@@ -126,6 +126,21 @@ router.post('/transactions', async (req, res) => {
       res.status(500).json({ error: "An error occurred while processing the request." });
   }
 });
+
+router.post('transactions/post/deposit', async (req, res) => {
+  try {
+    const transaction = req.body;
+
+  }
+  catch {
+
+  }
+
+});
+
+router.post('transaction/post/withdrawal', async (req, res) => {
+
+})
 
 
 
@@ -185,7 +200,7 @@ async function insertTransferTransaction(transaction) {
 //Returns True if transaction would take account Balance below 0
 async function isTransactionBelowZero(accountID, transactionAmount){
   let accountBalance = await database.getBalanceFromAccountID(accountID);
-  console.log(accountBalance)
+ // console.log(accountBalance) //debug
   return (accountBalance - transactionAmount) < 0;
 }
 
