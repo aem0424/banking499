@@ -472,6 +472,19 @@ async function getAccountIDFromUserID(userID) {
 
     return [data, error];
 }
+// Get Balance from AccountID
+// Params: AcountID
+// Return: Balance
+async function getBalanceFromAccountID(accountID) {
+    let { data, error } = await supabase
+    .from('Account')
+    .select('Balance')
+    .eq('AccountID', accountID)
+    .single();
+
+    return data.Balance;
+
+}
 
 // Search Accounts
 // Params: UserID, AccountName
@@ -800,6 +813,7 @@ module.exports = {
     getAccounts,
     getUserAccounts,
     getAccountIDFromUserID,
+    getBalanceFromAccountID,
     searchAccounts,
     insertAccount,
     deleteAccount,

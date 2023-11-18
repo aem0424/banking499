@@ -103,25 +103,30 @@ router.get('/transactions/transfers', async (req, res) => {
 // POST: Insert a Transaction
 // Params: Transaction { TransactionType, FromAccountID, ToAccountID, Amount }
 // Return: Transaction { TransactionType, FromAccountID, ToAccountID, Amount, Timestamp } (Confirmation)
-  router.post('/transactions', async (req, res) => {
-    try {
+router.post('/transactions', async (req, res) => {
+  try {
       const transaction = req.body; // Assuming the transaction data is sent in the request body
-  
-      // Validate the 'transaction' here
-  
+
+      // Verify Transaction will not take FromAccount to below zero
+      testbool = await isTransactionBelowZero(transaction.FromAccountID, transaction.Amount);
+      if (testbool == true) {
+          return res.status(402).json({ error: 'Insufficient funds' });
+      }
+
       // Perform the insertion of the transaction
       let [insertedTransaction, error] = await insertTransferTransaction(transaction);
-  
+
       if (error) {
-        return res.status(500).json({ error: "Failed to insert the transaction", message: error.message });
+          return res.status(500).json({ error: "Failed to insert the transaction", message: error.message });
       }
-  
+
       return res.status(201).json({ message: "Transaction inserted successfully", data: insertedTransaction });
-    } catch (error) {
+  } catch (error) {
       console.error("An error occurred:", error);
       res.status(500).json({ error: "An error occurred while processing the request." });
-    }
-  });
+  }
+});
+
 
 
 
@@ -177,6 +182,12 @@ async function insertTransferTransaction(transaction) {
   }
 }
 
+//Returns True if transaction would take account Balance below 0
+async function isTransactionBelowZero(accountID, transactionAmount){
+  let accountBalance = await database.getBalanceFromAccountID(accountID);
+  console.log(accountBalance)
+  return (accountBalance - transactionAmount) < 0;
+}
 
 
 // ------------------------ BillPay -------------------------------
