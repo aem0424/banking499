@@ -1,33 +1,28 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useNavigate, useLocation } from 'react-router-dom'
-import './/css/TellerDeposit.css';
-
-function TellerDeposit() {
-    const navigate = useNavigate();
+import './/css/CustomerWithdraw.css';
+function CustomerWithdraw() {
     const location = useLocation();
-    const user = location.state && location.state.user; 
-    const customer = location.state.customer;
-    const [customerAccounts, setCustomerAccounts] = useState([]);
+    const navigate = useNavigate();
+    const user = location.state && location.state.user;
+    const [userAccounts, setUserAccounts] = useState([]);
     const [formData, setFormData] = useState({
-        TransactionType:'Deposit',
-        FromAccountID:'19',
-        ToAccountID:'',
+        TransactionType:'Withdraw',
+        FromAccountID:'',
+        ToAccountID:'19',
         Amount:'',
-    })
+    });
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
+    const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
 
-    useEffect(() => {
-        if (!user) {
-          navigate('/Login');
-        }
-      }, [user, navigate]);
-    
-    const handleBackButtonClick = () => {
-        navigate('/Teller/Transaction', {state: {user, customer}})
+      // Check if user is null, redirect to "/"
+  useEffect(() => {
+    if (!user) {
+      navigate('/Login');
     }
+  }, [user, navigate]);
 
     const handleInputChange = (e) => {
         const {name, value} = e.target;
@@ -35,23 +30,21 @@ function TellerDeposit() {
             ...formData,
             [name]: value,
         });
-    };    
+    };
 
     const createAccountList = (e) => {
         let accountList = [];
-        customerAccounts.map((account, index) => (
+        userAccounts.map((account, index) => (
             accountList.push(<option key={index} value={account.AccountID}>{account.AccountID}: {account.AccountName}</option>)
         ));
         return accountList;
-    }    
+    }
 
     useEffect(() => {
-        axios.get('/teller/customer/accounts', {params: {UserID: customer.UserID}})
+        axios.get('/customer/accounts', {withCredentials:true})
         .then((response) => {
-            console.log(response);
             if (response.status === 200) {
-                setCustomerAccounts(response.data);
-                console.log(customer);
+                setUserAccounts(response.data);
             }
             setLoading(false);            
         })
@@ -60,13 +53,12 @@ function TellerDeposit() {
             setError(error);
             setLoading(false);
         });
-    }, [customer]);    
+    }, [user]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const {TransactionType, FromAccountID, ToAccountID, Amount} = formData;
         setError(null);
-
         try {
             const response = await axios.post('http://localhost:4000/transactions', {
                 TransactionType,
@@ -85,7 +77,11 @@ function TellerDeposit() {
             setError(error);
             console.log('error: ', error)
         }
-    };    
+    };
+
+    const handleBackButtonClick = () => {
+        navigate('/Customer/Transaction', {state: {user}})
+    }
 
     return (
         <div className='container'>
@@ -94,18 +90,18 @@ function TellerDeposit() {
             ) : error ? (
                 <p>ERROR: {error.message}</p>
             ) : success ? (
-                <p>Successful deposit!</p>
-            ) : customerAccounts ? (
+                <p>Success!</p>
+            ) : userAccounts ? (
             <div>
-                <h1>Deposit Funds</h1>             
-            <form onSubmit={handleSubmit} className='amount-form'>
-              <div> 
-                <label htmlFor="ToAccountID">Account</label>
+                <h1>Withdraw Funds</h1>             
+            <form onSubmit={handleSubmit} className='register-form'>
+              <div className='form-group'> 
+                <label htmlFor="FromAccountID" className='form-label'>Account</label>
                 <select
                     type="text"
-                    id="ToAccountID"
-                    name="ToAccountID"
-                    value={formData.ToAccountID}
+                    id="FromAccountID"
+                    name="FromAccountID"
+                    value={formData.FromAccountID}
                     onChange={handleInputChange}
                     required
                 >
@@ -113,8 +109,8 @@ function TellerDeposit() {
                     {createAccountList()};
                 </select>                    
               </div>          
-              <div> 
-                <label htmlFor="Amount">Amount to Deposit</label>
+              <div className='form-group'> 
+                <label htmlFor="Amount" className='form-label'>Amount to Withdraw</label>
                 <input
                     type="numeric"
                     id="Amount"
@@ -125,13 +121,13 @@ function TellerDeposit() {
                 />  
               </div> 
               <div>                         
-                <button type="submit">Deposit Funds</button>
+                <button type="submit" className='submit-button'>Withdraw Funds</button>
               </div>
             </form> 
             </div>               
             ) : null}
-            <button onClick={handleBackButtonClick}>Back</button>            
+            <button onClick={handleBackButtonClick} className='form-button'>Back</button>            
         </div>
     )
 }
-export default TellerDeposit;
+export default CustomerWithdraw;

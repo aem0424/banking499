@@ -3,16 +3,16 @@ import axios from 'axios'
 import { useNavigate, useLocation } from 'react-router-dom'
 import './/css/TellerDeposit.css';
 
-function TellerDeposit() {
+function TellerWithdraw() {
     const navigate = useNavigate();
     const location = useLocation();
     const user = location.state && location.state.user; 
     const customer = location.state.customer;
     const [customerAccounts, setCustomerAccounts] = useState([]);
     const [formData, setFormData] = useState({
-        TransactionType:'Deposit',
-        FromAccountID:'19',
-        ToAccountID:'',
+        TransactionType:'Withdraw',
+        FromAccountID:'',
+        ToAccountID:'19',
         Amount:'',
     })
     const [loading, setLoading] = useState(true);
@@ -94,18 +94,18 @@ function TellerDeposit() {
             ) : error ? (
                 <p>ERROR: {error.message}</p>
             ) : success ? (
-                <p>Successful deposit!</p>
+                <p>Successful withdraw!</p>
             ) : customerAccounts ? (
             <div>
-                <h1>Deposit Funds</h1>             
+                <h1>Withdraw Funds</h1>             
             <form onSubmit={handleSubmit} className='amount-form'>
               <div> 
-                <label htmlFor="ToAccountID">Account</label>
+                <label htmlFor="FromAccountID">Account</label>
                 <select
                     type="text"
-                    id="ToAccountID"
-                    name="ToAccountID"
-                    value={formData.ToAccountID}
+                    id="FromAccountID"
+                    name="FromAccountID"
+                    value={formData.FromAccountID}
                     onChange={handleInputChange}
                     required
                 >
@@ -114,7 +114,7 @@ function TellerDeposit() {
                 </select>                    
               </div>          
               <div> 
-                <label htmlFor="Amount">Amount to Deposit</label>
+                <label htmlFor="Amount">Amount to Withdraw</label>
                 <input
                     type="numeric"
                     id="Amount"
@@ -125,7 +125,7 @@ function TellerDeposit() {
                 />  
               </div> 
               <div>                         
-                <button type="submit">Deposit Funds</button>
+                <button type="submit">Withdraw Funds</button>
               </div>
             </form> 
             </div>               
@@ -134,4 +134,4 @@ function TellerDeposit() {
         </div>
     )
 }
-export default TellerDeposit;
+export default TellerWithdraw;

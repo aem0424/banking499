@@ -113,14 +113,6 @@ function TellerCustomerManage() {
           </div>
             ) : customers ? (
               <div>
-                <ul>
-                    {customers.map((customer, index) => (
-                        <li key={index}>
-                            <p>{customer.FirstName} {customer.LastName}
-                            <button onClick={() => handleViewCustomerClick(customer)}>View</button></p>
-                        </li>
-                    ))}
-                </ul>
                 <form onSubmit={handleSubmit} className='search-form'>
                         <div>
                             <label htmlFor="Name">Search Users by Name</label>
@@ -136,7 +128,15 @@ function TellerCustomerManage() {
                         <div>
                             <button type="submit">Search</button>
                         </div>
-                    </form>     
+                    </form>                     
+                <ul>
+                    {customers.map((customer, index) => (
+                        <li key={index}>
+                            <p>{customer.FirstName} {customer.LastName}
+                            <button onClick={() => handleViewCustomerClick(customer)}>View</button></p>
+                        </li>
+                    ))}
+                </ul>
                 </div>                        
             ) : null }
             <button onClick={handleBackButtonClick}>Back</button>

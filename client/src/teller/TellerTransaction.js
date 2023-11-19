@@ -24,6 +24,10 @@ function TellerTransaction() {
         navigate('/Teller/Transaction/Deposit', {state: { user, customer }});
     }
 
+    const handleTellerWithdraw = () => {
+        navigate('/Teller/Transaction/Withdraw', {state: {user, customer}});
+    }
+
     const handleBackButtonClick = () => {
         navigate('/Teller/Customer', {state: { user }})
     }
@@ -32,7 +36,8 @@ function TellerTransaction() {
         <div className='container'>
             <h1>Please select a transaction to perform on the selected account.</h1>
             <button onClick={handleTellerTransfer}>Transfer</button>
-            <button onClick={handleTellerDeposit}>Deposit</button><br/>  
+            <button onClick={handleTellerDeposit}>Deposit</button> 
+            <button onClick={handleTellerWithdraw}>Withdraw</button><br/>
             <button onClick={handleBackButtonClick}>Back</button> 
         </div>
     )

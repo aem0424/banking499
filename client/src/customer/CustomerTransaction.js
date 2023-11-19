@@ -23,6 +23,10 @@ function CustomerTransaction() {
     const handleCustomerDepositClick = () => {
         navigate('/Customer/Transaction/Deposit', {state: {user}});
     }
+
+    const handleCustomerWithdrawClick = () => {
+        navigate('/Customer/Transaction/Withdraw', {state: {user}})
+    }
     
     const handleBackButtonClick = () => {
         navigate('/Customer', {state: {user}});
@@ -33,6 +37,7 @@ function CustomerTransaction() {
             <h1>Please select a transaction to perform.</h1>
             <button onClick={handleCustomerTransferClick} className='form-button'>Transfer</button>
             <button onClick={handleCustomerDepositClick} className='form-button'>Deposit</button>
+            <button onClick={handleCustomerWithdrawClick} className='form-button'>Withdraw</button><br/>
             <button onClick={handleBackButtonClick} className='form-button'>Back</button>
         </div>
     )

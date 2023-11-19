@@ -59,8 +59,7 @@ function CustomerDeposit() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const {TransactionType, FromAccountID, Amount} = formData;
-        const ToAccountID = FromAccountID;
+        const {TransactionType, FromAccountID, ToAccountID, Amount} = formData;
         setError(null);
 
         console.log(TransactionType, FromAccountID, ToAccountID, Amount);
@@ -103,7 +102,7 @@ function CustomerDeposit() {
               <div className='form-group'> 
                 <label htmlFor="ToAccountID" className='form-label'>Account</label>
                 <select
-                    type="text"
+                    type="numeric"
                     id="ToAccountID"
                     name="ToAccountID"
                     value={formData.ToAccountID}

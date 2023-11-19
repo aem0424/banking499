@@ -13,6 +13,7 @@ import CustomerEditUserInformation from ".//customer/CustomerEditUserInformation
 import CustomerMain from ".//customer/CustomerMain";
 import CustomerTransaction from ".//customer/CustomerTransaction";
 import CustomerTransfer from ".//customer/CustomerTransfer";
+import CustomerWithdraw from ".//customer/CustomerWithdraw";
 import CustomerViewAccountInformation from ".//customer/CustomerViewAccountInformation";
 import CustomerViewAccountList from ".//customer/CustomerViewAccountList";
 import CustomerDeleteRequest from "./customer/CustomerDeleteRequest";
@@ -24,6 +25,7 @@ import TellerEditAccount from ".//teller/TellerEditAccount";
 import TellerMain from ".//teller/TellerMain";
 import TellerTransaction from ".//teller/TellerTransaction";
 import TellerTransfer from ".//teller/TellerTransfer";
+import TellerWithdraw from ".//teller/TellerWithdraw"
 import TellerViewAccount from ".//teller/TellerViewAccount";
 import TellerDeleteAccount from ".//teller/TellerDeleteAccount";
 import AdminCreateTeller from ".//admin/AdminCreateTeller";
@@ -60,6 +62,7 @@ function App() {
         <Route exact path="/Customer/Transaction" element ={<CustomerTransaction user={user}/>}/>
         <Route exact path="/Customer/Transaction/Transfer" element ={<CustomerTransfer user={user}/>}/>
         <Route exact path="/Customer/Transaction/Deposit" element ={<CustomerDeposit user={user}/>}/>
+        <Route exact path="/Customer/Transaction/Withdraw" element = {<CustomerWithdraw user={user}/>}/>
         <Route exact path="/Customer/PayBill" element ={<CustomerBillPay user={user}/>}/>
         <Route exact path="/Customer/CreateAccount" element ={<CustomerCreateAccount user={user}/>}/>
         <Route exact path="/Customer/UserInfo" element ={<CustomerViewUserInformation user={user}/>}/>
@@ -75,6 +78,7 @@ function App() {
         <Route exact path="/Teller/Transaction" element = {<TellerTransaction user={user}/>}/>
         <Route exact path="/Teller/Transaction/Deposit" element = {<TellerDeposit user={user}/>}/>
         <Route exact path="/Teller/Transaction/Transfer" element = {<TellerTransfer user={user}/>}/>
+        <Route exact path="/Teller/Transaction/Withdraw" element = {<TellerWithdraw user={user}/>}/>
         <Route exact path="/Teller/Account/Create" element = {<TellerCreateAccount user={user}/>}/>
         <Route exact path="/Teller/Customer" element = {<TellerCustomerManage user={user}/>}/>
         <Route exact path="/Teller/Customer/UserInfo" element = {<TellerViewCustomerInfo user={user}/>}/>
