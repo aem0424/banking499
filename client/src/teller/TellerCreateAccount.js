@@ -76,6 +76,7 @@ function TellerCreateAccount() {
                         onChange={handleInputChange}
                         required
                     >
+                      <option value="" disabled>Select Type</option>                      
                       <option value="Checking">Checking</option>
                       <option value="Savings">Savings</option>
                       <option value="MoneyMarket">Money Market</option>
