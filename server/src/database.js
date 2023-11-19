@@ -200,6 +200,16 @@ async function deleteUser(userID) {
     return [data, error];
 }
 
+async function updateUserFullName(userID, name) {
+    const { data, error } = await supabase
+        .from('User')
+        .update({FullName: name})
+        .eq("UserID", userID)
+        .select();
+
+    return [data, error];
+}
+
 
 
 // Get Customers
@@ -809,6 +819,7 @@ module.exports = {
     insertUser,
     updateUser,
     deleteUser,
+    updateUserFullName,
 
     getCustomers,
     getCustomer,

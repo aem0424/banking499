@@ -396,6 +396,19 @@ app.get('/pepper', async (req, res) => {
   return res.status(200).json({pepper: pepper});
 });
 
+// app.post('/name/fill', async (req, res) => {
+//   let [users, err_users] = await database.getAllUsers();
+//     if(err_users) return res.status(500).json({ error: 'Failed to get all users', message: err_users, data: users});
+//     console.log(users);
+//   for(const user of users) {
+//     let name = user.FirstName + " " + user.LastName;
+//     let [nameData, err_nameData] = await database.updateUserFullName(user.UserID, name);
+//     if(err_nameData) return res.status(500).json({ error: 'Failed to update user name', message: err_nameData, data: nameData});
+//     console.log(nameData);
+//   }
+//   return res.status(200).json(users);
+// })
+
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
