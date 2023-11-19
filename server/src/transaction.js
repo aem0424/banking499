@@ -230,7 +230,7 @@ router.get('/billpay/accounts', async (req, res) => {
 // GET: Get Single BillPay Account by BillPayID
 // Params: BillPayID
 // Return: Whole Row from BillPayment table associated
-router.get('/billpay/account', async (req, res) => {
+router.get('/billpay/get/account', async (req, res) => {
   // Check If the User is Logged In
 
   const billpayID = req.query.BillPayID;
@@ -250,7 +250,7 @@ router.get('/billpay/account', async (req, res) => {
 // POST: Insert BillPay Account
 // Params: BillPay{ Name, Address, Amount, PayFromAccount, DueDate } * UserID set by session
 // Return: BillPay{BillPayID, UserID, Name, Address, Amount, PayFromAccount, DueDate } (Confirmation)
-router.post('/billpay/account', async (req, res) => {
+router.post('/billpay/post/account', async (req, res) => {
   
   // Check if the user is logged in
   const userID = req.session.user?.UserID;
@@ -281,6 +281,56 @@ router.post('/billpay/account', async (req, res) => {
   return res.status(201).json(insertedData[0]);
 });
 
+// POST: Insert a Transaction
+// Params: Transaction { BillPayID, FromAccountID, Amount }
+// Return: message, BillPayment {Entire Row}
+router.post('/billpay/post/paybill', async (req, res) => {
+  const currentTimeStamp = new Date().toISOString();
+  let payment = req.body;
+  let currentBillAmount = await database.getBillPaymentAmount(payment.BillPayID);
+
+  // Verify Transaction will not take FromAccount to below zero
+  testbool = await isTransactionBelowZero(payment.FromAccountID, payment.Amount);
+  if (testbool == true) {
+      return res.status(402).json({ error: 'Insufficient funds' });
+  }
+
+  // Calculate locally what the updated Amount should be
+  let newAmount = currentBillAmount - payment.Amount;
+
+  // Update BillPayment Table
+  let { data, error } = await database.updateBillPaymentAmount(payment.BillPayID, newAmount);
+  if (error) {
+      return res.status(500).json({ error: 'Internal Server Error', message: error.message });
+  }
+
+  // Build Transaction Info
+  data = data[0];
+
+  // Update Transaction Table
+  let {transactionData, er_transactionData } = await database.insertTransactionForAccount(
+      data.BillType,
+      payment.FromAccountID,
+      -payment.Amount,
+      currentTimeStamp
+  );
+
+  // Update Account Balance
+  const fromAccountUpdateResult = await database.updateAccountBalance(
+      payment.FromAccountID,
+      -payment.Amount
+  );
+
+  // Return confirmation message and updated transaction
+  return res.status(201).json({ message: "Transaction inserted successfully", data: data });
+});
+
+
+
+
+
+
+//=======================================================================================================
 // GET: Get a List of Customer Accounts with BillPayment Info (include {withCredentials:true})
 // Params: None
 // Return: [ Account1 {AccountID, UserID, AccountName, AccountType, Balance, InterestRate, Activated, Deleted}, Account2{...}, ... ]

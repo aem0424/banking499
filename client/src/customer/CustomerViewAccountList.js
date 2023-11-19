@@ -96,24 +96,44 @@ function CustomerViewAccountList() {
                 <p>Loading...</p>
             ) : error ? (
                 <p>ERROR: {error.message}</p>
-            ) : searchFound ? (
+            ) : (
                 <div>
-                    {searchAccounts.length > 0 ?( 
-                    <ul>
-                        {searchAccounts.map((account, index) => (
-                            <li key={index}>
-                                <button onClick={() => handleViewInformationClick(account)}>{account.AccountName}</button><br/>
-                                </li>
-                            
+                    <h2>Account Type</h2>
+                    {searchFound ? (
+                <div>
+                    {searchAccounts.length > 0 ?(
+                        <table className='striped-table'>
+                        <thead>
+                            <tr>
+                            <th>Account Type</th>
+                            <th>Account Name</th>
+                            <th>Balance</th>
+                            <th></th>
+                            </tr>
+                        </thead>
+                    <tbody>
+                        {searchAccounts
+                            .sort((a, b) => a.AccountType.localeCompare(b.AccountType))
+                            .slice(startIndex,endIndex)
+                            .map((account, index) => (
+                            <tr key={index}>
+                                <td>{account.AccountType}</td>
+                                <td>{account.AccountName}</td>
+                                <td>{account.Balance.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</td>
+                                <td>
+                                    <button onClick={() => handleViewInformationClick(account)}>View</button><br/>
+                                </td>
+                            </tr>
                          ))}
-                    </ul>
+                    </tbody>
+                    </table>
                     ) : (
-                        <p style={{color:'red'}}>No Active Accounts</p>
+                        <p style={{color:'red'}}>No Accounts Found</p>
                     )}
                 </div>
-            ) : userAccounts.length > 0 ? (
+            ) : (
                 <div>
-                    <h2>Account List</h2>
+                    {userAccounts.length > 0 ? (
                     <table className='striped-table'>
                         <thead>
                             <tr>
@@ -140,6 +160,9 @@ function CustomerViewAccountList() {
                          ))}
                     </tbody>
                     </table>
+                    ) : (
+                        <p style={{ color: 'red' }}>No Active Accounts</p>
+                    )}
                     {startIndex > 0 && (
                         <button onClick={handleLoadPrevious} className='form-button'>Load Previous Accounts</button>
                     )}
@@ -163,11 +186,11 @@ function CustomerViewAccountList() {
                         </div>
                     </form>
                 </div>
-            ) : (
-                <p style={{color:'red'}}>No Active Accounts</p>
             )}
             <button onClick={handleBackButtonClick} className='form-button'>Back</button>            
+            </div>
+            )}
         </div>
-    )
+    );
 }
 export default CustomerViewAccountList;

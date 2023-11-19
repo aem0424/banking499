@@ -14,6 +14,7 @@ function TellerDeleteAccount() {
     const [accountData, setAccountData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(false);
 
       // Check if user is null, redirect to "/"
   useEffect(() => {
@@ -34,6 +35,7 @@ function TellerDeleteAccount() {
         {withCredentials: true})
             if(response.status === 200) {
                 console.log('success', response.data);
+                setSuccess(true);
             } else {
                 console.error('error: ', error);
             }
@@ -58,9 +60,18 @@ function TellerDeleteAccount() {
     
     return (
         <div className='container'>
-            <h1>Are you sure you want to delete this account?</h1>
-            <button onClick={handleSubmit}>Yes</button><br/>
-            <button onClick={handleNoClick}>No</button>
+            { success ? (
+                <div>
+                    <p>Successfully deleted.</p>
+                    <button onClick={handleNoClick}>Back</button>
+                </div>
+            ) : userData ? (
+                <div>
+                    <h1>Are you sure you want to delete this account?</h1>
+                    <button onClick={handleSubmit}>Yes</button><br/>
+                    <button onClick={handleNoClick}>No</button> 
+                </div>
+            ) : null }
         </div>
     )
 }

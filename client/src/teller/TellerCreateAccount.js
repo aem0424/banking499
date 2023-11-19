@@ -18,6 +18,7 @@ function TellerCreateAccount() {
         AccountType: '',
     })
     const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(false);
 
     useEffect(() => {
       if (!user) {
@@ -43,6 +44,7 @@ function TellerCreateAccount() {
           const response = await axios.put('/teller/customer/account/create', formData)
           if (response.status === 200) {
             console.log('Account creation requested successful:', response.data)
+            setSuccess(true);
           }
           else {
             console.error('Error requesting account creation:', response.statusText)
@@ -55,37 +57,42 @@ function TellerCreateAccount() {
 
     return (
         <div className='container'>
+          {success ? (
+            <p>Successfully created account!</p>
+          ) : user ? ( 
             <form onSubmit={handleSubmit}>
-                <div>
-                 <label htmlFor="AccountName">Account Name:</label>
-                    <input
-                        type="text"
-                        id="AccountName"
-                        name="AccountName"
-                        value={formData.AccountName}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </div>
-                <div>
-                 <label htmlFor="AccountType">Account Type:</label>
-                    <select
-                        id="AccountType"
-                        name="AccountType"
-                        value={formData.AccountType}
-                        onChange={handleInputChange}
-                        required
-                    >
-                      <option value="Checking">Checking</option>
-                      <option value="Savings">Savings</option>
-                      <option value="MoneyMarket">Money Market</option>
-                      <option value="HomeMortgage">Home Mortgage</option>
-                      <option value="CreditCard">Credit Card</option>
-                    </select>
-                </div>        
-              <button type = "submit" className='form-button'>Create Request</button> 
-              <button onClick={handleBackButtonClick}>Back</button>                                   
-            </form>
+            <div>
+             <label htmlFor="AccountName">Account Name:</label>
+                <input
+                    type="text"
+                    id="AccountName"
+                    name="AccountName"
+                    value={formData.AccountName}
+                    onChange={handleInputChange}
+                    required
+                />
+            </div>
+            <div>
+             <label htmlFor="AccountType">Account Type:</label>
+                <select
+                    id="AccountType"
+                    name="AccountType"
+                    value={formData.AccountType}
+                    onChange={handleInputChange}
+                    required
+                >
+                  <option value="" disabled>Select Type</option>                      
+                  <option value="Checking">Checking</option>
+                  <option value="Savings">Savings</option>
+                  <option value="MoneyMarket">Money Market</option>
+                  <option value="HomeMortgage">Home Mortgage</option>
+                  <option value="CreditCard">Credit Card</option>
+                </select>
+            </div>        
+          <button type = "submit" className='form-button'>Create Request</button> 
+        </form>
+        ) : null }
+        <button onClick={handleBackButtonClick}>Back</button>                                           
         </div>
     )
 }
