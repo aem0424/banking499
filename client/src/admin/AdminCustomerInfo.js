@@ -78,14 +78,14 @@ function AdminCustomerInfo() {
         <div className='container'>
           <div className='info'>
             <h2>Customer Personal Information</h2>
-            <p>Name: {customerData.FirstName} {customerData.LastName}</p>
-            <p>Address Line 1: {customerData.Street}</p>
-            <p>Address Line 2: {customerData.Street2}</p>
-            <p>City: {customerData.City}</p>
-            <p>State: {customerData.State}</p>           
-            <p>Phone Number: {customerData.PhoneNumber}</p>
-            <p>SSN: {customerData.SSN}</p>
-            <p>Date of Birth: {customerData.DOB}</p>
+            <p><strong>Name:</strong> {customerData.FirstName} {customerData.LastName}</p>
+            <p><strong>Address Line 1:</strong> {customerData.Street}</p>
+            <p><strong>Address Line 2:</strong> {customerData.Street2}</p>
+            <p><strong>City:</strong> {customerData.City}</p>
+            <p><strong>State:</strong> {customerData.State}</p>           
+            <p><strong>Phone Number:</strong> {customerData.PhoneNumber}</p>
+            <p><strong>SSN:</strong> {customerData.SSN}</p>
+            <p><strong>Date of Birth</strong> {customerData.DOB}</p>
           </div>
             
             <div>
