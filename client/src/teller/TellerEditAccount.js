@@ -16,13 +16,14 @@ function TellerEditAccount() {
     const [formData, setFormData] = useState({
         AccountID: account?.AccountID || "",
         UserID: account?.UserID || "",
-        Balance: account?.Balance || "",
-        Activated: account?.Activated || "",
+        Balance: account?.Balance || 0,
+        Activated: account?.Activated || true,
         AccountNumber: account?.AccountNumber || "",
         AccountName: account?.AccountName || "",
         AccountType: account?.AccountType || "",
-        InterestRate: account?.InterestRate || "",
+        InterestRate: account?.InterestRate || 0,
     });
+    const [success, setSuccess] = useState(false);    
 
       // Check if user is null, redirect to "/"
   useEffect(() => {
@@ -30,7 +31,7 @@ function TellerEditAccount() {
       navigate('/Login');
     }
   }, [user, navigate]);
-    const [success, setSuccess] = useState(false);
+
 
     const handleBackButtonClick = () => {
         navigate('/Teller/Customer/UserInfo', { state : { user, customer }})
@@ -68,6 +69,7 @@ function TellerEditAccount() {
 
           if (response.status === 200) {
             console.log('Customer updated successfully:', response.data);
+            setSuccess(true);            
           } else {
             console.error('Error updating customer:', response.statusText);
           }
@@ -78,6 +80,9 @@ function TellerEditAccount() {
 
     return (
         <div className='container'>
+          { success ? (
+            <p>Successfully edited!</p>
+          ) : user ? (
             <div>
             <h1>Edit Account Information</h1>
             <form onSubmit={handleSubmit} className="edit-form">
@@ -120,6 +125,7 @@ function TellerEditAccount() {
                 <button type="submit" className="form-button">Make Edits</button><br/>                
             </form>
          </div>        
+          ) : null }
          <button onClick={handleBackButtonClick}>Back</button>                                 
         </div>
 )}

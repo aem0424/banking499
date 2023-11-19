@@ -17,6 +17,7 @@ function TellerDeposit() {
     })
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
+    const [success, setSuccess] = useState(false);
 
     useEffect(() => {
         if (!user) {
@@ -78,6 +79,7 @@ function TellerDeposit() {
 
         if(response.data) {
             console.log('success: ', response.data);
+            setSuccess(true);
         } else {
             console.log('error!', error);
         }
@@ -93,6 +95,8 @@ function TellerDeposit() {
                 <p>Loading...</p>
             ) : error ? (
                 <p>ERROR: {error.message}</p>
+            ) : success ? (
+                <p>Successful deposit!</p>
             ) : customerAccounts ? (
             <div>
                 <h1>Deposit Funds</h1>             

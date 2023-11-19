@@ -18,6 +18,7 @@ function TellerTransfer() {
     });
     const [loading, setLoading] = useState(true);    
     const [error, setError] = useState(null);     
+    const [success, setSuccess] = useState(false);    
     
     useEffect(() => {
         if (!user) {
@@ -71,6 +72,7 @@ function TellerTransfer() {
 
         if(response.data) {
             console.log('success: ', response.data);
+            setSuccess(true);            
         } else {
             console.log('error!');
         }
@@ -89,6 +91,8 @@ function TellerTransfer() {
         <div className='container'>
             {loading ? (
                 <p>Loading...</p>
+            ) : success ? (
+                <p>Successfully transferred!</p>
             ) : error ? (
                 <p>ERROR: {error.message}</p>
             ) : customerAccounts ? (
