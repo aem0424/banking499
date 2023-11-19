@@ -787,7 +787,51 @@ async function getUserAccountsBillpayIncluded(userID) {
     return [data, error];
 }
 
+// Update Amount Collumn in BillPayment Table based on BillPayID
+// Params: billPayID, newAmount
+// Return: 
+async function updateBillPaymentAmount(billPayID, newAmount) {
+    try {
+        const { data, error } = await supabase
+            .from('BillPayment')
+            .update({ Amount: newAmount })
+            .eq('BillPayID', billPayID)
+            .select()
 
+
+        if (error) {
+            throw error;
+        }
+
+        return { data, error: null }; // Return an object with both data and error properties
+    } catch (error) {
+        console.error('Error updating BillPayment Amount:', error.message);
+        return { data: null, error }; // Return an object with both data and error properties
+    }
+}
+
+
+// Get Amount collumn based on billpayID
+// Params: billPayID
+// Return: Amount
+async function getBillPaymentAmount(billPayID) {
+    try {
+        let { data, error } = await supabase
+            .from('BillPayment')
+            .select('Amount')
+            .eq('BillPayID', billPayID)
+            .single(); // Assuming a single row is expected
+
+        if (error) {
+            throw error;
+        }
+
+        return data.Amount;
+    } catch (error) {
+        console.error('Error retrieving BillPayment Amount:', error.message);
+        throw error;
+    }
+}
 
 
 
@@ -853,11 +897,15 @@ module.exports = {
     insertTransactionForAccount,
     updateAccountBalance,
 
+    getUserAccountsBillpayIncluded,
     getBillPayAccount,
     getBillPayAccounts,
+    getBillPaymentAmount,
     insertBillPay,
     insertCreditAccount,
+    updateBillPaymentAmount,
 
     getUserAccountsBillpayIncluded,
+
     
 }
