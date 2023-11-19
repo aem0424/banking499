@@ -40,50 +40,73 @@ router.get('/system/generateInterest', async (req, res) => {
 
 
 
-  // System function to generate interest on All Accounts based on InterestAmount
+// System function to generate interest on All Accounts based on InterestAmount
 // Params: None
 // Return: None
 async function generateInterest() {
-    try {
+  try {
       // Fetch all records from the 'Account' table
       const [data, error] = await database.getAccounts();
 
       if (error) {
-        throw error;
+          throw error;
       }
 
       // Calculate interest and insert transactions
       const transactions = await Promise.all(
-        data.map(async (account) => {
-          const interestAmount = parseFloat((account.Balance * (account.InterestRate * 0.01 * 0.083)).toFixed(2));
+          data.map(async (account) => {
+              const interestAmount = parseFloat((account.Balance * (account.InterestRate * 0.01 * 0.083)).toFixed(2));
 
+              const transaction = {
+                  TransactionType: 'Interest',
+                  FromAccountID: '19',
+                  ToAccountID: account.AccountID,
+                  Amount: interestAmount,
+              };
 
-          const transaction = {
-            TransactionType: 'Interest',
-            FromAccountID: '19',
-            ToAccountID: account.AccountID,
-            Amount: interestAmount,
-          };
+              // Insert the transaction
+              if (account.AccountType === "Checking" ||
+                  account.AccountType === "Savings" ||
+                  account.AccountType === "Money Market") {
+                  // Add Interest
+                  const [transactionResult, transactionError] = await transactionTest.insertTransferTransaction(transaction);
+                  if (transactionError) {
+                      console.error(`Error inserting transaction for AccountID ${account.AccountID}:`, transactionError.message);
+                      return null;
+                  }
+              } 
+              if (account.AccountType === "Credit Card")
+              {
 
-          // Insert the transaction
-          const [transactionResult, transactionError] = await transactionTest.insertTransferTransaction(transaction);
-
-          if (transactionError) {
-            console.error(`Error inserting transaction for AccountID ${account.AccountID}:`, transactionError.message);
-            return null;
-          }
-
-        })
+              }
+          })
       );
 
       return transactions.filter(Boolean); // Filter out null transactions
-    } catch (error) {
+  } catch (error) {
       throw error;
-    }
+  }
 }
-  module.exports = router;
+
+// System function to generate interest on All Accounts based on InterestAmount
+// Params: None
+// Return: None
+async function serviceCreditCard(transaction) {
+  try {
+
+
+    
 
 
 
+  } catch (error) {
+    throw error;
+  }
 
+}
+
+module.exports = {
+  router: router,
+  generateInterest: generateInterest
+};
 

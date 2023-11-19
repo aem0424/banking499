@@ -843,6 +843,23 @@ async function getBillPaymentAmount(billPayID) {
     }
 }
 
+async function getBillPayByAccountReference(accountID) {
+    try {
+        let {data, error} = await supabase
+        .from('BillPayment')
+        .select('BillPayID')
+        .eq('AccountReference', accountID)
+        .single();
+
+        if (error) {
+            throw error;
+        }
+        return data.BillPayID;
+    }   catch (error) {
+        console.error('Error retrieving BillPayment ID:', error.message);
+    }
+}
+
 
 
 
@@ -912,6 +929,7 @@ module.exports = {
     getBillPayAccount,
     getBillPayAccounts,
     getBillPaymentAmount,
+    getBillPayByAccountReference,
     insertBillPay,
     insertCreditAccount,
     updateBillPaymentAmount,

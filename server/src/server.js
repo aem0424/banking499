@@ -4,7 +4,9 @@ const cors = require('cors');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const bodyParser = require('body-parser');
+const cron = require('node-cron');
 require('dotenv').config(); // Load environment variables from .env file
+
 
 
 const database = require('./database.js');
@@ -39,7 +41,16 @@ app.use(customerRoute, sessionMiddleware);
 app.use(tellerRoute, sessionMiddleware);
 app.use(adminRoute, sessionMiddleware);
 app.use(transactionRoute.router, sessionMiddleware); // Exporting function + api endpoints, .router was a fix / why its different ~RM
-app.use(financialProcessorRoute, sessionMiddleware);
+app.use(financialProcessorRoute.router, sessionMiddleware);
+
+
+// Automated Interest Geneartion -- Based in UTC time ('Minute Hour Day')
+cron.schedule('0 6 28 * *', () => {
+  financialProcessorRoute.generateInterest();
+  console.log('Automated Interest Generation');
+});
+
+
 
 app.get('/', (req, res) => {
   res.send('Home Route');
