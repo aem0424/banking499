@@ -49,6 +49,14 @@ function TellerViewCustomerInfo() {
         navigate('/Teller/Account', {state: {user, customer, account}});
     }
 
+    const handle1099Click = (account) => {
+        navigate('/Teller/Account/1099', {state: {user, customer, account}});
+    }
+
+    const handleEditCredentialsClick = () => {
+        navigate('/Teller/Customer/Edit', {state: {user, customer}});
+    }        
+
     const handleInputChange = (e) => {
         const {name, value} = e.target;
         setFormData({
@@ -221,6 +229,7 @@ function TellerViewCustomerInfo() {
                           <th></th>
                           <th></th>
                           <th></th>
+                          <th></th>
                         </tr>
                       </thead>
                       <tbody>
@@ -239,6 +248,9 @@ function TellerViewCustomerInfo() {
                             <td>
                               <button onClick={() => handleDeleteAccountClick(account)}>Delete</button>
                             </td>
+                            <td>
+                              <button onClick={() => handle1099Click(account)}>1099</button>
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -253,7 +265,8 @@ function TellerViewCustomerInfo() {
                           <button onClick={handleLoadMore} className='form-button'>Load More Accounts</button>
                         )}
                         <button onClick={() => handleCreateAccountClick} className='form-button'>New Account</button>
-                        <button onClick={() => handleTransactionClick} className='form-button'>Make Transaction</button>
+                        <button onClick={() => handleTransactionClick} className='form-button'>Make Transaction</button><br/>
+                        <button onClick={() => handleEditCredentialsClick} className='form-button'>Edit Credentials</button>
                 </div> 
             )}                       
             <button onClick={handleBackButtonClick} className='form-button'>Back</button>

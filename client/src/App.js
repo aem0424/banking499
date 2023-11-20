@@ -28,6 +28,8 @@ import TellerTransfer from ".//teller/TellerTransfer";
 import TellerWithdraw from ".//teller/TellerWithdraw"
 import TellerViewAccount from ".//teller/TellerViewAccount";
 import TellerDeleteAccount from ".//teller/TellerDeleteAccount";
+import TellerCustomerEdit from ".//teller/TellerCustomerEdit"
+import Teller1099Form from ".//teller/Teller1099Form";
 import AdminCreateTeller from ".//admin/AdminCreateTeller";
 import AdminCustomerInfo from ".//admin/AdminCustomerInfo";
 import AdminCustomerList from ".//admin/AdminCustomerList";
@@ -82,7 +84,9 @@ function App() {
         <Route exact path="/Teller/Account/Create" element = {<TellerCreateAccount user={user}/>}/>
         <Route exact path="/Teller/Customer" element = {<TellerCustomerManage user={user}/>}/>
         <Route exact path="/Teller/Customer/UserInfo" element = {<TellerViewCustomerInfo user={user}/>}/>
+        <Route exact path="/Teller/Customer/Edit" element = {<TellerCustomerEdit user={user}/>}/>
         <Route exact path="/Teller/Account/Delete" element = {<TellerDeleteAccount user={user}/>}/>
+        <Route exact path="/Teller/Account/1099" element = {<Teller1099Form user={user}/>}/>
       </Route>
       <Route element = {<PrivateRouteAdmin />}>
         <Route exact path="/Admin" element = {<AdminMain user={user}/>}/>
