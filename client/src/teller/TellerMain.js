@@ -60,8 +60,8 @@ function TellerMain() {
                <div> 
                 <h1>Welcome, {userData.FirstName} {userData.LastName}!</h1>
                 <p> This is the main teller page.</p>
-                <button onClick={handleTellerCustomer}>View Customers/Accounts</button><br/>
-                <button onClick={handleLogoutClick}>Logout</button>            
+                <button onClick={handleTellerCustomer} className='form-button'>View Customers/Accounts</button><br/>
+                <button onClick={handleLogoutClick} className='logout-button'>Logout</button>            
                </div>     
             ) : null}
         </div>

@@ -115,17 +115,88 @@ function TellerViewCustomerInfo() {
         }
     }, [user, customer]);
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+  
+    const handleLoadMore = () => {
+      setCurrentPage(currentPage + 1);
+    };
+  
+    const handleLoadPrevious = () => {
+      setCurrentPage(currentPage - 1);
+    };
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = currentPage * itemsPerPage;
+
     return (
         <div className='container'>
             {loading ? (
                 <p>Loading...</p>
-            ): error ? (
+            ) : error ? (
                 <p>ERROR: {error.message}</p>
-            ) : searchFound ? (
-                <div>
+            ) : (
+            <div>
+                <h2>Customer Information</h2>
+                <div className='info'>
+            <p><strong>Name:</strong> {customer.FirstName} {customer.LastName}</p>
+            <p><strong>Address Line 1:</strong> {customer.Street}</p>
+            <p><strong>Address Line 2:</strong> {customer.Street2}</p>
+            <p><strong>City:</strong> {customer.City}</p>
+            <p><strong>State:</strong> {customer.State}</p>
+            <p><strong>ZIP:</strong> {customer.ZIP}</p>
+            <p><strong>Phone Number:</strong> {customer.PhoneNumber}</p>
+            <p><strong>SSN:</strong> {customer.SSN}</p>
+            <p><strong>Date of Birth:</strong> {customer.DOB}</p>
+            </div>
+            <h2>Account List</h2>
+                  {searchFound ? (
+            <div>
+              {searchAccounts.length > 0 ?(
+                <table className='striped-table'>
+                      <thead>
+                        <tr>
+                          <th>Account Type</th>
+                          <th>Account Name</th>
+                          <th>Balance</th>
+                          <th>Interest Rate</th>
+                          <th></th>
+                          <th></th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                  <tbody>
+                    {searchAccounts
+                    .sort((a,b) => a.AccountType.localeCompare(b.AccountType))
+                    .slice(startIndex,endIndex)
+                    .map((account, index) => (
+                        <tr key={index}>
+                        <td>{account.AccountType}</td>
+                        <td>{account.AccountName}</td>
+                        <td>{account.Balance.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</td>
+                        <td>{account.InterestRate}</td>
+                        <td>
+                          <button onClick={() => handleViewAccountClick(account)}>View</button>
+                        </td>
+                        <td>
+                          <button onClick={() => handleEditAccountClick(account)}>Edit</button>
+                        </td>
+                        <td>
+                          <button onClick={() => handleDeleteAccountClick(account)}>Delete</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ):(
+                <p style={{color:'red'}}>No Accounts Found</p>
+              )}          
+          </div>
+            ) : (
+              <div>
                 <form onSubmit={handleSubmit} className='search-form'>
                         <div>
-                            <label htmlFor="AccountName">Search Account by Name</label>
+                            <label htmlFor="AccountName" className='form-label'>Search Account by Name</label>
                             <input
                                 type="text"
                                 id="AccountName"
@@ -134,98 +205,61 @@ function TellerViewCustomerInfo() {
                                 onChange={handleInputChange}
                                 required
                             />
-                        </div>
+                        </div>           
                         <div>
-                            <button type="submit">Search</button>
+                            <button type="submit" className='submit-button'>Search</button>
                         </div>
-                </form>                        
-                  Name: {customer.FirstName} {customer.LastName}<br/>
-                  Address: {customer.Street}, {customer.Street2}<br/>
-                  Address: {customer.City}, {customer.State} {customer.ZIP}<br/>
-                  Phone Number: {customer.PhoneNumber}<br/>
-                  SSN: {customer.SSN}<br/>
-                  Date of Birth: {customer.DOB}<br/>
-                  <div>
-              <h2>Customer Accounts</h2>
-              <table className='striped-table'>
-               <thead>
-                <tr>
-                  <th>Account Type</th>
-                  <th>Account Name</th>
-                  <th>Balance</th>
-                  <th>Interest Rate</th>
-                </tr>
-                </thead>
-            <tbody>
-              {searchAccounts.map((account, index) => (
-                <tr key={index}>
-                  <td>{account.AccountType}</td>
-                  <td>{account.AccountName}</td>
-                  <td>{account.Balance.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</td>
-                  <td>{account.InterestRate}</td>
-                  <td><button onClick={() => handleEditAccountClick(account)}>Edit</button></td>
-                </tr>
-                ))}
-              </tbody>
-              </table>
-             </div>                               
-            </div>
-            ): customer ? (
-                <div>                      
-                  Name: {customer.FirstName} {customer.LastName}<br/>
-                  Address: {customer.Street}, {customer.Street2}<br/>
-                  Address: {customer.City}, {customer.State} {customer.ZIP}<br/>
-                  Phone Number: {customer.PhoneNumber}<br/>
-                  SSN: {customer.SSN}<br/>
-                  Date of Birth: {customer.DOB}<br/>
-                  <div>
-              <h2>Customer Accounts</h2>
-              <form onSubmit={handleSubmit} className='search-form'>
-                        <div>
-                            <label htmlFor="AccountName">Search Account by Name</label>
-                            <input
-                                type="text"
-                                id="AccountName"
-                                name="AccountName"
-                                value={formData.AccountName}
-                                onChange={handleInputChange}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <button type="submit">Search</button>
-                        </div>
-             </form>                  
-              <table className='striped-table'>
-               <thead>
-                <tr>
-                  <th>Account Type</th>
-                  <th>Account Name</th>
-                  <th>Balance</th>
-                  <th>Interest Rate</th>
-                </tr>
-                </thead>
-            <tbody>
-              {customerAccounts.map((account, index) => (
-                <tr key={index}>
-                  <td>{account.AccountType}</td>
-                  <td>{account.AccountName}</td>
-                  <td>{account.Balance.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</td>
-                  <td>{account.InterestRate}</td>
-                  <td><button onClick={() => handleViewAccountClick(account)}>Transactions</button></td>
-                  <td><button onClick={() => handleEditAccountClick(account)}>Edit</button></td>
-                  <td><button onClick={() => handleDeleteAccountClick(account)}>Delete</button></td>
-                </tr>
-                ))}
-              </tbody>
-              </table>
-             </div>     
-             <button onClick={handleCreateAccountClick}>New Account</button>
-             <button onClick={handleTransactionClick}>Make Transaction</button><br/>                                 
-            </div>
-            ) : null}
-            <button onClick={handleBackButtonClick}>Back</button>            
+                    </form>                     
+                  {customerAccounts.length> 0 ? (
+                    <table className='striped-table'>
+                      <thead>
+                        <tr>
+                          <th>Account Type</th>
+                          <th>Account Name</th>
+                          <th>Balance</th>
+                          <th>Interest Rate</th>
+                          <th></th>
+                          <th></th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {customerAccounts.sort((a,b) => a.AccountType.localeCompare(b.AccountType)).slice(startIndex,endIndex).map((account,index) => (
+                          <tr key={index}>
+                            <td>{account.AccountType}</td>
+                            <td>{account.AccountName}</td>
+                            <td>{account.Balance.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</td>
+                            <td>{account.InterestRate}</td>
+                            <td>
+                              <button onClick={() => handleViewAccountClick(account)}>View</button>
+                            </td>
+                            <td>
+                              <button onClick={() => handleEditAccountClick(account)}>Edit</button>
+                            </td>
+                            <td>
+                              <button onClick={() => handleDeleteAccountClick(account)}>Delete</button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    ) : (
+                          <p style={{ color: 'red' }}>No Active Accounts</p>
+                        )}
+                        {startIndex > 0 && (
+                          <button onClick={handleLoadPrevious} className='form-button'>Load Previous Accounts</button>
+                        )}
+                        {endIndex < customerAccounts.length && (
+                          <button onClick={handleLoadMore} className='form-button'>Load More Accounts</button>
+                        )}
+                        <button onClick={() => handleCreateAccountClick} className='form-button'>New Account</button>
+                        <button onClick={() => handleTransactionClick} className='form-button'>Make Transaction</button>
+                </div> 
+            )}                       
+            <button onClick={handleBackButtonClick} className='form-button'>Back</button>
         </div>
-    )
+            )}
+            </div>
+    );
 }
 export default TellerViewCustomerInfo;

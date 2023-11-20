@@ -92,26 +92,58 @@ function TellerCustomerManage() {
           });
       }, [user]);
 
+      const [currentPage, setCurrentPage] = useState(1);
+      const itemsPerPage = 10;
+    
+      const handleLoadMore = () => {
+        setCurrentPage(currentPage + 1);
+      };
+    
+      const handleLoadPrevious = () => {
+        setCurrentPage(currentPage - 1);
+      };
+  
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = currentPage * itemsPerPage;
+
     return (
         <div className='container'>
-            <h1>Customer List</h1>
             {loading ? (
                 <p>Loading...</p>
             ) : error ? (
                 <p>ERROR: {error.message}</p>
-            ) : searchFound ? (
-              <div>
-              <ul>
-                  {searchCustomers.map((customer, index) => (
-                      <li key={index}>
-                        <p>{customer.FirstName} {customer.LastName}
-                          <button onClick={() => handleViewCustomerClick(customer)}>View</button></p>
-                          </li>
-                      
-                   ))}
-              </ul>
+            ) : (
+            <div>
+                  <h1>Customer List</h1>
+                  {searchFound ? (
+            <div>
+              {searchCustomers.length > 0 ?(
+                <table className='striped-table'>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {searchCustomers
+                    .sort((a,b) => a.LastName.localeCompare(b.LastName))
+                    .slice(startIndex,endIndex)
+                    .map((customer, index) => (
+                      <tr key = {index}>
+                        <td>{customer.LastName}, {customer.FirstName} </td>
+                        <td>
+                          <button onClick={() => handleViewCustomerClick(customer)}>View</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ):(
+                <p style={{color:'red'}}>No Customers Found</p>
+              )}          
           </div>
-            ) : customers ? (
+            ) : (
               <div>
                 <form onSubmit={handleSubmit} className='search-form'>
                         <div>
@@ -126,21 +158,43 @@ function TellerCustomerManage() {
                             />
                         </div>           
                         <div>
-                            <button type="submit">Search</button>
+                            <button type="submit" className='submit-button'>Search</button>
                         </div>
                     </form>                     
-                <ul>
-                    {customers.map((customer, index) => (
-                        <li key={index}>
-                            <p>{customer.FirstName} {customer.LastName}
-                            <button onClick={() => handleViewCustomerClick(customer)}>View</button></p>
-                        </li>
-                    ))}
-                </ul>
-                </div>                        
-            ) : null }
-            <button onClick={handleBackButtonClick}>Back</button>
+                  {customers.length> 0 ? (
+                    <table className='striped-table'>
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {customers.sort((a,b) => a.LastName.localeCompare(b.LastName)).slice(startIndex,endIndex).map((customer,index) => (
+                          <tr key={index}>
+                            <td>{customer.LastName}, {customer.FirstName}</td>
+                            <td>
+                              <button onClick={() => handleViewCustomerClick(customer)}>View</button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    ) : (
+                          <p style={{ color: 'red' }}>No Active Customers</p>
+                        )}
+                        {startIndex > 0 && (
+                          <button onClick={handleLoadPrevious} className='form-button'>Load Previous Customers</button>
+                        )}
+                        {endIndex < customers.length && (
+                          <button onClick={handleLoadMore} className='form-button'>Load More Customers</button>
+                        )}
+                </div> 
+            )}                       
+            <button onClick={handleBackButtonClick} className='form-button'>Back</button>
         </div>
-    )
+            )}
+            </div>
+    );
 }
 export default TellerCustomerManage;
