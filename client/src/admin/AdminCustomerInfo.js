@@ -82,7 +82,8 @@ function AdminCustomerInfo() {
             <p><strong>Address Line 1:</strong> {customerData.Street}</p>
             <p><strong>Address Line 2:</strong> {customerData.Street2}</p>
             <p><strong>City:</strong> {customerData.City}</p>
-            <p><strong>State:</strong> {customerData.State}</p>           
+            <p><strong>State:</strong> {customerData.State}</p>
+            <p><strong>ZIP:</strong> {customerData.ZIP}</p>            
             <p><strong>Phone Number:</strong> {customerData.PhoneNumber}</p>
             <p><strong>SSN:</strong> {customerData.SSN}</p>
             <p><strong>Date of Birth</strong> {customerData.DOB}</p>

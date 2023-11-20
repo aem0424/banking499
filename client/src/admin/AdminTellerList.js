@@ -118,7 +118,7 @@ function AdminTellerList() {
                     {teller.LastName}, {teller.FirstName}
                   </td>
                   <td>
-                    <button onClick={() => handleEditTellersClick(teller)}>Edit</button>
+                    <button onClick={() => handleEditTellersClick(teller)}>View</button>
                   </td>
                   <td>
                     <button onClick={() => handleDeleteTellerClick(teller)}>Delete</button>

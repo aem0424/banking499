@@ -100,6 +100,19 @@ function AdminTellerEdit() {
   };
   return (
     <div className='container'>
+          <div className='info'>
+            <h2>Teller Personal Information</h2>
+            <p><strong>Name:</strong> {tellerData.FirstName} {tellerData.LastName}</p>
+            <p><strong>Address Line 1:</strong> {tellerData.Street}</p>
+            <p><strong>Address Line 2:</strong> {tellerData.Street2}</p>
+            <p><strong>City:</strong> {tellerData.City}</p>
+            <p><strong>State:</strong> {tellerData.State}</p>
+            <p><strong>ZIP:</strong> {tellerData.ZIP}</p>              
+            <p><strong>Phone Number:</strong> {tellerData.PhoneNumber}</p>
+            <p><strong>SSN:</strong> {tellerData.SSN}</p>
+            <p><strong>Date of Birth</strong> {tellerData.DOB}</p>
+          </div>
+
       <h1>Edit Teller</h1>
       <p>Name: {tellerData.FirstName} {tellerData.LastName}</p>
       <form onSubmit={handleSubmit} className="register-form">
