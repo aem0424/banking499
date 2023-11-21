@@ -8,8 +8,9 @@ function Teller1099Form() {
     const user = location.state && location.state.user;
     const customer = location.state.customer; 
     const account = location.state.account;
+    const [tenForm, setTenForm] = useState(null);
     const [userData, setUserData] = useState(null);
-    const [loading, setLoading] = useState(false); //setting to false for now
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null); 
     const [success, setSuccess] = useState(false);
 
@@ -29,14 +30,16 @@ function Teller1099Form() {
                 const response = await axios.get('/1099form', {params: {AccountID: account.AccountID}})
                 if(response) {
                     console.log(response);
-                    console.log(response.data);
+                    setTenForm(response.data);
+                    setLoading(false);
                 }
                 else {
                     console.log(error);
                     setError(error);
+                    setLoading(false);
                 }
             }
-            getData().catch(console.error);
+            getData().catch(console.log(error));
         }
     })
 
@@ -48,8 +51,10 @@ function Teller1099Form() {
                 <p>ERROR: {error}</p>
             ) : loading ? (
                 <p>Loading...</p>
-            ) : account ? (
-                <p>tba</p>
+            ) : tenForm ? (
+                <div>
+                    <object data={tenForm} type="application/pdf" width = "100%" height = "100%"></object>
+                </div>
             ) : null}
             <button onClick={handleBackButtonClick}>Back</button>
         </div>
