@@ -1,4 +1,5 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
 const router = express.Router();
 const database = require('./database.js');
 
@@ -77,11 +78,26 @@ router.post('/admin/teller/update', async (req, res) => {
   let teller = req.body;
   if (teller.FirstName || teller.LastName) {
     let [nameData, err_nameData] = await database.getUserName(teller.UserID);
-    if(err_nameData) return res.status(500).json({ error: "Failed to query teller name", message: "Error occurred while getting user name", data: { UserID: teller.UserID }});
+    if (err_nameData) return res.status(500).json({ error: "Failed to query teller name", message: "Error occurred while getting user name", data: { UserID: teller.UserID } });
     nameData = nameData[0];
     console.log(nameData);
     teller.FullName = (teller.FirstName ? teller.FirstName : nameData.FirstName) + " " + (teller.LastName ? teller.LastName : nameData.LastName)
-}
+  }
+
+  if (teller.Password) {
+    try {
+      teller.PasswordOriginal = teller.Password;
+      let salt = await bcrypt.genSalt(10);
+      let peper = process.env.PASSWORD_PEPPER;
+
+      let hashedPassword = await bcrypt.hash(teller.Password, salt) + peper;
+      teller.Password = hashedPassword;
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Failed to encrypt password" });
+    }
+  }
+
 
   let [tellerData, err_tellerData] = await database.updateUser(teller);
   if (err_tellerData) return res.status(500).json({ error: "Failed to update this teller", message: err_tellerData });
@@ -192,6 +208,20 @@ router.post('/admin/customer/update', async (req, res) => {
     nameData = nameData[0];
     console.log(nameData);
     customer.FullName = (customer.FirstName ? customer.FirstName : nameData.FirstName) + " " + (customer.LastName ? customer.LastName : nameData.LastName)
+  }
+
+  if (customer.Password) {
+    try {
+      customer.PasswordOriginal = customer.Password;
+      let salt = await bcrypt.genSalt(10);
+      let peper = process.env.PASSWORD_PEPPER;
+
+      let hashedPassword = await bcrypt.hash(customer.Password, salt) + peper;
+      customer.Password = hashedPassword;
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Failed to encrypt password" });
+    }
   }
 
   let [customerData, err_customerData] = await database.updateUser(customer);

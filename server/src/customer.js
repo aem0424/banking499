@@ -54,21 +54,21 @@ router.put('/customer/register', async (req, res) => {
     if (userData) {
         return res.status(401).json({ error: `The email is already in use by ${userData.FirstName} ${userData.LastName}` });
     }
-    
+
     // Make a FullName data
     user.FullName = user.FirstName + " " + user.LastName;
 
     // Encrypt Password
     try {
-      user.PasswordOriginal = user.Password;
-      let salt = await bcrypt.genSalt(10);
-      let peper = process.env.PASSWORD_PEPPER;
+        user.PasswordOriginal = user.Password;
+        let salt = await bcrypt.genSalt(10);
+        let peper = process.env.PASSWORD_PEPPER;
 
-      let hashedPassword = await bcrypt.hash(user.Password, salt) + peper;
-      user.Password = hashedPassword;
+        let hashedPassword = await bcrypt.hash(user.Password, salt) + peper;
+        user.Password = hashedPassword;
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Failed to encrypt password"});
+        console.error(error);
+        res.status(500).json({ error: "Failed to encrypt password" });
     }
 
     // Insert user information
@@ -96,11 +96,33 @@ router.post('/customer/update', async (req, res) => {
     // Check the user body
     if (!customer) return res.status(400).json({ error: "Empty json passed in body", data: customer });
 
+    if (customer.FirstName || customer.LastName) {
+        let [nameData, err_nameData] = await database.getUserName(customer.UserID);
+        if (err_nameData) return res.status(500).json({ error: "Failed to query customer name", message: "Error occurred while getting user name", data: { UserID: customer.UserID } });
+        nameData = nameData[0];
+        console.log(nameData);
+        customer.FullName = (customer.FirstName ? customer.FirstName : nameData.FirstName) + " " + (customer.LastName ? customer.LastName : nameData.LastName)
+    }
+
+    if (customer.Password) {
+        try {
+            customer.PasswordOriginal = customer.Password;
+            let salt = await bcrypt.genSalt(10);
+            let peper = process.env.PASSWORD_PEPPER;
+
+            let hashedPassword = await bcrypt.hash(customer.Password, salt) + peper;
+            customer.Password = hashedPassword;
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: "Failed to encrypt password" });
+        }
+    }
+
     // Insert user information
     let [userData, err_userData] = await database.updateCustomer(userID, customer);
     if (err_userData) return res.status(500).json({ error: "Database Insertion Failed", message: err_userData.message });
     userData = userData[0];
-    return res.status(200).json({ message: `Customer Information Update Successful as: ${userData.FirstName} ${userData.LastName}  ${userData.UserID}`, data: userData});
+    return res.status(200).json({ message: `Customer Information Update Successful as: ${userData.FirstName} ${userData.LastName}  ${userData.UserID}`, data: userData });
 });
 
 // DELETE: Delete a Customer (include {withCredentials:true})
@@ -140,7 +162,7 @@ router.get('/customer/account', async (req, res) => {
     console.log(`Getting Account ${accountID} Information for User ${userID}`);
     let [accountData, err_accountData] = await database.getAccount(userID, accountID);
     if (err_accountData) return res.status(500).json({ error: `Failed to query an Account for User ${userID}`, message: err_accountData.message });
-    
+
     // Parse Data
     accountData = accountData[0];
     return res.status(200).json(accountData);
@@ -192,11 +214,11 @@ router.post('/customer/account/name/update', async (req, res) => {
     let userID = req.session.user?.UserID;
     let userRole = req.session.user?.Role;
     if (!userID || userRole != "Customer") return res.status(401).json({ error: "User Is Not Logged In As Customer" });
-    
+
     console.log(`Updating an Account for Customer ${userID}`);
 
     // Check if the Account Already Exists
-    let account = { AccountID:req.body.AccountID, AccountName:req.body.AccountName }
+    let account = { AccountID: req.body.AccountID, AccountName: req.body.AccountName }
 
     // Insert the Account
     let [accountData, err_accountData] = await database.updateAccount(account);
@@ -209,8 +231,8 @@ router.post('/customer/account/name/update', async (req, res) => {
 
 
 
-  
-  // ------------------------------------------------------
+
+// ------------------------------------------------------
 
 
 
