@@ -100,7 +100,7 @@ function TellerWithdraw() {
                 <h1>Withdraw Funds</h1>             
             <form onSubmit={handleSubmit} className='amount-form'>
               <div> 
-                <label htmlFor="FromAccountID">Account</label>
+                <label htmlFor="FromAccountID" className='form-label'>Account:</label>
                 <select
                     type="text"
                     id="FromAccountID"
@@ -114,7 +114,7 @@ function TellerWithdraw() {
                 </select>                    
               </div>          
               <div> 
-                <label htmlFor="Amount">Amount to Withdraw</label>
+                <label htmlFor="Amount" className='form-label'>Amount to Withdraw:</label>
                 <input
                     type="numeric"
                     id="Amount"
@@ -125,12 +125,12 @@ function TellerWithdraw() {
                 />  
               </div> 
               <div>                         
-                <button type="submit">Withdraw Funds</button>
+                <button type="submit" className='submit-button'>Withdraw Funds</button>
               </div>
             </form> 
             </div>               
             ) : null}
-            <button onClick={handleBackButtonClick}>Back</button>            
+            <button onClick={handleBackButtonClick} className='form-button'>Back</button>            
         </div>
     )
 }

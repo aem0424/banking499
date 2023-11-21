@@ -59,7 +59,14 @@ function CustomerWithdraw() {
         e.preventDefault();
         const {TransactionType, FromAccountID, ToAccountID, Amount} = formData;
         setError(null);
-        try {
+
+        const handling = await axios.get('/customer/account', {params: {AccountID: ToAccountID}}, {withCredentials:true});
+        const type = handling.data.AccountType;
+        if(type === "Home Mortgage Loan") {
+            setError("Can't withdraw from " + type + " account.");
+        }
+        else {
+         try {
             const response = await axios.post('http://localhost:4000/transactions', {
                 TransactionType,
                 FromAccountID,
@@ -67,16 +74,17 @@ function CustomerWithdraw() {
                 Amount
             });
 
-        if(response.data) {
+         if(response.data) {
             console.log('success: ', response.data);
             setSuccess(true);
-        } else {
+         } else {
             console.log('error!', error);
-        }
-        } catch (error) {
+         }
+         } catch (error) {
             setError(error);
             console.log('error: ', error)
         }
+      }
     };
 
     const handleBackButtonClick = () => {

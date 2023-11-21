@@ -35,10 +35,10 @@ function TellerTransaction() {
     return (
         <div className='container'>
             <h1>Please select a transaction to perform on the selected account.</h1>
-            <button onClick={handleTellerTransfer}>Transfer</button>
-            <button onClick={handleTellerDeposit}>Deposit</button> 
-            <button onClick={handleTellerWithdraw}>Withdraw</button><br/>
-            <button onClick={handleBackButtonClick}>Back</button> 
+            <button onClick={handleTellerTransfer} className='form-button'>Transfer</button>
+            <button onClick={handleTellerDeposit} className='form-button'>Deposit</button> 
+            <button onClick={handleTellerWithdraw} className='form-button'>Withdraw</button><br/>
+            <button onClick={handleBackButtonClick} className='form-button'>Back</button> 
         </div>
     )
 }

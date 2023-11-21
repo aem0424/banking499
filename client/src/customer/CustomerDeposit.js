@@ -62,25 +62,31 @@ function CustomerDeposit() {
         const {TransactionType, FromAccountID, ToAccountID, Amount} = formData;
         setError(null);
 
-        console.log(TransactionType, FromAccountID, ToAccountID, Amount);
-        try {
-            const response = await axios.post('http://localhost:4000/transactions', {
+        const handling = await axios.get('/customer/account', {params: {AccountID: FromAccountID}}, {withCredentials:true});
+        const type = handling.data.AccountType;
+        if(type === "Credit Card" ||  type === "Home Mortgage Loan") {
+            setError("Can't deposit into " + type + " account.");
+        }
+        else {
+            try {
+             const response = await axios.post('http://localhost:4000/transactions', {
                 TransactionType,
                 FromAccountID,
                 ToAccountID,
                 Amount
             });
 
-        if(response.data) {
-            console.log('success: ', response.data);
-            setSuccess(true);
-        } else {
+            if(response.data) {
+             console.log('success: ', response.data);
+             setSuccess(true);
+          } else {
             console.log('error!', error);
-        }
+         }
         } catch (error) {
             setError(error);
             console.log('error: ', error)
         }
+     }
     };
 
     const handleBackButtonClick = () => {
@@ -92,7 +98,7 @@ function CustomerDeposit() {
             {loading ? (
                 <p>Loading...</p>
             ) : error ? (
-                <p>ERROR: {error.message}</p>
+                <p>ERROR: {error}</p>
             ) : success ? (
                 <p>Success!</p>
             ) : userAccounts ? (

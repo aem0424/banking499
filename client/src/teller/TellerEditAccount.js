@@ -86,7 +86,7 @@ function TellerEditAccount() {
             <div>
             <h1>Edit Account Information</h1>
             <form onSubmit={handleSubmit} className="edit-form">
-                <div className="form-columns">
+                <div className="form-group">
                     <label htmlFor="AccountName" className="form-label">Account Name</label>
                     <input
                         type="text"
@@ -98,7 +98,7 @@ function TellerEditAccount() {
                         className="form-input"
                     />
                 </div>
-                <div className="form-columns">
+                <div className="form-group">
                     <label htmlFor="AccountType" className="form-label">Account Type</label>
                     <input
                         type="text"
@@ -110,8 +110,8 @@ function TellerEditAccount() {
                         className="form-input"
                     />
                 </div>       
-                <div className="form-columns">
-                    <label htmlFor="InterestRate" className="form-label">Interest Rate</label>
+                <div className="form-group">
+                    <label htmlFor="InterestRate" className="form-label">Interest Rate %</label>
                     <input
                         type="numeric"
                         id="InterestRate"
@@ -122,11 +122,11 @@ function TellerEditAccount() {
                         className="form-input"
                     />
                 </div>      
-                <button type="submit" className="form-button">Make Edits</button><br/>                
+                <button type="submit" className="submit-button">Make Edits</button><br/>                
             </form>
          </div>        
           ) : null }
-         <button onClick={handleBackButtonClick}>Back</button>                                 
+         <button onClick={handleBackButtonClick} className='form-button'>Back</button>                                 
         </div>
 )}
 export default TellerEditAccount;
