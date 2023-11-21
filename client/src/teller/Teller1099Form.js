@@ -25,15 +25,18 @@ function Teller1099Form() {
 
     useEffect(() => {
         if(user) {
-            const response = axios.get('/1099form', {params: {AccountID: account.AccountID}})
-            if(response) {
-                console.log(response);
-                console.log(response.data);
+            const getData = async() => {
+                const response = await axios.get('/1099form', {params: {AccountID: account.AccountID}})
+                if(response) {
+                    console.log(response);
+                    console.log(response.data);
+                }
+                else {
+                    console.log(error);
+                    setError(error);
+                }
             }
-            else {
-                console.log(error);
-                setError(error);
-            }
+            getData().catch(console.error);
         }
     })
 
