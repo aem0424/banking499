@@ -11,8 +11,20 @@ function TellerCustomerEdit() {
     const [error, setError] = useState(null);   
     const [success, setSuccess] = useState(false);          
     const [formData, setFormData] = useState({
-        Email:customer?.Email,
-        Password:customer?.Password,
+        Email: customer?.Email || "",
+        Password: customer?.Password || "",
+        UserID: customer?.UserID || "",
+        FirstName: customer?.FirstName || "",
+        LastName: customer?.LastName || "",
+        FullName: customer?.FullName || "",
+        Street: customer?.Street || "",
+        Street2: customer?.Street2 || "",
+        City: customer?.City || "",
+        State: customer?.State || "",
+        ZIP: customer?.ZIP || "",              
+        PhoneNumber: customer?.PhoneNumber || "",
+        CellPhoneNumber: customer?.CellPhoneNumber || "",
+        DOB: customer?.DOB || "",        
     });
 
     const handleBackButtonClick = () => {
@@ -35,9 +47,8 @@ function TellerCustomerEdit() {
 
      const handleSubmit = async (e) => {
       e.preventDefault();
-  
       try {
-        const response = await axios.post('/teller/customer/update', formData, {withCredentials:true});
+        const response = await axios.post('/teller/customer/update', formData);
 
         if (response.status === 200) {
           console.log('Customer updated successfully:', response.data);
