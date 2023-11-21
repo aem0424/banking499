@@ -741,7 +741,29 @@ async function updateAccountBalance(accountID, amount) {
       .from('Account')
       .update({ Balance: updatedBalance })
       .eq('AccountID', accountID);
-  }
+}
+
+
+async function sumInterestForYearAndAccount(year, accountID) {
+    const { data, error } = await supabase
+      .from('Transaction')
+      .select('Amount')
+      .eq('AccountID', accountID)
+      .eq('TransactionType', 'Interest')
+      .gte('Timestamp', `${year}-01-01T00:00:00.000Z`)
+      .lt('Timestamp', `${parseInt(year) + 1}-01-01T00:00:00.000Z`);
+  
+    if (error) {
+      console.error('Error fetching data:', error.message);
+      return null; 
+    }
+  
+    let totalInterest = data.reduce((sum, transaction) => sum + transaction.Amount, 0);
+    totalInterest = totalInterest.toFixed(2); // Returning num with precision of 2
+    return totalInterest;
+}
+  
+
   
 
 // --------------------------- BillPayments Table -----------------------
@@ -936,6 +958,7 @@ module.exports = {
     getTransactionTransfer,
     insertTransactionForAccount,
     updateAccountBalance,
+    sumInterestForYearAndAccount,
 
     getUserAccountsBillpayIncluded,
     getBillPayAccount,
@@ -947,6 +970,6 @@ module.exports = {
     updateBillPaymentAmount,
 
     getUserAccountsBillpayIncluded,
-
+    
     
 }

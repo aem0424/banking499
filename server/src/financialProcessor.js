@@ -19,13 +19,27 @@ const database = require('./database.js');
 const transactionTest = require('./transaction.js');
 
 
+function calculateLoanPayment(interestRate, years, baseCost) {
+  // Convert interest rate to decimal
+  const rate = interestRate / 100;
+  
+  // Compounded monthly
+  const n = 12;
+
+  // Calculate compound interest
+  const compoundInterest = baseCost * Math.pow(1 + rate / n, n * years);
+
+  // Calculate total cost
+  const totalCost = compoundInterest.toFixed(2); // Round to 2 decimal places
+
+  return parseFloat(totalCost);
+}
+
+
 
 // System function to generate interest on All Accounts based on InterestAmount
 // Params: None
 // Return: None
-
-
-
 router.get('/system/generateInterest', async (req, res) => {
     let userRole = req.session.user?.Role;
     // if (userRole != "Administrator") return res.status(401).json({ error: "User Is Not Logged In As Admin" });
