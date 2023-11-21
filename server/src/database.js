@@ -25,6 +25,17 @@ async function getUser(userID) {
 }
 
 
+// Get UserName
+// Params: UserID
+async function getUserName(userID) {
+    const { data, error } = await supabase
+        .from('User')
+        .select('FirstName, LastName')
+        .eq('UserID', userID);
+
+    return [data, error];
+}
+
 // Get User Name From Email
 // Params: Email
 // Return: User's First Name and Last Name
@@ -873,6 +884,7 @@ module.exports = {
     getUserQuestionsAnswers,
     getUserIDFromLogin,
     getUserLoginFromUserID,
+    getUserName,
     getUserNameFromEmail,
     getUserPassword,
     searchUsers,

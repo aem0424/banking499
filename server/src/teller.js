@@ -96,6 +96,35 @@ router.get('/teller/customer', async (req, res) => {
     return res.status(200).json(userData);
 });
 
+// POST: Update a Customer Information
+// Params: User{ UserID*, Email, FirstName, LastName, ... }
+// Return: Confirmation Message
+router.post('/teller/customer/update', async (req, res) => {
+    console.log("Getting a Customers List");
+  
+    let userID = req.session.user?.UserID;
+    let userRole = req.session.user?.Role;
+    if (!userID || userRole != "Teller") return res.status(401).json({ error: "User Is Not Logged In As Teller" });
+  
+    let customer = req.body;
+
+    if (customer.FirstName || customer.LastName) {
+        let [nameData, err_nameData] = await database.getUserName(customer.UserID);
+        if(err_nameData) return res.status(500).json({ error: "Failed to query customer name", message: "Error occurred while getting user name", data: { UserID: customer.UserID }});
+        nameData = nameData[0];
+        console.log(nameData);
+        customer.FullName = (customer.FirstName ? customer.FirstName : nameData.FirstName) + " " + (customer.LastName ? customer.LastName : nameData.LastName)
+    }
+   
+    let [customerData, err_customerData] = await database.updateUser(customer);
+    if (err_customerData) {
+      return res.status(500).json({ error: "Failed to update Customer Data", message: err_customerData.message });
+    }
+    
+    customerData = customerData[0];
+    return res.status(200).json({message: "Updated the customer information successfully", data: customerData});
+  });
+
 // GET: Get Customer Accounts (Login Required)
 // Params: UserID (CustomerID)
 // Return: List of Tellers

@@ -13,7 +13,7 @@ router.get('/admin/tellers', async (req, res) => {
   let userRole = req.session.user?.Role;
   if (!userID || userRole != "Administrator") return res.status(401).json({ error: "User Is Not Logged In As Admin" });
 
- 
+
   let [tellerList, err_tellerList] = await database.getTellers();
   if (err_tellerList) return res.status(500).json({ error: "Failed to query Tellers List", message: err_tellerList.message });
 
@@ -54,7 +54,7 @@ router.put('/admin/teller/register', async (req, res) => {
   if (err_userData) return res.status(500).json({ error: 'Failed to query User name', message: err_userData.message });
   userData = userData[0];
 
-  if (userData) return res.status(404).json({ error: `Unable to Create a new Teller`, message: `The email is already in use by ${userData.FirstName} ${userData.LastName} ${userData.UserID}`});
+  if (userData) return res.status(404).json({ error: `Unable to Create a new Teller`, message: `The email is already in use by ${userData.FirstName} ${userData.LastName} ${userData.UserID}` });
 
   // Add a New Teller
   let [tellerData, err_tellerData] = await database.insertTeller(teller);
@@ -75,10 +75,17 @@ router.post('/admin/teller/update', async (req, res) => {
   if (!userID || userRole != "Administrator") return res.status(401).json({ error: "User Is Not Logged In As Admin" });
 
   let teller = req.body;
+  if (teller.FirstName || teller.LastName) {
+    let [nameData, err_nameData] = await database.getUserName(teller.UserID);
+    if(err_nameData) return res.status(500).json({ error: "Failed to query teller name", message: "Error occurred while getting user name", data: { UserID: teller.UserID }});
+    nameData = nameData[0];
+    console.log(nameData);
+    teller.FullName = (teller.FirstName ? teller.FirstName : nameData.FirstName) + " " + (teller.LastName ? teller.LastName : nameData.LastName)
+}
 
   let [tellerData, err_tellerData] = await database.updateUser(teller);
   if (err_tellerData) return res.status(500).json({ error: "Failed to update this teller", message: err_tellerData });
-  
+
   tellerData = tellerData[0];
   return res.status(200).json({ message: "Successfully Updated the Teller Information", data: tellerData });
 });
@@ -120,7 +127,7 @@ router.get('/admin/customers', async (req, res) => {
   let userRole = req.session.user?.Role;
   if (!userID || userRole != "Administrator") return res.status(401).json({ error: "User Is Not Logged In As Admin" });
 
- 
+
   let [customerList, err_customerList] = await database.getCustomers();
   if (err_customerList) return res.status(500).json({ error: "Failed to query Customers List", message: err_customerList.message });
 
@@ -157,12 +164,12 @@ router.get('/admin/customer', async (req, res) => {
   if (!userID || userRole != "Administrator") return res.status(401).json({ error: "User Is Not Logged In As Admin" });
 
   let customerID = req.query.UserID;
- 
+
   let [customerData, err_customerData] = await database.getUser(customerID);
   if (err_customerData) {
     return res.status(500).json({ error: "Failed to get Customer Data", message: err_customerData.message });
   }
-  
+
   customerData = customerData[0];
   return res.status(200).json(customerData);
 });
@@ -178,14 +185,22 @@ router.post('/admin/customer/update', async (req, res) => {
   if (!userID || userRole != "Administrator") return res.status(401).json({ error: "User Is Not Logged In As Admin" });
 
   let customer = req.body;
- 
+
+  if (customer.FirstName || customer.LastName) {
+    let [nameData, err_nameData] = await database.getUserName(customer.UserID);
+    if (err_nameData) return res.status(500).json({ error: "Failed to query customer name", message: "Error occurred while getting user name", data: { UserID: customer.UserID } });
+    nameData = nameData[0];
+    console.log(nameData);
+    customer.FullName = (customer.FirstName ? customer.FirstName : nameData.FirstName) + " " + (customer.LastName ? customer.LastName : nameData.LastName)
+  }
+
   let [customerData, err_customerData] = await database.updateUser(customer);
   if (err_customerData) {
     return res.status(500).json({ error: "Failed to update Customer Data", message: err_customerData.message });
   }
-  
+
   customerData = customerData[0];
-  return res.status(200).json({message: "Updated the customer information successfully", data: customerData});
+  return res.status(200).json({ message: "Updated the customer information successfully", data: customerData });
 });
 
 // DELETE: Delete a Customer (include {withCredentials:true})
@@ -226,7 +241,7 @@ router.get('/admin/customer/accounts', async (req, res) => {
   let [accountData, err_accountData] = await database.getUserAccounts(customerID);
   if (err_accountData) {
     console.error('Database Error:', err_accountData);
-  return res.status(500).json({ error: "Failed to get the Customer's Accounts", message: err_accountData.message });
+    return res.status(500).json({ error: "Failed to get the Customer's Accounts", message: err_accountData.message });
   }
   return res.status(200).json(accountData);
 });
@@ -280,7 +295,7 @@ router.put('/admin/customer/account/create', async (req, res) => {
   if (err_accountData) return res.status(500).json({ error: "Failed to add the Customer's Banking Account Information", message: err_accountData.message });
 
   accountData = accountData[0];
-  return res.status(200).json({message:"Created the Customer's Account Information Successfully", data: accountData});
+  return res.status(200).json({ message: "Created the Customer's Account Information Successfully", data: accountData });
 });
 
 
@@ -298,7 +313,7 @@ router.post('/admin/customer/account/update', async (req, res) => {
   if (err_accountData) return res.status(500).json({ error: "Failed to update the Customer's Banking Account Information", message: err_accountData.message });
 
   accountData = accountData[0];
-  return res.status(200).json({message:"Updated the Customer's Account Information Successfully", data: accountData});
+  return res.status(200).json({ message: "Updated the Customer's Account Information Successfully", data: accountData });
 });
 
 // Delete: Delete a Customer Banking Account Information
@@ -314,18 +329,18 @@ router.delete('/admin/customer/account/delete', async (req, res) => {
 
   // Check if the account balance is 0
   let [accountData, err_accountData] = await database.getAccount(customerID, accountID);
-  
+
   if (err_accountData) return res.status(500).json({ error: `Failed to query the Account ${accountID} for Customer ${customerID}`, message: err_accountData.message, data: accountData });
 
   if (accountData.Balance != 0) {
-    return res.status(400).json( { error: `Account Balance Is Not $0`, message: `The Account ${accountID}'s balance is ${accountData.Balance}. The account balance must be $0 in order to delete the account`, data: accountData});
-}
+    return res.status(400).json({ error: `Account Balance Is Not $0`, message: `The Account ${accountID}'s balance is ${accountData.Balance}. The account balance must be $0 in order to delete the account`, data: accountData });
+  }
 
   let [deletionData, err_deletionData] = await database.deleteAccount(accountID, customerID);
   if (err_deletionData) return res.status(500).json({ error: "Failed to delete the Customer's Banking Account Information", message: err_deletionData.message, userData: req.body });
 
   deletionData = deletionData[0];
-  return res.status(200).json({message:"Deleted the Customer's Account Information Successfully", data: deletionData});
+  return res.status(200).json({ message: "Deleted the Customer's Account Information Successfully", data: deletionData });
 });
 
 
