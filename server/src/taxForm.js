@@ -5,8 +5,6 @@ const router = express.Router();
 const database = require('./database.js');
 
 const taxYear = '2023'
-const taxYearTwoDigit = '23'
-const testid = '7'
 
 
 
@@ -48,12 +46,12 @@ router.get('/1099form', async (req, res) => {
         const incomeTaxWithheld = form.getTextField('incomeTaxWithheld');
         const investmentExpenses = form.getTextField('investmentExpenses');
         const foreignTaxPaid = form.getTextField('foreignTaxPaid');
-        const foreignCountry = form.getTextField('foreignCountry');
-        const privateBondInterest = form.getTextField('privateBondInterest');
-        const marketDiscount = form.getTextField('marketDiscount');
-        const bondPremium = form.getTextField('bondPremium');
-        const bondPremiumTreasury = form.getTextField('bondPremiumTreasury');
-        const bondPremiumTaxExempt = form.getTextField('bondPremiumTaxExempt');
+        const foreignCountry = form.getTextField('foreignCountry'); // USA only ?
+        const privateBondInterest = form.getTextField('privateBondInterest'); // we do not offer bond accounts
+        const marketDiscount = form.getTextField('marketDiscount'); 
+        const bondPremium = form.getTextField('bondPremium'); // we do not offer bond accounts
+        const bondPremiumTreasury = form.getTextField('bondPremiumTreasury'); // we do not offer bond accounts
+        const bondPremiumTaxExempt = form.getTextField('bondPremiumTaxExempt'); // we do not offer bond accounts
         const taxCredit = form.getTextField('taxCredit');
         const state = form.getTextField('state');
         const stateID = form.getTextField('stateID');
@@ -83,7 +81,7 @@ router.get('/1099form', async (req, res) => {
         recipientTIN.setText(String(user.SSN))
         recipientName.setText(String(user.FirstName + ' ' + user.LastName).toUpperCase());
         recipientAddress.setText(String(user.Street + ', ' + user.Street2).toUpperCase());
-        cityStateZip.setText(String("\t " + user.City + "\t " + user.State + "\t " + user.ZIP).toUpperCase());
+        cityStateZip.setText(String("\t " + user.City + ",\t " + user.State + "\t " + user.ZIP).toUpperCase());
 
         // Unused Fields
         withdrawalPenalty.setText('0.00');
@@ -114,59 +112,5 @@ router.get('/1099form', async (req, res) => {
 
   
   
-  
   module.exports = router;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// First Test
-async function fillPDF() {
-  try {
-    // Replace 'path/to/your/file.pdf' with the actual path to your PDF file
-    const pdfPath = '1099int.pdf';
-
-    // Read the PDF file as a Buffer
-    const pdfBytes = fs.readFileSync(pdfPath);
-
-    // Load existing PDF
-    const pdfDoc = await PDFDocument.load(pdfBytes);
-
-    // Get the form fields
-    const form = pdfDoc.getForm();
-
-    // Fill out the form fields
-    const textField = form.getTextField('recipientName');
-    textField.setText('Bobby Morgan');
-
-    // Save the modified PDF
-    const modifiedPdfBytes = await pdfDoc.save();
-
-    // Replace 'path/to/your/modified/file.pdf' with the desired path for the modified PDF
-    fs.writeFileSync('bobby1099.pdf', modifiedPdfBytes);
-
-    console.log('PDF successfully filled and saved!');
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
 

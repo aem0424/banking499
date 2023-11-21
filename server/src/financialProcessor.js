@@ -52,7 +52,17 @@ router.get('/system/generateInterest', async (req, res) => {
     }
   });
 
-
+router.get('/system/credit', async (req, res) => {
+  let userRole = req.session.user?.Role;
+  // if (userRole != "Administrator") return res.status(401).json({ error: "User Is Not Logged In As Admin" });
+  try {
+    const result = await serviceCreditCard();
+    res.json({ success: true, result });
+  } catch (error) {
+    console.error('Error generating interest:', error.message);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
 
 // System function to generate interest on All Accounts based on InterestAmount
 // Params: None
@@ -89,10 +99,6 @@ async function generateInterest() {
                       return null;
                   }
               } 
-              if (account.AccountType === "Credit Card")
-              {
-
-              }
           })
       );
 
@@ -105,22 +111,50 @@ async function generateInterest() {
 // System function to generate interest on All Accounts based on InterestAmount
 // Params: None
 // Return: None
-async function serviceCreditCard(transaction) {
+async function serviceCreditCard() {
   try {
+    const [data, error] = await database.getOverdueCreditCardPayments();
 
+    if (error) {
+      throw error;
+    }
 
-    
+    const transactions = await Promise.all(
+      data.map(async (billAccount) => {
+        console.log(billAccount)
+        const transaction = {
+          TransactionType: 'Interest',
+          AccountID: billAccount.AccountReference,
+          Amount: billAccount.Amount
+        };
+        const [transactionResult, transactionError] = await transactionTest.insertCreditTransaction(transaction);
+        if (transactionError) {
+          console.error(`Error inserting transaction for AccountID ${billAccount.AccountReference}:`, transactionError.message);
+          return null;
+        }
+        let account = await database.getAccount_(billAccount.AccountReference);
+        account = account[0];
+        account = account[0];
+        let interestAmount = parseFloat((account.Balance * (account.InterestRate * 0.01 * 0.083)).toFixed(2));
+        console.log(billAccount);
+        console.log(billAccount.BillPayID);
+        let newBillResult = await database.updateBillPaymentAmount(billAccount.BillPayID, interestAmount);
+        let newDueDate = await database.updateDueDate(billAccount.BillPayID);
 
+      })
+    );
 
-
+    return transactions.filter(Boolean); // Filter out null transactions
   } catch (error) {
     throw error;
   }
-
 }
+
+
 
 module.exports = {
   router: router,
-  generateInterest: generateInterest
+  generateInterest: generateInterest,
+  serviceCreditCard: serviceCreditCard
 };
 
