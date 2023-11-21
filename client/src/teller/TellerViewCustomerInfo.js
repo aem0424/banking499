@@ -72,7 +72,7 @@ function TellerViewCustomerInfo() {
         console.log(formData);
         try {
             const response = await axios.get('/teller/customer/accounts/search', 
-            {params: {AccountName: formData.AccountName}});
+            {params: {AccountName: formData.AccountName, UserID: customer.UserID}});
         if(response.data) {
             console.log('success:', response.data);
             setSearchAccounts(response.data);
@@ -147,15 +147,8 @@ function TellerViewCustomerInfo() {
             <div>
                 <h2>Customer Information</h2>
                 <div className='info'>
-            <p><strong>Name:</strong> {customer.FirstName} {customer.LastName}</p>
-            <p><strong>Address Line 1:</strong> {customer.Street}</p>
-            <p><strong>Address Line 2:</strong> {customer.Street2}</p>
-            <p><strong>City:</strong> {customer.City}</p>
-            <p><strong>State:</strong> {customer.State}</p>
-            <p><strong>ZIP:</strong> {customer.ZIP}</p>
-            <p><strong>Phone Number:</strong> {customer.PhoneNumber}</p>
-            <p><strong>SSN:</strong> {customer.SSN}</p>
-            <p><strong>Date of Birth:</strong> {customer.DOB}</p>
+            <p><strong>Name:</strong> {customer.FirstName} {customer.LastName}<strong> Phone Number:</strong> {customer.PhoneNumber} <strong> SSN:</strong> {customer.SSN} <strong> Date of Birth:</strong> {customer.DOB}</p>
+            <p><strong>Address Line 1:</strong> {customer.Street} <strong>Address Line 2:</strong> {customer.Street2} <strong>City/State/ZIP:</strong> {customer.City}, {customer.State}, {customer.ZIP}</p>
             </div>
             <h2>Account List</h2>
                   {searchFound ? (
@@ -168,6 +161,7 @@ function TellerViewCustomerInfo() {
                           <th>Account Name</th>
                           <th>Balance</th>
                           <th>Interest Rate</th>
+                          <th></th>
                           <th></th>
                           <th></th>
                           <th></th>
@@ -192,6 +186,9 @@ function TellerViewCustomerInfo() {
                         <td>
                           <button onClick={() => handleDeleteAccountClick(account)}>Delete</button>
                         </td>
+                        <td>
+                              <button onClick={() => handle1099Click(account)}>1099</button>
+                            </td>
                       </tr>
                     ))}
                   </tbody>
@@ -264,9 +261,9 @@ function TellerViewCustomerInfo() {
                         {endIndex < customerAccounts.length && (
                           <button onClick={handleLoadMore} className='form-button'>Load More Accounts</button>
                         )}
-                        <button onClick={() => handleCreateAccountClick} className='form-button'>New Account</button>
-                        <button onClick={() => handleTransactionClick} className='form-button'>Make Transaction</button><br/>
-                        <button onClick={() => handleEditCredentialsClick} className='form-button'>Edit Credentials</button>
+                        <button onClick={handleCreateAccountClick} className='form-button'>New Account</button>
+                        <button onClick={handleTransactionClick} className='form-button'>Make Transaction</button>
+                        <button onClick={handleEditCredentialsClick} className='form-button'>Edit Credentials</button>
                 </div> 
             )}                       
             <button onClick={handleBackButtonClick} className='form-button'>Back</button>

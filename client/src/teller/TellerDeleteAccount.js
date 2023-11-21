@@ -68,8 +68,8 @@ function TellerDeleteAccount() {
             ) : userData ? (
                 <div>
                     <h1>Are you sure you want to delete this account?</h1>
-                    <button onClick={handleSubmit}>Yes</button><br/>
-                    <button onClick={handleNoClick}>No</button> 
+                    <button onClick={handleSubmit} className='submit-button'>Yes</button><br/>
+                    <button onClick={handleNoClick} className='logout-button'>No</button> 
                 </div>
             ) : null }
         </div>

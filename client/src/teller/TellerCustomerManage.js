@@ -147,7 +147,7 @@ function TellerCustomerManage() {
               <div>
                 <form onSubmit={handleSubmit} className='search-form'>
                         <div>
-                            <label htmlFor="Name">Search Users by Name</label>
+                            <label htmlFor="Name" className='form-label'>Search Users by Name</label>
                             <input
                                 type="text"
                                 id="Name"

@@ -100,7 +100,7 @@ function TellerDeposit() {
                 <h1>Deposit Funds</h1>             
             <form onSubmit={handleSubmit} className='amount-form'>
               <div> 
-                <label htmlFor="ToAccountID">Account</label>
+                <label htmlFor="ToAccountID" className='form-label'>Account: </label>
                 <select
                     type="text"
                     id="ToAccountID"
@@ -114,7 +114,7 @@ function TellerDeposit() {
                 </select>                    
               </div>          
               <div> 
-                <label htmlFor="Amount">Amount to Deposit</label>
+                <label htmlFor="Amount" className='form-label'>Amount to Deposit: </label>
                 <input
                     type="numeric"
                     id="Amount"
@@ -125,12 +125,12 @@ function TellerDeposit() {
                 />  
               </div> 
               <div>                         
-                <button type="submit">Deposit Funds</button>
+                <button type="submit" className='submit-button'>Deposit Funds</button>
               </div>
             </form> 
             </div>               
             ) : null}
-            <button onClick={handleBackButtonClick}>Back</button>            
+            <button onClick={handleBackButtonClick} className='form-button'>Back</button>            
         </div>
     )
 }

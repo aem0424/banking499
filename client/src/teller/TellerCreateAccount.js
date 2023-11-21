@@ -62,7 +62,8 @@ function TellerCreateAccount() {
           ) : user ? ( 
             <form onSubmit={handleSubmit}>
             <div>
-             <label htmlFor="AccountName">Account Name:</label>
+              <h2>Make Transaction</h2>
+             <label htmlFor="AccountName" className='form-label'>Account Name:</label>
                 <input
                     type="text"
                     id="AccountName"
@@ -73,7 +74,7 @@ function TellerCreateAccount() {
                 />
             </div>
             <div>
-             <label htmlFor="AccountType">Account Type:</label>
+             <label htmlFor="AccountType" className='form-label'>Account Type:</label>
                 <select
                     id="AccountType"
                     name="AccountType"
@@ -89,10 +90,10 @@ function TellerCreateAccount() {
                   <option value="CreditCard">Credit Card</option>
                 </select>
             </div>        
-          <button type = "submit" className='form-button'>Create Request</button> 
+          <button type = "submit" className='submit-button'>Create Request</button> 
         </form>
         ) : null }
-        <button onClick={handleBackButtonClick}>Back</button>                                           
+        <button onClick={handleBackButtonClick} className='form-button'>Back</button>                                           
         </div>
     )
 }

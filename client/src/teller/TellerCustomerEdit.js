@@ -82,11 +82,11 @@ function TellerCustomerEdit() {
                         className="form-input"
                     />
                 </div>       
-                <button type="submit" className="form-button">Make Edits</button><br/>                
+                <button type="submit" className="submit-button">Make Edits</button><br/>                
             </form>
          </div>        
           ) : null }
-         <button onClick={handleBackButtonClick}>Back</button>                                 
+         <button onClick={handleBackButtonClick} className='form-button'>Back</button>                                 
         </div>
 )}
 
