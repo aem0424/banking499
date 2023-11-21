@@ -60,7 +60,7 @@ function CustomerWithdraw() {
         const {TransactionType, FromAccountID, ToAccountID, Amount} = formData;
         setError(null);
 
-        const handling = await axios.get('/customer/account', {params: {AccountID: ToAccountID}}, {withCredentials:true});
+        const handling = await axios.get('/customer/account', {params: {AccountID: FromAccountID}}, {withCredentials:true});
         const type = handling.data.AccountType;
         if(type === "Home Mortgage Loan") {
             setError("Can't withdraw from " + type + " account.");
