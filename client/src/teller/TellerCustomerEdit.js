@@ -12,7 +12,7 @@ function TellerCustomerEdit() {
     const [success, setSuccess] = useState(false);          
     const [formData, setFormData] = useState({
         Email:customer?.Email,
-        Password:customer?.PasswordOriginal,
+        Password:customer?.Password,
     });
 
     const handleBackButtonClick = () => {
@@ -37,7 +37,7 @@ function TellerCustomerEdit() {
       e.preventDefault();
   
       try {
-        const response = await axios.post('/teller/customer/account/update', formData, {withCredentials:true});
+        const response = await axios.post('/teller/customer/update', formData, {withCredentials:true});
 
         if (response.status === 200) {
           console.log('Customer updated successfully:', response.data);
@@ -71,12 +71,12 @@ function TellerCustomerEdit() {
                     />
                 </div>
                 <div className="form-columns">
-                    <label htmlFor="AccountType" className="form-label">Password</label>
+                    <label htmlFor="Password" className="form-label">Password</label>
                     <input
                         type="text"
-                        id="PasswordOriginal"
-                        name="PasswordOriginal"
-                        value={formData.PasswordOriginal}
+                        id="Password"
+                        name="Password"
+                        value={formData.Password}
                         onChange={handleInputChange}
                         required
                         className="form-input"

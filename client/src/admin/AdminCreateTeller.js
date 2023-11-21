@@ -21,8 +21,8 @@ function AdminCreateTeller() {
       FirstName: '',
       LastName: '',
       PhoneNumber: '',
+      CellPhoneNumber: '',
       /*SSN: '',
-      PhoneNumber: '',
       DOB: '',
       Street: '',
       Street2: '',
@@ -41,6 +41,7 @@ function AdminCreateTeller() {
       FirstName: '',
       LastName: '',
       PhoneNumber: '',
+      CellPhoneNumber: '',
     });
 
       // Check if user is null, redirect to "/"
@@ -61,7 +62,9 @@ function AdminCreateTeller() {
         error = 'Must be at least 6 characters.';
       } else if (['FirstName', 'LastName'].includes(name) && !/^[a-zA-Z]+$/.test(value)) {
         error = `Invalid ${name === 'FirstName' ? 'First' : 'Last'} Name.`;
-      } else if (name === 'Email' && !/\S+@\S+\.\S+/.test(value)) {
+      } else if (name === 'CellPhoneNumber' && isNaN(value) && value.length !== 10) {
+        error = 'Invalid Phone Number.';
+      }else if (name === 'Email' && !/\S+@\S+\.\S+/.test(value)) {
         error = 'Invalid Email.';
       }
     
@@ -207,6 +210,19 @@ function AdminCreateTeller() {
                 />
                   {errors.PhoneNumber && <><br /><span className="error-message">{errors.PhoneNumber}</span></>}
               </div>
+            <div className='form-group'>
+            <label htmlFor="CellPhoneNumber" className='form-label'>Cell Phone Number:</label>
+            <input
+              type="tel"
+              id="CellPhoneNumber"
+              name="CellPhoneNumber"
+              value={formData.CellPhoneNumber}
+              onChange={handleInputChange}
+              required
+              className={`form-input ${errors.CellPhoneNumber ? 'error' : ''}`}
+            />
+              {errors.CellPhoneNumber && <><br /><span className="error-message">{errors.CellPhoneNumber}</span></>}
+          </div>
           </div>
 
           {/*

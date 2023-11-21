@@ -148,7 +148,6 @@ router.post('transaction/post/withdrawal', async (req, res) => {
 // ------------------------ Helper Functions
 async function insertTransferTransaction(transaction) {
   const currentTimeStamp = new Date().toISOString();
-
   try {
     const insertedFromTransaction = await database.insertTransactionForAccount(
       transaction.TransactionType,
@@ -187,6 +186,42 @@ async function insertTransferTransaction(transaction) {
       TransactionType: transaction.TransactionType,
       AccountID: transaction.FromAccountID,
       ToAccountID: transaction.ToAccountID,
+      Amount: transaction.Amount,
+      Timestamp: currentTimeStamp,
+    };
+
+    return [transactionData, null];
+  } catch (error) {
+    return [null, error];
+  }
+}
+
+async function insertCreditTransaction(transaction) {
+  const currentTimeStamp = new Date().toISOString();
+  try {
+
+    const insertedToTransaction = await database.insertTransactionForAccount(
+      transaction.TransactionType,
+      transaction.AccountID,
+      transaction.Amount,
+      currentTimeStamp
+    );
+
+    const accountUpdateResult = await database.updateAccountBalance(
+      transaction.AccountID,
+      transaction.Amount
+    );
+
+    if (
+      insertedToTransaction[1] ||
+      accountUpdateResult[1]
+    ) {
+      return [null, 'Error in transaction processing'];
+    }
+
+    const transactionData = {
+      TransactionType: transaction.TransactionType,
+      AccountID: transaction.AccountID,
       Amount: transaction.Amount,
       Timestamp: currentTimeStamp,
     };
@@ -350,5 +385,6 @@ router.get('/billpay/customer/accounts', async (req, res) => {
 
 module.exports = {
   router: router,
-  insertTransferTransaction: insertTransferTransaction
+  insertTransferTransaction: insertTransferTransaction,
+  insertCreditTransaction: insertCreditTransaction
 };

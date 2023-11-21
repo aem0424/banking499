@@ -21,14 +21,31 @@ function Teller1099Form() {
 
     const handleBackButtonClick = () => {
         navigate('/Teller/Customer/UserInfo', { state : { user, customer }})
-      };
+    };
+
+    useEffect(() => {
+        if(user) {
+            const getData = async() => {
+                const response = await axios.get('/1099form', {params: {AccountID: account.AccountID}})
+                if(response) {
+                    console.log(response);
+                    console.log(response.data);
+                }
+                else {
+                    console.log(error);
+                    setError(error);
+                }
+            }
+            getData().catch(console.error);
+        }
+    })
 
     return (
         <div className='container'>
             { success ? (
                 <p>Success!</p>
             ) : error ? (
-                <p>Error!</p>
+                <p>ERROR: {error}</p>
             ) : loading ? (
                 <p>Loading...</p>
             ) : account ? (

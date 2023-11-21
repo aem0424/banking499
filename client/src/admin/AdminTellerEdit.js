@@ -3,9 +3,6 @@ import axios from 'axios';
 import '../pre/Logout.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-
-
-
 function AdminTellerEdit() {
   const location = useLocation();
   const user = location.state && location.state.user;
@@ -29,6 +26,21 @@ function AdminTellerEdit() {
     City: tellerData?.City || "",
     ZIP: tellerData?.ZIP || "",
     PhoneNumber: tellerData?.PhoneNumber || "",
+    CellPhoneNumber: tellerData?.CellPhoneNumber || "",
+  });
+
+  const [errors, setErrors] = useState({
+    Email: '',
+    Password: '',
+    FirstName: '',
+    LastName: '',
+    SSN: '',
+    PhoneNumber: '',
+    CellPhoneNumber: '',
+    Street: '',
+    Street2: '',
+    City: '',
+    ZIP: '',
   });
 
     // Check if user is null, redirect to "/"
@@ -40,11 +52,38 @@ function AdminTellerEdit() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    let error = '';
+  
+    if (name === 'SSN' && (isNaN(value) || value.length !== 9)) {
+      error = 'Invalid SSN.';
+    } else if (name === 'PhoneNumber' && (isNaN(value) || value.length !== 10)) {
+      error = 'Invalid Phone Number.';
+    } else if (name === 'CellPhoneNumber' && (isNaN(value) || value.length !== 10)) {
+      error = 'Invalid Phone Number.';
+    }else if (name === 'Password' && value.length < 6) {
+      error = 'Must be at least 6 characters.';
+    } else if (['FirstName', 'LastName'].includes(name) && !/^[a-zA-Z]+$/.test(value)) {
+      error = `Invalid ${name === 'FirstName' ? 'First' : 'Last'} Name.`;
+    } else if (['Street', 'Street2', 'City'].includes(name) && !/^[a-zA-Z0-9\s,.'-]*$/.test(value)) {
+      error = `Invalid ${name}.`;
+    } else if (name === 'Email' && !/\S+@\S+\.\S+/.test(value)) {
+      error = 'Invalid Email.';
+    } else if (name === 'ZIP' && (isNaN(value) || value.length !==5)) {
+      error = 'Invalid ZIP Code.';
+    }
+
     setFormData({
       ...formData,
       [name]: value,
     });
+
+    setErrors({
+      ...errors,
+      [name]: error,
+    });
   };
+
+  const allFieldsValid = Object.values(errors).every((error) => error === '');
 
   const handleLogoutClick = () => {
     axios.post('/user/logout')
@@ -84,6 +123,11 @@ function AdminTellerEdit() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!allFieldsValid) {
+      console.error('Please fill in all fields correctly before submitting.');
+      return;
+    }
     
     try {
       const response = await axios.post('http://localhost:4000/admin/teller/update', formData, {withCredentials:true});
@@ -100,21 +144,15 @@ function AdminTellerEdit() {
   };
   return (
     <div className='container'>
+      <h2>Teller Personal Information</h2>
           <div className='info'>
-            <h2>Teller Personal Information</h2>
             <p><strong>Name:</strong> {tellerData.FirstName} {tellerData.LastName}</p>
-            <p><strong>Address Line 1:</strong> {tellerData.Street}</p>
-            <p><strong>Address Line 2:</strong> {tellerData.Street2}</p>
-            <p><strong>City:</strong> {tellerData.City}</p>
-            <p><strong>State:</strong> {tellerData.State}</p>
-            <p><strong>ZIP:</strong> {tellerData.ZIP}</p>              
-            <p><strong>Phone Number:</strong> {tellerData.PhoneNumber}</p>
-            <p><strong>SSN:</strong> {tellerData.SSN}</p>
-            <p><strong>Date of Birth</strong> {tellerData.DOB}</p>
+            <p><strong>Address:</strong> {tellerData.Street}, {tellerData.Street2}, {tellerData.City}, {tellerData.State}, {tellerData.ZIP}</p>         
+            <p><strong>Home Phone Number:</strong> {tellerData.PhoneNumber} <strong>Cell Phone Number:</strong> {tellerData.CellPhoneNumber}</p>
+            <p><strong>SSN:</strong> {tellerData.SSN} <strong>Date of Birth</strong> {tellerData.DOB}</p>
           </div>
 
-      <h1>Edit Teller</h1>
-      <p>Name: {tellerData.FirstName} {tellerData.LastName}</p>
+      <h2>Edit Teller</h2>
       <form onSubmit={handleSubmit} className="register-form">
           <div className="form-columns">
             <div className='form-group'>
@@ -126,8 +164,9 @@ function AdminTellerEdit() {
                 value={formData.FirstName}
                 onChange={handleInputChange}
                 required
-                className='form-input'
+                className={`form-input ${errors.FirstName ? 'error' : ''}`}
               />
+               {errors.FirstName && <><br /><span className="error-message">{errors.FirstName}</span></>}
             </div>
             <div className='form-group'>
               <label htmlFor="LastName" className='form-label'>Last Name:</label>
@@ -138,9 +177,10 @@ function AdminTellerEdit() {
                 value={formData.LastName}
                 onChange={handleInputChange}
                 required
-                className='form-input'
-              />
-            </div>
+                className={`form-input ${errors.LastName ? 'error' : ''}`}
+                />
+                  {errors.LastName && <><br /><span className="error-message">{errors.LastName}</span></>}
+              </div>
             <div className='form-group'>
               <label htmlFor="SSN" className='form-label'>SSN:</label>
               <input
@@ -150,11 +190,12 @@ function AdminTellerEdit() {
                 value={formData.SSN}
                 onChange={handleInputChange}
                 required
-                className='form-input'
-              />
-            </div>
+                className={`form-input ${errors.SSN ? 'error' : ''}`}
+                />
+                  {errors.SSN && <><br /><span className="error-message">{errors.SSN}</span></>}
+              </div>
             <div className='form-group'>
-              <label htmlFor="PhoneNumber" className='form-label'>Phone Number:</label>
+              <label htmlFor="PhoneNumber" className='form-label'> Home Phone Number:</label>
               <input
                 type="tel"
                 id="PhoneNumber"
@@ -162,9 +203,23 @@ function AdminTellerEdit() {
                 value={formData.PhoneNumber}
                 onChange={handleInputChange}
                 required
-                className='form-input'
-              />
-            </div>
+                className={`form-input ${errors.PhoneNumber ? 'error' : ''}`}
+                />
+                  {errors.PhoneNumber && <><br /><span className="error-message">{errors.PhoneNumber}</span></>}
+              </div>
+            <div className='form-group'>
+            <label htmlFor="CellPhoneNumber" className='form-label'>Cell Phone Number:</label>
+            <input
+              type="tel"
+              id="CellPhoneNumber"
+              name="CellPhoneNumber"
+              value={formData.CellPhoneNumber}
+              onChange={handleInputChange}
+              required
+              className={`form-input ${errors.CellPhoneNumber ? 'error' : ''}`}
+            />
+            {errors.CellPhoneNumber && <><br /><span className="error-message">{errors.CellPhoneNumber}</span></>}
+          </div>
           </div>
           <div className="form-columns">
             
@@ -188,9 +243,10 @@ function AdminTellerEdit() {
                 value={formData.Street}
                 onChange={handleInputChange}
                 required
-                className='form-input'
-              />
-            </div>
+                className={`form-input ${errors.Street ? 'error' : ''}`}
+                />
+                  {errors.Street && <><br /><span className="error-message">{errors.Street}</span></>}
+              </div>
             <div className='form-group'>
               <label htmlFor="Street2" className='form-label'>Address Line 2:</label>
               <input
@@ -199,10 +255,10 @@ function AdminTellerEdit() {
                 name="Street2"
                 value={formData.Street2}
                 onChange={handleInputChange}
-                required
-                className='form-input'
-              />
-            </div>
+                className={`form-input ${errors.Street2 ? 'error' : ''}`}
+                />
+                  {errors.Street2 && <><br /><span className="error-message">{errors.Street2}</span></>}
+              </div>
             <div className='form-group'>
               <label htmlFor="City" className='form-label'>City:</label>
               <input
@@ -212,9 +268,10 @@ function AdminTellerEdit() {
                 value={formData.City}
                 onChange={handleInputChange}
                 required
-                className='form-input'
-              />
-            </div>
+                className={`form-input ${errors.City ? 'error' : ''}`}
+                />
+                  {errors.City && <><br /><span className="error-message">{errors.City}</span></>}
+              </div>
             <div className='form-group'>
               <label htmlFor="State" className='form-label'>State:</label>
               <select
@@ -285,9 +342,10 @@ function AdminTellerEdit() {
                 value={formData.ZIP}
                 onChange={handleInputChange}
                 required
-                className='form-input'
-              />
-            </div>
+                className={`form-input ${errors.ZIP ? 'error' : ''}`}
+                />
+                  {errors.ZIP && <><br /><span className="error-message">{errors.ZIP}</span></>}
+              </div>
             </div>
             {successMessage && (<p className="success-message">{successMessage}</p>)}
         <button type='submit' className='submit-button'>Save Changes</button>

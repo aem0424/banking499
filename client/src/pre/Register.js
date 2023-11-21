@@ -14,6 +14,7 @@ function Register() {
     LastName: '',
     SSN: '',
     PhoneNumber: '',
+    CellPhoneNumber: '',
     DOB: '',
     Street: '',
     Street2: '',
@@ -33,6 +34,7 @@ function Register() {
     LastName: '',
     SSN: '',
     PhoneNumber: '',
+    CellPhoneNumber: '',
     Street: '',
     Street2: '',
     City: '',
@@ -43,11 +45,13 @@ function Register() {
     const { name, value } = e.target;
     let error = '';
   
-    if (name === 'SSN' && isNaN(value) && value.length !== 9) {
+    if (name === 'SSN' && (isNaN(value) || value.length !== 9)) {
       error = 'Invalid SSN.';
-    } else if (name === 'PhoneNumber' && isNaN(value) && value.length !== 10) {
+    } else if (name === 'PhoneNumber' && (isNaN(value) || value.length !== 10)) {
       error = 'Invalid Phone Number.';
-    } else if (name === 'Password' && value.length < 6) {
+    } else if (name === 'CellPhoneNumber' && (isNaN(value) || value.length !== 10)) {
+      error = 'Invalid Phone Number.';
+    }else if (name === 'Password' && value.length < 6) {
       error = 'Must be at least 6 characters.';
     } else if (['FirstName', 'LastName'].includes(name) && !/^[a-zA-Z]+$/.test(value)) {
       error = `Invalid ${name === 'FirstName' ? 'First' : 'Last'} Name.`;
@@ -55,7 +59,7 @@ function Register() {
       error = `Invalid ${name}.`;
     } else if (name === 'Email' && !/\S+@\S+\.\S+/.test(value)) {
       error = 'Invalid Email.';
-    } else if (name === 'ZIP' && isNaN(value)) {
+    } else if (name === 'ZIP' && (isNaN(value) || value.length !==5)) {
       error = 'Invalid ZIP Code.';
     }
   
@@ -105,7 +109,6 @@ function Register() {
 
   return (
     <div className='container'>
-      <h1>Welcome to Summit Financial</h1>
       <h2>Register</h2>
       <form onSubmit={handleSubmit} className="register-form">
         <div className="form-columns">
@@ -161,6 +164,8 @@ function Register() {
             />
               {errors.LastName && <><br /><span className="error-message">{errors.LastName}</span></>}
           </div>
+          </div>
+          <div className="form-columns">
           <div className='form-group'>
             <label htmlFor="SSN" className='form-label'>SSN:</label>
             <input
@@ -175,20 +180,31 @@ function Register() {
               {errors.SSN && <><br /><span className="error-message">{errors.SSN}</span></>}
           </div>
           <div className='form-group'>
-            <label htmlFor="PhoneNumber" className='form-label'>Phone Number:</label>
+            <label htmlFor="PhoneNumber" className='form-label'>Home Phone Number:</label>
             <input
               type="tel"
               id="PhoneNumber"
               name="PhoneNumber"
               value={formData.PhoneNumber}
               onChange={handleInputChange}
-              required
               className={`form-input ${errors.PhoneNumber ? 'error' : ''}`}
             />
               {errors.PhoneNumber && <><br /><span className="error-message">{errors.PhoneNumber}</span></>}
           </div>
-        </div>
-        <div className="form-columns">
+          <div className='form-group'>
+            <label htmlFor="CellPhoneNumber" className='form-label'>Cell Phone Number:</label>
+            <input
+              type="tel"
+              id="CellPhoneNumber"
+              name="CellPhoneNumber"
+              value={formData.CellPhoneNumber}
+              onChange={handleInputChange}
+              required
+              className={`form-input ${errors.CellPhoneNumber ? 'error' : ''}`}
+            />
+              {errors.CellPhoneNumber && <><br /><span className="error-message">{errors.CellPhoneNumber}</span></>}
+          </div>
+        
           
           <div className='form-group'>
             <label htmlFor="DOB" className='form-label'>Date of Birth:</label>
@@ -201,6 +217,8 @@ function Register() {
               required
             />
           </div>
+          </div>
+          <div className="form-columns">
           <div className='form-group'>
             <label htmlFor="Street" className='form-label'>Address Line 1:</label>
             <input
@@ -314,7 +332,7 @@ function Register() {
             />
               {errors.ZIP && <><br /><span className="error-message">{errors.ZIP}</span></>}
           </div>
-        </div>
+          </div>
           <div className="form-columns">
             <div className='form-group'>
               <label htmlFor="Question1" className='form-label'>Security Question 1:</label>
@@ -327,7 +345,7 @@ function Register() {
               >
                 <option value="DEFAULT" disabled>Select your security question</option>
                <option value="What is your mother\'s maiden name?">What is your mother's maiden name?</option>
-               <option value="What is the name of your first pet??">What is the name of your first pet?</option>
+               <option value="What is the name of your first pet?">What is the name of your first pet?</option>
                <option value="In which city were you born?">In which city were you born?</option>
               </select>
             </div>

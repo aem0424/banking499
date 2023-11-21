@@ -76,17 +76,12 @@ function AdminCustomerInfo() {
     
     return (
         <div className='container'>
+          <h2>Customer Info</h2>
           <div className='info'>
-            <h2>Customer Personal Information</h2>
             <p><strong>Name:</strong> {customerData.FirstName} {customerData.LastName}</p>
-            <p><strong>Address Line 1:</strong> {customerData.Street}</p>
-            <p><strong>Address Line 2:</strong> {customerData.Street2}</p>
-            <p><strong>City:</strong> {customerData.City}</p>
-            <p><strong>State:</strong> {customerData.State}</p>
-            <p><strong>ZIP:</strong> {customerData.ZIP}</p>            
-            <p><strong>Phone Number:</strong> {customerData.PhoneNumber}</p>
-            <p><strong>SSN:</strong> {customerData.SSN}</p>
-            <p><strong>Date of Birth</strong> {customerData.DOB}</p>
+            <p><strong>Address:</strong> {customerData.Street}, {customerData.Street2}, {customerData.City}, {customerData.State}, {customerData.ZIP}</p>         
+            <p><strong>Home Phone Number:</strong> {customerData.PhoneNumber} <strong>Cell Phone Number:</strong> {customerData.CellPhoneNumber}</p>
+            <p><strong>SSN:</strong> {customerData.SSN} <strong>Date of Birth</strong> {customerData.DOB}</p>
           </div>
             
             <div>

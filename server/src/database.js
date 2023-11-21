@@ -741,7 +741,29 @@ async function updateAccountBalance(accountID, amount) {
       .from('Account')
       .update({ Balance: updatedBalance })
       .eq('AccountID', accountID);
-  }
+}
+
+
+async function sumInterestForYearAndAccount(year, accountID) {
+    const { data, error } = await supabase
+      .from('Transaction')
+      .select('Amount')
+      .eq('AccountID', accountID)
+      .eq('TransactionType', 'Interest')
+      .gte('Timestamp', `${year}-01-01T00:00:00.000Z`)
+      .lt('Timestamp', `${parseInt(year) + 1}-01-01T00:00:00.000Z`);
+  
+    if (error) {
+      console.error('Error fetching data:', error.message);
+      return null; 
+    }
+  
+    let totalInterest = data.reduce((sum, transaction) => sum + transaction.Amount, 0);
+    totalInterest = totalInterest.toFixed(2); // Returning num with precision of 2
+    return totalInterest;
+}
+  
+
   
 
 // --------------------------- BillPayments Table -----------------------
@@ -871,7 +893,59 @@ async function getBillPayByAccountReference(accountID) {
     }
 }
 
+async function getOverdueCreditCardPayments() {
+    try {
+      const currentDate = new Date();
+      const thirtyDaysAgo = new Date(currentDate);
+      thirtyDaysAgo.setDate(currentDate.getDate() - 30);
+      console.log('Current Date:', currentDate.toISOString().split('T')[0]);
+      console.log('Thirty Days Ago:', thirtyDaysAgo.toISOString().split('T')[0]);
 
+  
+      const { data, error } = await supabase
+        .from('BillPayment')
+        .select('*')
+        .eq('BillType', 'Credit Card')
+        .lte('DueDate', currentDate.toISOString().split('T')[0]) // Assuming DueDate is in YYYY-MM-DD format
+        .gte('DueDate', thirtyDaysAgo.toISOString().split('T')[0]); // DueDate over 30 days
+  
+      if (error) {
+        console.error('Error fetching data:', error.message);
+        return null; // or throw an error if you prefer
+      }
+  
+      return [data, error ];
+    } catch (error) {
+      console.error('Error:', error);
+      throw error; // Throw the error for handling at a higher level if needed
+    }
+}
+
+async function updateDueDate(BillPayID) {
+    try {
+      const currentDate = new Date();
+      const newDueDate = new Date(currentDate);
+      newDueDate.setDate(currentDate.getDate() + 30);
+  
+      const { data, error } = await supabase
+        .from('BillPayment')
+        .update({ DueDate: newDueDate.toISOString().split('T')[0] })
+        .eq('BillPayID', BillPayID);
+  
+      if (error) {
+        console.error('Error updating DueDate:', error.message);
+        throw error;
+      }
+  
+      console.log('DueDate updated successfully:', data);
+      return data;
+    } catch (error) {
+      console.error('Error in updateDueDate:', error.message);
+      throw error;
+    }
+  }
+  
+  
 
 
 module.exports = {
@@ -936,6 +1010,7 @@ module.exports = {
     getTransactionTransfer,
     insertTransactionForAccount,
     updateAccountBalance,
+    sumInterestForYearAndAccount,
 
     getUserAccountsBillpayIncluded,
     getBillPayAccount,
@@ -945,8 +1020,10 @@ module.exports = {
     insertBillPay,
     insertCreditAccount,
     updateBillPaymentAmount,
+    getOverdueCreditCardPayments,
+    updateDueDate,
 
     getUserAccountsBillpayIncluded,
-
+    
     
 }

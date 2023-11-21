@@ -15,6 +15,7 @@ const tellerRoute = require('./teller.js');
 const adminRoute = require('./admin.js');
 const transactionRoute = require('./transaction.js');
 const financialProcessorRoute = require('./financialProcessor.js');
+const taxFormRoute = require('./taxForm.js');
 
 const app = express();
 const PORT = 4000;
@@ -40,6 +41,7 @@ app.use(sessionMiddleware);
 app.use(customerRoute, sessionMiddleware);
 app.use(tellerRoute, sessionMiddleware);
 app.use(adminRoute, sessionMiddleware);
+app.use(taxFormRoute, sessionMiddleware);
 app.use(transactionRoute.router, sessionMiddleware); // Exporting function + api endpoints, .router was a fix / why its different ~RM
 app.use(financialProcessorRoute.router, sessionMiddleware);
 
@@ -50,7 +52,13 @@ cron.schedule('0 6 28 * *', () => {
   console.log('Automated Interest Generation');
 });
 
+// Automated Credit Card Servicing -- Based in UTC ('Minute)
 
+// Automated Interest Geneartion -- Based in UTC time ('Hour Day')
+cron.schedule('0 6 * * *', () => {
+  financialProcessorRoute.serviceCreditCard();
+  console.log('Automated Credit Card Servicing');
+});
 
 app.get('/', (req, res) => {
   res.send('Home Route');

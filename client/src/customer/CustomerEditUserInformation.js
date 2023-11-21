@@ -5,6 +5,7 @@ import './/css/CustomerEditUserInformation.css';
 
 function CustomerEditUserInformation() {
     const location = useLocation();
+    const [successMessage, setSuccessMessage] = useState(null);
     const user = location.state && location.state.user;
     const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
@@ -24,7 +25,22 @@ function CustomerEditUserInformation() {
         State: customerData?.State || "",
         ZIP: customerData?.ZIP || "",              
         PhoneNumber: customerData?.PhoneNumber || "",
+        CellPhoneNumber: customerData?.CellPhoneNumber || "",
         DOB: customerData?.DOB || "",
+    });
+
+    const [errors, setErrors] = useState({
+      Email: '',
+      Password: '',
+      FirstName: '',
+      LastName: '',
+      SSN: '',
+      PhoneNumber: '',
+      CellPhoneNumber: '',
+      Street: '',
+      Street2: '',
+      City: '',
+      ZIP: '',
     });
 
       // Check if user is null, redirect to "/"
@@ -40,11 +56,38 @@ function CustomerEditUserInformation() {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+        let error = '';
+  
+        if (name === 'SSN' && (isNaN(value) || value.length !== 9)) {
+          error = 'Invalid SSN.';
+        } else if (name === 'PhoneNumber' && (isNaN(value) || value.length !== 10)) {
+          error = 'Invalid Phone Number.';
+        } else if (name === 'CellPhoneNumber' && (isNaN(value) || value.length !== 10)) {
+          error = 'Invalid Phone Number.';
+        }else if (name === 'Password' && value.length < 6) {
+          error = 'Must be at least 6 characters.';
+        } else if (['FirstName', 'LastName'].includes(name) && !/^[a-zA-Z]+$/.test(value)) {
+          error = `Invalid ${name === 'FirstName' ? 'First' : 'Last'} Name.`;
+        } else if (['Street', 'Street2', 'City'].includes(name) && !/^[a-zA-Z0-9\s,.'-]*$/.test(value)) {
+          error = `Invalid ${name}.`;
+        } else if (name === 'Email' && !/\S+@\S+\.\S+/.test(value)) {
+          error = 'Invalid Email.';
+        } else if (name === 'ZIP' && (isNaN(value) || value.length !==5)) {
+          error = 'Invalid ZIP Code.';
+        }
+        
         setFormData({
           ...formData,
           [name]: value,
         });
+
+        setErrors({
+          ...errors,
+          [name]: error,
+        });
       };
+
+      const allFieldsValid = Object.values(errors).every((error) => error === '');
   
       useEffect(() => {
         if (user) {
@@ -65,12 +108,17 @@ function CustomerEditUserInformation() {
       const handleSubmit = async (e) => {
         e.preventDefault();
         formData.FullName = formData.FirstName + ' ' + formData.LastName;
+        if (!allFieldsValid) {
+          console.error('Please fill in all fields correctly before submitting.');
+          return;
+        }
     
         try {
           const response = await axios.post('/customer/update', formData, {withCredentials:true});
 
           if (response.status === 200) {
             console.log('Customer updated successfully:', response.data);
+            setSuccessMessage('Customer updated successfully');
           } else {
             console.error('Error updating customer:', response.statusText);
           }
@@ -93,9 +141,10 @@ function CustomerEditUserInformation() {
                         value={formData.FirstName}
                         onChange={handleInputChange}
                         required
-                        className="form-input"
-                    />
-                </div>
+                        className={`form-input ${errors.FirstName ? 'error' : ''}`}
+                        />
+                         {errors.FirstName && <><br /><span className="error-message">{errors.FirstName}</span></>}
+                      </div>
                 <div className="form-group">
                     <label htmlFor="LastName" className="form-label">Last Name</label>
                     <input
@@ -105,9 +154,10 @@ function CustomerEditUserInformation() {
                         value={formData.LastName}
                         onChange={handleInputChange}
                         required
-                        className="form-input"
-                    />                    
-                </div>
+                        className={`form-input ${errors.LastName ? 'error' : ''}`}
+                        />
+                          {errors.LastName && <><br /><span className="error-message">{errors.LastName}</span></>}
+                      </div>
                 <div className="form-group">
                     <label htmlFor="Street" className="form-label">Address</label>
                     <input
@@ -117,9 +167,10 @@ function CustomerEditUserInformation() {
                         value={formData.Street}
                         onChange={handleInputChange}
                         required
-                        className="form-input"
-                    />                         
-                </div>
+                        className={`form-input ${errors.Street ? 'error' : ''}`}
+                        />
+                          {errors.Street && <><br /><span className="error-message">{errors.Street}</span></>}
+                      </div>
                 <div className="form-group">
                     <label htmlFor="Street2" className="form-label">Address 2</label>
                     <input
@@ -128,10 +179,10 @@ function CustomerEditUserInformation() {
                         name="Street2"
                         value={formData.Street2}
                         onChange={handleInputChange}
-                        required
-                        className="form-input"
-                    />                         
-                </div>
+                        className={`form-input ${errors.Street2 ? 'error' : ''}`}
+                        />
+                          {errors.Street2 && <><br /><span className="error-message">{errors.Street2}</span></>}
+                      </div>
                 </div>
                 <div className="form-columns">
                   <div className='form-group'>
@@ -143,9 +194,10 @@ function CustomerEditUserInformation() {
                         value={formData.City}
                         onChange={handleInputChange}
                         required
-                        className="form-input"
-                    />                                       
-                </div>
+                        className={`form-input ${errors.City ? 'error' : ''}`}
+                        />
+                          {errors.City && <><br /><span className="error-message">{errors.City}</span></>}
+                      </div>
                 <div className="group">
                     <label htmlFor="State" className="form-label">State</label>
                     <select
@@ -216,11 +268,12 @@ function CustomerEditUserInformation() {
                         value={formData.ZIP}
                         onChange={handleInputChange}
                         required
-                        className="form-input"
-                    />   
-                </div>
+                        className={`form-input ${errors.ZIP ? 'error' : ''}`}
+                        />
+                          {errors.ZIP && <><br /><span className="error-message">{errors.ZIP}</span></>}
+                      </div>
                 <div className="form-group">
-                    <label htmlFor="PhoneNumber" className="form-label">Phone Number</label>
+                    <label htmlFor="PhoneNumber" className="form-label">Home Phone Number</label>
                     <input
                         type="text"
                         id="PhoneNumber"
@@ -228,8 +281,22 @@ function CustomerEditUserInformation() {
                         value={formData.PhoneNumber}
                         onChange={handleInputChange}
                         required
-                        className="form-input"
-                    />                       
+                        className={`form-input ${errors.PhoneNumber ? 'error' : ''}`}
+                        />
+                          {errors.PhoneNumber && <><br /><span className="error-message">{errors.PhoneNumber}</span></>}
+                      </div>
+                <div className='form-group'>
+                  <label htmlFor="CellPhoneNumber" className='form-label'>Cell Phone Number:</label>
+                    <input
+                     type="tel"
+                      id="CellPhoneNumber"
+                      name="CellPhoneNumber"
+                      value={formData.CellPhoneNumber}
+                      onChange={handleInputChange}
+                      required
+                      className={`form-input ${errors.CellPhoneNumber ? 'error' : ''}`}
+                      />
+                    {errors.CellPhoneNumber && <><br /><span className="error-message">{errors.CellPhoneNumber}</span></>}
                 </div>
                 <div className="form-group">
                     <label htmlFor="DOB" className="form-label">Date of Birth</label>
@@ -243,6 +310,7 @@ function CustomerEditUserInformation() {
                     />             
                 </div>
                 </div>
+                {successMessage && (<p className="success-message">{successMessage}</p>)}
                 <button type="submit" className="submit-button">Make Edits</button><br/>
             </form>
            </div>
