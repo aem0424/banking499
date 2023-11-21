@@ -13,11 +13,15 @@ function Teller1099Form() {
     const [error, setError] = useState(null); 
     const [success, setSuccess] = useState(false);
 
+    useEffect(() => {
+        if (!user) {
+          navigate('/Login');
+        }
+      }, [user, navigate]);
+
     const handleBackButtonClick = () => {
         navigate('/Teller/Customer/UserInfo', { state : { user, customer }})
       };
-
-      
 
     return (
         <div className='container'>

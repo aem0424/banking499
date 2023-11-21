@@ -51,7 +51,7 @@ function TellerDeposit() {
             console.log(response);
             if (response.status === 200) {
                 setCustomerAccounts(response.data);
-                console.log(customer);
+                console.log(customerAccounts)
             }
             setLoading(false);            
         })
@@ -67,7 +67,13 @@ function TellerDeposit() {
         const {TransactionType, FromAccountID, ToAccountID, Amount} = formData;
         setError(null);
 
-        try {
+        const handling = await axios.get('/teller/customer/account', {params: {UserID: customer.UserID, AccountID: ToAccountID}});
+        const type = handling.data.AccountType;
+        if(type === "Credit Card" || type === "Home Mortgage Loan") {
+            setError("Can't deposit into " + type + " account.");
+        }        
+        else {
+         try {
             const response = await axios.post('http://localhost:4000/transactions', {
                 TransactionType,
                 FromAccountID,
@@ -75,15 +81,16 @@ function TellerDeposit() {
                 Amount
             });
 
-        if(response.data) {
+         if(response.data) {
             console.log('success: ', response.data);
             setSuccess(true);
-        } else {
+         } else {
             console.log('error!', error);
-        }
-        } catch (error) {
+         }
+         } catch (error) {
             setError(error);
             console.log('error: ', error)
+         }
         }
     };    
 
@@ -92,7 +99,7 @@ function TellerDeposit() {
             {loading ? (
                 <p>Loading...</p>
             ) : error ? (
-                <p>ERROR: {error.message}</p>
+                <p>ERROR: {error}</p>
             ) : success ? (
                 <p>Successful deposit!</p>
             ) : customerAccounts ? (

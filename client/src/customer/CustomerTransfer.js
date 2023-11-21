@@ -61,8 +61,20 @@ function CustomerTransfer() {
         e.preventDefault();
         const {TransactionType, FromAccountID, ToAccountID, Amount} = formData;
         setError(null);
+        const handlingFrom = await axios.get('/customer/account', {params: {AccountID: FromAccountID}}, {withCredentials:true});
+        const handlingTo = await axios.get('/customer/account', {params: {AccountID: ToAccountID}}, {withCredentials:true});
+        const typeFrom = handlingFrom.data.AccountType;
+        const typeTo = handlingTo.data.AccountType;
 
-        try {
+
+        if(typeFrom === "Credit Card" ||  typeFrom === "Home Mortgage Loan") {
+            setError("Can't transfer from " + typeFrom + " account.");
+        }
+        else if(typeTo === "Credit Card" ||  typeTo === "Home Mortgage Loan") {
+            setError("Can't transfer to " + typeTo + " account.");
+        }
+        else {
+         try {
             const response = await axios.post('http://localhost:4000/transactions', {
                 TransactionType,
                 FromAccountID,
@@ -70,16 +82,16 @@ function CustomerTransfer() {
                 Amount
             });
 
-        if(response.data) {
+         if(response.data) {
             console.log('success: ', response.data);
-        } else {
+         } else {
             console.log('error!');
-        }
-        } catch (error) {
+         }
+         } catch (error) {
             setError(error);
             console.log('error: ', error)
+         }
         }
-
     };
 
     const handleBackButtonClick = () => {

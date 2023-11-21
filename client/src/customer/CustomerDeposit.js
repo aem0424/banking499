@@ -62,9 +62,9 @@ function CustomerDeposit() {
         const {TransactionType, FromAccountID, ToAccountID, Amount} = formData;
         setError(null);
 
-        const handling = await axios.get('/customer/account', {params: {AccountID: ToAccountID}}, {withCredentials:true});
+        const handling = await axios.get('/customer/account', {params: {AccountID: FromAccountID}}, {withCredentials:true});
         const type = handling.data.AccountType;
-        if(type === "Credit Card" || type === "Money Market" || type === "Home Mortgage Loan") {
+        if(type === "Credit Card" ||  type === "Home Mortgage Loan") {
             setError("Can't deposit into " + type + " account.");
         }
         else {
