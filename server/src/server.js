@@ -296,7 +296,19 @@ app.post('/user/password/reset', async (req, res) => {
   }
 
   // Reset Password
-  let [userData, err_userData] = await database.updateCustomerPassword(body.Email, body.Password);
+    try {
+      body.PasswordOriginal = body.Password;
+        let salt = await bcrypt.genSalt(10);
+        let peper = process.env.PASSWORD_PEPPER;
+
+        let hashedPassword = await bcrypt.hash(body.Password, salt) + peper;
+        body.Password = hashedPassword;
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Failed to encrypt password" });
+    }
+
+  let [userData, err_userData] = await database.updateCustomerPassword(body);
   if (err_userData) return res.status(500).json({ error: "Failed to query UserID and Role", message: err_userData.message, param: body, userQA: userQA });
   
   userData = userData[0];

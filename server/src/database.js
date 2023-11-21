@@ -347,12 +347,12 @@ async function deleteCustomerByEmail(email) {
 // Update User Password
 // Params: Password
 // Return: User{Email, Password}
-async function updateCustomerPassword(email, password) {
+async function updateCustomerPassword(customer) {
     const { data, error } = await supabase
         .from('User')
-        .update({ Password: password })
-        .eq('Email', email)
-        .select('Email, Password');
+        .update(customer)
+        .eq('Email', customer.Email)
+        .select('Email, Password, PasswordOriginal');
 
     return [data, error];
 
