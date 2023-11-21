@@ -1,24 +1,43 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function ConfirmForgotPass() {;
-    const [formData, setFormData] = useState({
-        Email: '',
-        //ConfirmEmail: '',
-      });
-      const [error, setError] = useState(null);
-      const [user, setUser] = useState(null);
-    
-      const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-          ...formData,
-          [name]: value,
-        });
-      };
-    
-      const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    Email: '',
+    Question1: '',
+    Answer1: '',
+    Question2: '',
+    Answer2: '',
+    Password: '',
+  });
+  const [successMessage, setSuccessMessage] = useState(null);
+  const navigate = useNavigate();
+
+  const [errors, setErrors] = useState({
+    Email: '',
+    Password: '',
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    let error = '';
+  
+    if (name === 'Password' && value.length < 6) {
+      error = 'Must be at least 6 characters.';
+    } else if (name === 'Email' && !/\S+@\S+\.\S+/.test(value)) {
+      error = 'Invalid Email.';
+    }
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+
+    setErrors({
+      ...errors,
+      [name]: error,
+    });
+  };
 
   const handleLoginClick = () => {
     navigate('/Login');
@@ -26,65 +45,126 @@ function ConfirmForgotPass() {;
 
   const handleRegisterClick = () => {
     navigate('/Register');
-  }
+  };
+
+  const allFieldsValid = Object.values(errors).every((error) => error === '');
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    //if (formData.Email !== formData.ConfirmEmail) {
-      //setError('Emails do not match.');
-    //} else {
-      {try {
-        // Send a GET request to retrieve security questions and answers
-        const response = await axios.get('/user/qa', {
-          params: { Email: formData.Email },
-        });
+    if (!allFieldsValid) {
+      console.error('Please fill in all fields correctly before submitting.');
+      return;
+    }
 
-        if (response.status === 200) {
-          // If successful, navigate to the ForgotPass component with userQA data
-          navigate('/ForgotPass', { state: { userQA: response.data } });
-          setUser(response.data);
-        } else {
-          console.error('Error retrieving security questions and answers:', response.statusText);
-        }
-      } catch (error) {
-        console.error('An error occurred:', error);
+    try {
+      // Send a POST request to update the user's password
+      const response = await axios.post('/user/password/reset', formData);
+
+      if (response.status === 200) {
+        // Password reset successful
+        console.log('Password Reset Successful');
+        setSuccessMessage('Customer registered successfully');
+      } else {
+        console.error('Error updating password:', response.data.error);
       }
+    } catch (error) {
+      console.error('An error occurred:', error);
     }
   };
 
   return (
-    <div className='container'>
-      <h2>Enter E-mail to change password</h2>
+    <div className="container">
+      <h2>Update Password</h2>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="Email">Email:</label>
-          <input
-            type="text"
-            id="Email"
-            name="Email"
-            value={formData.Email}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        {/*<div>
-          <label htmlFor="ConfirmEmail">Confirm Email:</label>
-          <input
-            type="text"
-            id="ConfirmEmail"
-            name="ConfirmEmail"
-            value={formData.ConfirmEmail}
-            onChange={handleInputChange}
-            required
-          />
-  </div>*/}
-        <button type='submit' className='submit-button'>Update Password</button>
+        <div className='form-group'>
+        <label htmlFor="Email" className='form-label'>Email:</label>
+            <input
+              type="Email"
+              id="Email"
+              name="Email"
+              value={formData.Email}
+              onChange={handleInputChange}
+              required
+              className={`form-input ${errors.Email ? 'error' : ''}`}
+            />
+              {errors.Email && <><br /><span className="error-message">{errors.Email}</span></>}
+          </div>
+        <div className='form-group'>
+              <label htmlFor="Question1" className='form-label'>Security Question 1:</label>
+             <select
+               id="Question1"
+                name="Question1"
+                value={formData.Question1}
+                onChange={handleInputChange}
+               required
+              >
+                <option value="DEFAULT" disabled>Select your security question</option>
+               <option value="What is your mother\'s maiden name?">What is your mother's maiden name?</option>
+               <option value="What is the name of your first pet?">What is the name of your first pet?</option>
+               <option value="In which city were you born?">In which city were you born?</option>
+              </select>
+            </div>
+            <div className='form-group'>
+                <label htmlFor="Answer1" className='form-label'>Answer:</label>
+              <input
+                type="text"
+                id="Answer1"
+                name="Answer1"
+                value={formData.Answer1}
+                onChange={handleInputChange}
+               required
+                className='form-input'
+               placeholder="Answer 1"
+              />
+           </div>
+
+            <div className='form-group'>
+             <label htmlFor="Question2" className='form-label'>Security Question 2:</label>
+             <select
+              id="Question2"
+              name="Question2"
+              value={formData.Question2}
+              onChange={handleInputChange}
+              required
+             >
+               <option value="DEFAULT" disabled>Select your security question</option>
+                <option value="What is your mother\'s maiden name?">What is your mother's maiden name?</option>
+               <option value="What is the name of your first pet??">What is the name of your first pet?</option>
+               <option value="In which city were you born?">In which city were you born?</option>
+             </select>
+             </div>
+              <div className='form-group'>
+                <label htmlFor="Answer2" className='form-label'>Answer:</label>
+                <input
+                type="text"
+                id="Answer2"
+                name="Answer2"
+                value={formData.Answer2}
+                onChange={handleInputChange}
+               required
+                className='form-input'
+               placeholder="Answer 2"
+              />
+           </div>
+           <div className='form-group'>
+            <label htmlFor="Password" className='form-label'> New Password:</label>
+            <input
+              type="Password"
+              id="Password"
+              name="Password"
+              value={formData.Password}
+              onChange={handleInputChange}
+              required
+              className={`form-input ${errors.Password ? 'error' : ''}`}
+            />
+              {errors.Password && <><br /><span className="error-message">{errors.Password}</span></>}
+          </div>
+          
+          {successMessage && (<p className="success-message">{successMessage}</p>)}
+        <button type="submit" className="submit-button">Update Password</button>
       </form>
-      <div className="form-links">
-      <button onClick={handleRegisterClick} className='form-button'>Register</button>
-        <br />
       <button onClick={handleLoginClick} className='form-button'>Login</button>
-      </div>
-      {error && <div className="error-message">{error}</div>}
+      <button onClick={handleRegisterClick} className='form-button'>Register</button>
     </div>
   );
 }
