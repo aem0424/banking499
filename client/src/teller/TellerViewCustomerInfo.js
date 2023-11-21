@@ -147,7 +147,7 @@ function TellerViewCustomerInfo() {
             <div>
                 <h2>Customer Information</h2>
                 <div className='info'>
-            <p><strong>Name:</strong> {customer.FirstName} {customer.LastName}<strong> Phone Number:</strong> {customer.PhoneNumber} <strong> SSN:</strong> {customer.SSN} <strong> Date of Birth:</strong> {customer.DOB}</p>
+            <p><strong>Name:</strong> {customer.FirstName} {customer.LastName}<strong> Home Phone Number:</strong> {customer.PhoneNumber} <strong>Cell Phone Number:</strong> {customer.CellPhoneNumber} <strong> SSN:</strong> {customer.SSN} <strong> Date of Birth:</strong> {customer.DOB}</p>
             <p><strong>Address Line 1:</strong> {customer.Street} <strong>Address Line 2:</strong> {customer.Street2} <strong>City/State/ZIP:</strong> {customer.City}, {customer.State}, {customer.ZIP}</p>
             </div>
             <h2>Account List</h2>

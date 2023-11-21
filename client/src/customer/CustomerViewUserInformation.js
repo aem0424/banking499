@@ -44,22 +44,21 @@ function CustomerViewUserInformation() {
 
     return (
         <div className='container'>
+        <h2>Customer Info</h2>
         {loading ? (
           <p>Loading...</p>
         ) : error ? (
           <p>ERROR: {error.message}</p>
         ) : userData? (
+          <div>
+          
           <div className='info'>
-            <h2>Customer Information</h2>
             <p><strong>Name:</strong> {userData.FirstName} {userData.LastName}</p>
-            <p><strong>Address Line 1:</strong> {userData.Street}</p>
-            <p><strong>Address Line 2:</strong> {userData.Street2}</p>
-            <p><strong>City:</strong> {userData.City}</p>
-            <p><strong>State:</strong> {userData.State}</p>
-            <p><strong>ZIP:</strong> {userData.ZIP}</p>
-            <p><strong>Phone Number:</strong> {userData.PhoneNumber}</p>
-            <p><strong>SSN:</strong> {userData.SSN}</p>
-            <p><strong>Date of Birth:</strong> {userData.DOB}</p>
+            <p><strong>Address:</strong> {userData.Street}, {userData.Street2}, {userData.City}, {userData.State}, {userData.ZIP}</p>         
+            <p><strong>Home Phone Number:</strong> {userData.PhoneNumber} <strong>Cell Phone Number:</strong> {userData.CellPhoneNumber}</p>
+            <p><strong>SSN:</strong> {userData.SSN} <strong>Date of Birth</strong> {userData.DOB}</p>
+          </div>
+            
             <button onClick={() => handleEditClick(userData)} className='form-button'>Edit User Information</button>
             <button onClick={handleBackButtonClick} className='form-button'>Back</button>      
           </div>
