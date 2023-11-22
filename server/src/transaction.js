@@ -331,7 +331,7 @@ router.post('/billpay/post/paybill', async (req, res) => {
   }
 
   // Calculate locally what the updated Amount should be
-  let newAmount = currentBillAmount - payment.Amount;
+  let newAmount = currentBillAmount + payment.Amount;
 
   // Update BillPayment Table
   let { data, error } = await database.updateBillPaymentAmount(payment.BillPayID, newAmount);
@@ -339,15 +339,32 @@ router.post('/billpay/post/paybill', async (req, res) => {
       return res.status(500).json({ error: 'Internal Server Error', message: error.message });
   }
 
+  // Query BillPay Info
+  let [userData, err_userData] = await database.getBillPayAccount(payment.BillPayID);
+  if (err_userData) {
+      return res.status(404).json({ error: `No Account with ${billpayID}`, message: err_userData.message });
+  }
+
+  console.log(userData);
   // Build Transaction Info
   data = data[0];
+  userData = userData[0];
 
-  // Update Transaction Table
+
+  // Update Transaction Table for Payment Account
   let {transactionData, er_transactionData } = await database.insertTransactionForAccount(
       data.BillType,
       payment.FromAccountID,
       -payment.Amount,
       currentTimeStamp
+  );
+
+  // Update Transaction Table for Bill Account
+  let {billTransactionData, er_billTransactionData } = await database.insertTransactionForAccount(
+    data.BillType,
+    userData.AccountReference,
+    payment.Amount,
+    currentTimeStamp
   );
 
   // Update Account Balance
