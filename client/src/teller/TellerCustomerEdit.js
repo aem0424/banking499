@@ -12,7 +12,7 @@ function TellerCustomerEdit() {
     const [success, setSuccess] = useState(false);          
     const [formData, setFormData] = useState({
         Email: customer?.Email || "",
-        Password: customer?.Password || "",
+        Password: "",
         UserID: customer?.UserID || "",
         FirstName: customer?.FirstName || "",
         LastName: customer?.LastName || "",
