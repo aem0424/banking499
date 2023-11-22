@@ -735,7 +735,7 @@ async function updateAccountBalance(accountID, amount) {
       return [null, accountError];
     }
   
-    const updatedBalance = (accountData[0].Balance + amount).toFixed(2);
+    const updatedBalance = (Number(accountData[0].Balance) + Number(amount)).toFixed(2);
   
     return supabase
       .from('Account')
