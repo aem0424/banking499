@@ -269,14 +269,14 @@ app.get('/user/qa', async (req, res) => {
 });
 
 // POST: Reset Password
-// Params: { Email, Question1, Question2, Answer1, Answer2, Password }
+// Params: { Email, Answer1, Answer2, Password }
 // Return: Confirmation Message
 app.post('/user/password/reset', async (req, res) => {
   // Check parameters
   let body = req.body
 
-  if (!body.Email || !body.Question1 || !body.Question2 || !body.Answer1 || !body.Answer2)
-    return res.status(403).json({ error: "Empty values passed in for answers or question", param: body });
+  if (!body.Email || !body.Answer1 || !body.Answer2)
+    return res.status(403).json({ error: "Empty values passed in for email or answers", param: body });
 
   // Query User Security Questions and Answers
   let [userQA, err_userQA] = await database.getUserQuestionsAnswers(body.Email);
@@ -284,11 +284,6 @@ app.post('/user/password/reset', async (req, res) => {
   userQA = userQA[0];
   if (!userQA) return res.status(404).json({ error: `Security Questions/Answers Not Found For User Email ${body.Email}`, userQA: userQA })
 
-  // Verify Questions
-  if ((body.Question1 == userQA.Question1 && body.Answer1 != userQA.Answer1) ||
-      (body.Question1 == userQA.Question2 && body.Answer1 != userQA.Answer2)) {
-    return res.status(400).json({ error: 'Unmatching Security Questions 2', type: 'Question1', message: 'The selected Question1 does not have a matching answer', param: body, userQA: userQA});
-  }
   // Verify Answers
   if ((body.Question2 == userQA.Question1 && body.Answer2 != userQA.Answer1) ||
       (body.Question2 == userQA.Question2 && body.Answer2 != userQA.Answer2)) {
