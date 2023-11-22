@@ -14,6 +14,7 @@ function CustomerEditUserInformation() {
     const customerData = location.state.customerData;
 
     const [formData, setFormData] = useState({
+        UserID: customerData?.UserID || "",
         Email: customerData?.Email || "",
         Password: customerData?.Password || "",
         FirstName: customerData?.FirstName || "",
