@@ -99,7 +99,7 @@ function TellerWithdraw() {
             {loading ? (
                 <p>Loading...</p>
             ) : error ? (
-                <p>ERROR: {error.message}</p>
+                <p>ERROR: {error}</p>
             ) : success ? (
                 <p>Successful withdraw!</p>
             ) : customerAccounts ? (
