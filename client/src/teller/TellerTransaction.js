@@ -29,7 +29,7 @@ function TellerTransaction() {
     }
 
     const handleBackButtonClick = () => {
-        navigate('/Teller/Customer', {state: { user }})
+        navigate('/Teller/Customer/UserInfo', {state: { user, customer }})
     }
 
     return (
