@@ -186,6 +186,7 @@ app.post('/user/login', async (req, res) => {
     return res.status(500).json({ error: "Failed to get User Login Information", message: err_userData.message });
   }
   userData = userData[0];
+  if (!userData) return res.status(404).json({ error: "User Login Not Found", data:userData, body: req.body})
 
   // Verify Hashed Password
   // Remove Pepper

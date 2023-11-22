@@ -66,7 +66,7 @@ router.put('/admin/teller/register', async (req, res) => {
 });
 
 // POST: Update a Teller's Information (include {withCredentials:true})
-// Params: User{ UserID, Email*, FirstName, LastName, SSN, PhoneNumber, DOB, Address, Address2, City, State, ZIP }
+// Params: User{ UserID*, Email, FirstName, LastName, SSN, PhoneNumber, DOB, Address, Address2, City, State, ZIP }
 // Return: Confirmation Message
 router.post('/admin/teller/update', async (req, res) => {
   console.log("Updating the Teller Information");

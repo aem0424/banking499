@@ -104,7 +104,7 @@ function TellerTransfer() {
             ) : success ? (
                 <p>Successfully transferred!</p>
             ) : error ? (
-                <p>ERROR: {error.message}</p>
+                <p>ERROR: {error}</p>
             ) : customerAccounts ? (
             <div>
                 <h1>Transfer Funds</h1>             

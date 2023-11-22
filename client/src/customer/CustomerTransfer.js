@@ -102,7 +102,7 @@ function CustomerTransfer() {
             {loading ? (
                 <p>Loading...</p>
             ) : error ? (
-                <p>ERROR: {error.message}</p>
+                <p>ERROR: {error}</p>
             ) : userAccounts ? (
             <div>
                 <h2>Transfer Funds</h2>
