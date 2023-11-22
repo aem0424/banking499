@@ -186,6 +186,7 @@ app.post('/user/login', async (req, res) => {
     return res.status(500).json({ error: "Failed to get User Login Information", message: err_userData.message });
   }
   userData = userData[0];
+  if (!userData) return res.status(404).json({ error: "User Login Not Found", data:userData, body: req.body})
 
   // Verify Hashed Password
   // Remove Pepper
@@ -229,13 +230,30 @@ app.post('/user/logout', async (req, res) => {
   });
 });
 
+// GET: Get a User's Password
+// Params: Email
+// Return: String (Password)
+app.get('/user/password', async (req, res) => {
+  console.log(`Getting a User's Password`);
+
+  email = req.query.Email;
+  // Query User Information
+  let [userPassword, err_userPassword] = await database.getUserPassword(email);
+  if (err_userPassword) return res.status(500).json({ error: `Failed to Query User ${userID}'s Address`, message: err_userData.message });
+
+
+  let password = userPassword[0];
+  return res.status(200).json(password);
+});
+
+
 // GET: Get the Current User's Password (Login Required)
 // Params: None
 // Return: String (Password)
-app.get('/user/password', async (req, res) => {
+app.get('/user/password/current', async (req, res) => {
   let userID = req.session.user?.UserID;
   let userEmail = req.session.user?.Email;
-  console.log(`Getting User ${userID}'s Role`);
+  console.log(`Getting User ${userID}'s Password`);
   if (!userID) return res.status(401).json({ error: "User Is Not Logged In" });
 
   // Query User Information
