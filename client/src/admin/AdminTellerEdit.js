@@ -27,6 +27,7 @@ function AdminTellerEdit() {
     ZIP: tellerData?.ZIP || "",
     PhoneNumber: tellerData?.PhoneNumber || "",
     CellPhoneNumber: tellerData?.CellPhoneNumber || "",
+    UserID: tellerData?.UserID,
   });
 
   const [errors, setErrors] = useState({
@@ -128,7 +129,6 @@ function AdminTellerEdit() {
       console.error('Please fill in all fields correctly before submitting.');
       return;
     }
-    
     try {
       const response = await axios.post('http://localhost:4000/admin/teller/update', formData, {withCredentials:true});
   
@@ -140,6 +140,20 @@ function AdminTellerEdit() {
       }
     } catch (error) {
       console.error('An error occurred:', error);
+    
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error('Response data:', error.response.data);
+        console.error('Response status:', error.response.status);
+        console.error('Response headers:', error.response.headers);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error('No response received. Request details:', error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error('Error setting up the request:', error.message);
+      }
     }
   };
   return (

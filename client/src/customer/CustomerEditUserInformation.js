@@ -42,8 +42,6 @@ function CustomerEditUserInformation() {
       City: '',
       ZIP: '',
     });
-
-      // Check if user is null, redirect to "/"
   useEffect(() => {
     if (!user) {
       navigate('/Login');
