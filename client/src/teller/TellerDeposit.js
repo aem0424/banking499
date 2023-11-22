@@ -51,7 +51,6 @@ function TellerDeposit() {
             console.log(response);
             if (response.status === 200) {
                 setCustomerAccounts(response.data);
-                console.log(customerAccounts)
             }
             setLoading(false);            
         })

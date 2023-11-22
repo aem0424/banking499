@@ -100,7 +100,7 @@ function TellerEditAccount() {
                 </div>
                 <div className="form-group">
                     <label htmlFor="AccountType" className="form-label">Account Type</label>
-                    <input
+                    <select
                         type="text"
                         id="AccountType"
                         name="AccountType"
@@ -108,7 +108,14 @@ function TellerEditAccount() {
                         onChange={handleInputChange}
                         required
                         className="form-input"
-                    />
+                    >
+                      <option value="" disabled>Select Account Type</option>
+                      <option value="Checking">Checking</option>
+                      <option value="Savings">Savings</option>
+                      <option value="Money Market">Money Market</option>
+                      <option value="Home Mortgage Loan">Home Mortgage Loan</option>
+                      <option value="Credit Card">Credit Card</option>
+                  </select>
                 </div>       
                 <div className="form-group">
                     <label htmlFor="InterestRate" className="form-label">Interest Rate %</label>
