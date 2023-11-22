@@ -82,7 +82,7 @@ function Register() {
   };
 
   const handleForgotPassClick = () => {
-    navigate('/ForgotPass');
+    navigate('/ConfirmForgotPass');
   };
 
   const handleSubmit = async (e) => {
