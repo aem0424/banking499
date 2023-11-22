@@ -63,7 +63,7 @@ function ConfirmForgotPass() {;
       if (response.status === 200) {
         // Password reset successful
         console.log('Password Reset Successful');
-        setSuccessMessage('Customer registered successfully');
+        setSuccessMessage('Password updated successfully');
       } else {
         console.error('Error updating password:', response.data.error);
       }
