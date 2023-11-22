@@ -50,7 +50,14 @@ function TellerViewCustomerInfo() {
     }
 
     const handle1099Click = (account) => {
-        navigate('/Teller/Account/1099', {state: {user, customer, account}});
+        const get1099Data = async() => {
+          const response = await axios.get('/1099form', {params: {AccountID: account.AccountID}, responseType:'blob'})
+          if(response) {
+            const pdfUrl = URL.createObjectURL(new Blob([response.data]));
+            window.open(pdfUrl, '_blank');
+          }
+        }
+        get1099Data();
     }
 
     const handleEditCredentialsClick = () => {
