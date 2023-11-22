@@ -46,7 +46,6 @@ function CustomerTransfer() {
         .then((response) => {
             if (response.status === 200) {
                 setUserAccounts(response.data);
-                console.log(userAccounts);
             }
             setLoading(false);            
         })
