@@ -15,6 +15,7 @@ function AdminTellerEdit() {
   
 
   const [formData, setFormData] = useState({
+    UserID: tellerData?.UserID || "",
     Email: tellerData?.Email || "",
     FirstName: tellerData?.FirstName || "",
     LastName: tellerData?.LastName || "",
