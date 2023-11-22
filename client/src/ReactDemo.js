@@ -1,24 +1,21 @@
-import React, { useState, useEffect } from "react"; // Import useState and useEffect
+import React, { useState } from "react";
 import axios from 'axios';
+import { saveAs } from 'file-saver';
 
 function ReactDemo() {
   const [accountId, setAccountId] = useState('');
 
   const handleClick = async () => {
     try {
-  
       const response = await axios.get(`/1099form`, {
         params: {
           AccountID: accountId,
         },
-        responseType: 'blob', // Set the responseType to 'blob' for binary data (PDF)
+        responseType: 'arraybuffer',
       });
-      
-      // Assuming the response is a PDF file
-      const pdfUrl = URL.createObjectURL(new Blob([response.data]));
 
-      // Open the PDF in a new tab
-      window.open(pdfUrl, '_blank');
+      // Use file-saver to trigger the download
+      saveAs(new Blob([response.data], { type: 'application/pdf' }), '1099form.pdf');
     } catch (error) {
       console.error('Error:', error);
     }
@@ -39,5 +36,5 @@ function ReactDemo() {
   );
 }
 
+export default ReactDemo;
 
-export default ReactDemo; // Export with the corrected component name

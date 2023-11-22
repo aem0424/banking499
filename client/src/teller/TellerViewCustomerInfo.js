@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { saveAs } from 'file-saver';
 
 function TellerViewCustomerInfo() {
     const location = useLocation();
@@ -49,16 +50,16 @@ function TellerViewCustomerInfo() {
         navigate('/Teller/Account', {state: {user, customer, account}});
     }
 
-    const handle1099Click = (account) => {
-        const get1099Data = async() => {
-          const response = await axios.get('/1099form', {params: {AccountID: account.AccountID}, responseType:'blob'})
-          if(response) {
-            const pdfUrl = URL.createObjectURL(new Blob([response.data]));
-            window.open(pdfUrl, '_blank');
-          }
-        }
-        get1099Data();
-    }
+    const handle1099Click = async (account) => {
+      try {
+        const response = await axios.get('/1099form', { params: { AccountID: account.AccountID }, responseType: 'arraybuffer' });
+    
+        // Use file-saver to trigger the download
+        saveAs(new Blob([response.data], { type: 'application/pdf' }), '1099form.pdf');
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
 
     const handleEditCredentialsClick = () => {
         navigate('/Teller/Customer/Edit', {state: {user, customer}});

@@ -102,6 +102,7 @@ router.get('/1099form', async (req, res) => {
       const modifiedPdfBytes = await pdfDoc.save();
       // Send the modified PDF as the response
       res.contentType('application/pdf');
+      res.setHeader('Content-Disposition', 'attachment; filename="1099form.pdf"');
       res.end(modifiedPdfBytes, 'binary');
     } catch (error) {
       console.error('Error:', error);
