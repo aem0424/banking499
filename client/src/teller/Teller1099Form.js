@@ -13,6 +13,7 @@ function Teller1099Form() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null); 
     const [success, setSuccess] = useState(false);
+    const [pdfUrl, setPdfUrl] = useState(null);
 
     useEffect(() => {
         if (!user) {
@@ -24,13 +25,18 @@ function Teller1099Form() {
         navigate('/Teller/Customer/UserInfo', { state : { user, customer }})
     };
 
+    const handleOpenWindowClick = () => {
+        window.open(pdfUrl, '_blank');
+    }
+
     useEffect(() => {
         if(user) {
             const getData = async() => {
-                const response = await axios.get('/1099form', {params: {AccountID: account.AccountID}})
+                const response = await axios.get('/1099form', {params: {AccountID: account.AccountID}, responseType: 'blob'})
                 if(response) {
                     console.log(response);
                     setTenForm(response.data);
+                    setPdfUrl(URL.createObjectURL(new Blob([response.data])));
                     setLoading(false);
                 }
                 else {
@@ -51,9 +57,9 @@ function Teller1099Form() {
                 <p>ERROR: {error}</p>
             ) : loading ? (
                 <p>Loading...</p>
-            ) : tenForm ? (
+            ) : pdfUrl ? (
                 <div>
-                    <object data={tenForm} type="application/pdf" width = "100%" height = "100%"></object>
+                    <button onClick={handleOpenWindowClick}>Click Here to Generate 1099</button>
                 </div>
             ) : null}
             <button onClick={handleBackButtonClick}>Back</button>
