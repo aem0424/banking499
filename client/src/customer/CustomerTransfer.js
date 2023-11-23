@@ -17,6 +17,7 @@ function CustomerTransfer() {
     });
     const [loading, setLoading] = useState(true);    
     const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(false);
 
       // Check if user is null, redirect to "/"
   useEffect(() => {
@@ -36,7 +37,7 @@ function CustomerTransfer() {
     const createAccountList = (e) => {
         let accountList = [];
         userAccounts.map((account, index) => (
-            accountList.push(<option key={index} value={account.AccountID}>{account.AccountID}: {account.AccountName}</option>)
+            accountList.push(<option key={index} value={account.AccountID}>{account.AccountName}, {account.AccountType}, {account.Balance.toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</option>)
         ));
         return accountList;
     }
@@ -57,6 +58,7 @@ function CustomerTransfer() {
     }, [user]);
 
     const handleSubmit = async (e) => {
+        setLoading(true);
         e.preventDefault();
         const {TransactionType, FromAccountID, ToAccountID, Amount} = formData;
         setError(null);
@@ -64,30 +66,41 @@ function CustomerTransfer() {
         const handlingTo = await axios.get('/customer/account', {params: {AccountID: ToAccountID}}, {withCredentials:true});
         const typeFrom = handlingFrom.data.AccountType;
         const typeTo = handlingTo.data.AccountType;
+        const balanceFrom = handlingFrom.data.Balance;
 
 
         if(typeFrom === "Credit Card" ||  typeFrom === "Home Mortgage Loan") {
             setError("Can't transfer from " + typeFrom + " account.");
+            setLoading(false);
         }
         else if(typeTo === "Credit Card" ||  typeTo === "Home Mortgage Loan") {
             setError("Can't transfer to " + typeTo + " account.");
+            setLoading(false);            
+        }
+        else if(Amount <= 0) {
+            setError("Can't transfer an amount less than or equal to $0.00.");
+            setLoading(false);            
+        }
+        else if (balanceFrom - Amount < 0) {
+            setError("Can't transfer if the account to transfer from would go negative.");
+            setLoading(false);
         }
         else {
          try {
-            const response = await axios.post('http://localhost:4000/transactions', {
-                TransactionType,
-                FromAccountID,
-                ToAccountID,
-                Amount
-            });
+            const response = await axios.post('http://localhost:4000/transactions', formData);
 
-         if(response.data) {
+        if(response.data) {
             console.log('success: ', response.data);
+            setSuccess(true);
+            setLoading(false);
          } else {
-            console.log('error!');
-         }
-         } catch (error) {
             setError(error);
+            console.log('error: ', error)
+            setLoading(false);
+          }
+         } catch (error) {
+            setError('An unexpected error has occurred.')
+            setLoading(false);
             console.log('error: ', error)
          }
         }
@@ -101,6 +114,8 @@ function CustomerTransfer() {
         <div className='container'>
             {loading ? (
                 <p>Loading...</p>
+            ) : success ? (
+                <p>Successful transfer!</p>
             ) : error ? (
                 <p>ERROR: {error}</p>
             ) : userAccounts ? (

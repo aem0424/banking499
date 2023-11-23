@@ -35,7 +35,7 @@ function CustomerWithdraw() {
     const createAccountList = (e) => {
         let accountList = [];
         userAccounts.map((account, index) => (
-            accountList.push(<option key={index} value={account.AccountID}>{account.AccountID}: {account.AccountName}</option>)
+            accountList.push(<option key={index} value={account.AccountID}>{account.AccountName}, {account.AccountType}, {account.Balance.toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</option>)
         ));
         return accountList;
     }
@@ -57,14 +57,21 @@ function CustomerWithdraw() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         const {TransactionType, FromAccountID, ToAccountID, Amount} = formData;
         setError(null);
 
         const handling = await axios.get('/customer/account', {params: {AccountID: FromAccountID}}, {withCredentials:true});
         const type = handling.data.AccountType;
+        const balanceFrom = handling.data.Balance;
         if(type === "Home Mortgage Loan") {
             setError("Can't withdraw from " + type + " account.");
+            setLoading(false);
         }
+        else if (balanceFrom - Amount < 0) {
+            setError("Can't withdraw if the account to withdraw from would go negative.");
+            setLoading(false);
+        }        
         else {
          try {
             const response = await axios.post('http://localhost:4000/transactions', {
@@ -77,12 +84,16 @@ function CustomerWithdraw() {
          if(response.data) {
             console.log('success: ', response.data);
             setSuccess(true);
+            setLoading(false);
          } else {
             console.log('error!', error);
+            setError(error);
+            setLoading(false);
          }
          } catch (error) {
-            setError(error);
+            setError('An unexpected error has occurred.');
             console.log('error: ', error)
+            setLoading(false);
         }
       }
     };
