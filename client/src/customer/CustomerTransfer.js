@@ -68,7 +68,6 @@ function CustomerTransfer() {
         const typeTo = handlingTo.data.AccountType;
         const balanceFrom = handlingFrom.data.Balance;
 
-
         if(typeFrom === "Credit Card" ||  typeFrom === "Home Mortgage Loan") {
             setError("Can't transfer from " + typeFrom + " account.");
             setLoading(false);
@@ -77,6 +76,10 @@ function CustomerTransfer() {
             setError("Can't transfer to " + typeTo + " account.");
             setLoading(false);            
         }
+        else if (isNaN(Number(Amount))) {
+            setError("Can't enter an amount that isn't a number.");
+            setLoading(false);
+        }        
         else if(Amount <= 0) {
             setError("Can't transfer an amount less than or equal to $0.00.");
             setLoading(false);            

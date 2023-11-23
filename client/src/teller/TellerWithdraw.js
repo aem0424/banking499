@@ -75,6 +75,10 @@ function TellerWithdraw() {
             setError("Can't withdraw from " + type + " account.");
             setLoading(false);
         }
+        else if (isNaN(Number(Amount))) {
+            setError("Can't enter an amount that isn't a number.");
+            setLoading(false);
+        }     
         else if (balanceFrom - Amount < 0) {
             setError("Can't withdraw if the account to withdraw from would go negative.");
             setLoading(false);

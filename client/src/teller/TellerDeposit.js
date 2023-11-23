@@ -72,6 +72,10 @@ function TellerDeposit() {
         if(type === "Credit Card" || type === "Home Mortgage Loan") {
             setError("Can't deposit into " + type + " account.");
         }        
+        else if (isNaN(Number(Amount))) {
+            setError("Can't enter an amount that isn't a number.");
+            setLoading(false);
+        }          
         else if(Amount <= 0) {
             setError("Can't deposit an amount less than or equal to $0.00.");
             setLoading(false);            

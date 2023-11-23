@@ -63,11 +63,17 @@ function CustomerDeposit() {
         const {TransactionType, FromAccountID, ToAccountID, Amount} = formData;
         setError(null);
 
+        console.log(Number(Amount));
         const handling = await axios.get('/customer/account', {params: {AccountID: ToAccountID}}, {withCredentials:true});
         const type = handling.data.AccountType;
         if(type === "Credit Card" ||  type === "Home Mortgage Loan") {
             setError("Can't deposit into " + type + " account.");
+            setLoading(false);
         }
+        else if (isNaN(Number(Amount))) {
+            setError("Can't enter an amount that isn't a number.");
+            setLoading(false);
+        }           
         else if(Amount <= 0) {
             setError("Can't deposit an amount less than or equal to $0.00.");
             setLoading(false);            
