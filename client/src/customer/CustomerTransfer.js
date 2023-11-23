@@ -87,7 +87,12 @@ function CustomerTransfer() {
         }
         else {
          try {
-            const response = await axios.post('http://localhost:4000/transactions', formData);
+            const response = await axios.post('http://localhost:4000/transactions', {
+                TransactionType,
+                FromAccountID,
+                ToAccountID,
+                Amount
+            });
 
         if(response.data) {
             console.log('success: ', response.data);
