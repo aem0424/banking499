@@ -7,7 +7,6 @@ function CustomerViewAccountInformation() {
     const location = useLocation();
     const user = location.state && location.state.user;
     const account = location.state.account;
-    const [userData, setUserData] = useState(null);
     const [accountData, setAccountData] = useState(null);
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -30,7 +29,7 @@ function CustomerViewAccountInformation() {
             axios.get('/user', {})
             .then((response) => {
                 if (response.status === 200) {
-                    setUserData(response.data);
+                    console.log('success');
                 }
             }).catch((error) => {
                 setError(error);
@@ -85,9 +84,9 @@ function CustomerViewAccountInformation() {
     return (
         <div className='container'>
             {loading ? (
-                <p>Loading account data...</p>
+                <p>Loading...</p>
             ): error ? (
-                <p>ERROR: {error.message}</p>
+                <p>ERROR: {error}</p>
             ): accountData ? (
                 <div>
                     <strong>Account Name: </strong>{accountData.AccountName}<br/>

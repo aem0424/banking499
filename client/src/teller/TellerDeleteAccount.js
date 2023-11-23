@@ -10,8 +10,6 @@ function TellerDeleteAccount() {
     const customer = location.state.customer;
     const account = location.state.account;
     const [userData, setUserData] = useState(null);
-    const [customerData, setCustomerData] = useState(null);
-    const [accountData, setAccountData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
@@ -65,6 +63,10 @@ function TellerDeleteAccount() {
                     <p>Successfully deleted.</p>
                     <button onClick={handleNoClick}>Back</button>
                 </div>
+            ) : loading ? (
+                <p>Loading...</p>
+            ) : error ? (
+                <p>ERROR: {error}</p>
             ) : userData ? (
                 <div>
                     <h1>Are you sure you want to delete this account?</h1>

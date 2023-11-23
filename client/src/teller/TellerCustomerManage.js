@@ -13,7 +13,6 @@ function TellerCustomerManage() {
     })
     const [customers, setCustomers] = useState([]);
     const [searchCustomers, setSearchCustomers] = useState([]);
-    const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchFound, setSearchFound] = useState(false);
@@ -69,7 +68,6 @@ function TellerCustomerManage() {
           axios.get('/user', {})
             .then((response) => {
               if (response.status === 200) {
-                setUserData(response.data);
                 setLoading(false);
               }
             })

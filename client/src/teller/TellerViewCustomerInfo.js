@@ -11,8 +11,6 @@ function TellerViewCustomerInfo() {
     const [formData, setFormData] = useState({
         AccountName:'',
     });
-    const [userData, setUserData] = useState(null);
-    const [customerData, setCustomerData] = useState(null);
     const [customerAccounts, setCustomerAccounts] = useState(null);
     const [searchAccounts, setSearchAccounts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -102,7 +100,6 @@ function TellerViewCustomerInfo() {
             .then((response) => {
                 if (response.status === 200) {
                     console.log("success")
-                    setUserData(response.data);
                 }
             })
             .catch((error) => {

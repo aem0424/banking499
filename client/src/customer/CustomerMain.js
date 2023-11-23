@@ -55,7 +55,8 @@ function CustomerMain() {
             }
           })
           .catch((error) => {
-            setError(error);
+            console.log(error);
+            setError('An unexpected error has occurred.');
             setLoading(false);
           });
       }
@@ -64,9 +65,9 @@ function CustomerMain() {
     return (
         <div className='container'>
           {loading ? (
-            <p>Loading user data...</p>
+            <p>Loading...</p>
           ): error ? (
-            <p>ERROR: {error.message}</p>
+            <p>ERROR: {error}</p>
           ) : userData ? (
             <div>
              <h1>Welcome, {userData.FirstName} {userData.LastName}!</h1>

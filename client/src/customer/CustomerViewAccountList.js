@@ -95,7 +95,7 @@ function CustomerViewAccountList() {
             {loading ? (
                 <p>Loading...</p>
             ) : error ? (
-                <p>ERROR: {error.message}</p>
+                <p>ERROR: {error}</p>
             ) : (
                 <div>
                     <h2>Account Type</h2>
