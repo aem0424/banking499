@@ -16,7 +16,7 @@ function CustomerEditUserInformation() {
     const [formData, setFormData] = useState({
         UserID: customerData?.UserID || "",
         Email: customerData?.Email || "",
-        Password: customerData?.Password || "",
+        //Password: customerData?.Password || "",
         FirstName: customerData?.FirstName || "",
         LastName: customerData?.LastName || "",
         FullName: customerData?.FullName || "",
@@ -32,7 +32,7 @@ function CustomerEditUserInformation() {
 
     const [errors, setErrors] = useState({
       Email: '',
-      Password: '',
+      //Password: '',
       FirstName: '',
       LastName: '',
       SSN: '',
@@ -63,9 +63,9 @@ function CustomerEditUserInformation() {
           error = 'Invalid Phone Number.';
         } else if (name === 'CellPhoneNumber' && (isNaN(value) || value.length !== 10)) {
           error = 'Invalid Phone Number.';
-        }else if (name === 'Password' && value.length < 6) {
+        }/*else if (name === 'Password' && value.length < 6) {
           error = 'Must be at least 6 characters.';
-        } else if (['FirstName', 'LastName'].includes(name) && !/^[a-zA-Z]+$/.test(value)) {
+        }*/ else if (['FirstName', 'LastName'].includes(name) && !/^[a-zA-Z]+$/.test(value)) {
           error = `Invalid ${name === 'FirstName' ? 'First' : 'Last'} Name.`;
         } else if (['Street', 'Street2', 'City'].includes(name) && !/^[a-zA-Z0-9\s,.'-]*$/.test(value)) {
           error = `Invalid ${name}.`;
