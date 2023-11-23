@@ -35,6 +35,9 @@ function TellerCustomerEdit() {
         if (!user) {
           navigate('/Login');
         }
+        else {
+          setLoading(false);
+        }
       }, [user, navigate]);
 
     const handleInputChange = (e) => {
@@ -47,40 +50,39 @@ function TellerCustomerEdit() {
 
      const handleSubmit = async (e) => {
       e.preventDefault();
+      setLoading(true);
       try {
         const response = await axios.post('/teller/customer/update', formData);
 
         if (response.status === 200) {
           console.log('Customer updated successfully:', response.data);
           setSuccess(true);            
+          setLoading(false);
         } else {
-          console.error('Error updating customer:', response.statusText);
+          setError(response.statusText);
+          setLoading(false);
         }
       } catch (error) {
-        console.error('An error occurred:', error);
+        setError('An unexpected error occurred.');
+        setLoading(false);
       }
     };           
 
      return (
         <div className='container'>
-          { success ? (
+          { loading ? (
+            <p>Loaidng...</p>
+          ) : success ? (
             <p>Successfully edited!</p>
+          ) : error ? (
+            <p>ERROR: {error}</p>
           ) : user ? (
             <div>
             <h1>Edit User Credentials</h1>
+            <div className="form-columns">
+              <p>Email: {customer.Email}</p>
+            </div>
             <form onSubmit={handleSubmit} className="edit-form">
-                <div className="form-columns">
-                    <label htmlFor="Email" className="form-label">Email</label>
-                    <input
-                        type="text"
-                        id="Email"
-                        name="Email"
-                        value={formData.Email}
-                        onChange={handleInputChange}
-                        required
-                        className="form-input"
-                    />
-                </div>
                 <div className="form-columns">
                     <label htmlFor="Password" className="form-label">Password</label>
                     <input
