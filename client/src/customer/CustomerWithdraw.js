@@ -71,7 +71,11 @@ function CustomerWithdraw() {
         else if (balanceFrom - Amount < 0) {
             setError("Can't withdraw if the account to withdraw from would go negative.");
             setLoading(false);
-        }        
+        }     
+        else if(Amount <= 0) {
+            setError("Can't withdraw an amount less than or equal to $0.00.");
+            setLoading(false);            
+        }           
         else {
          try {
             const response = await axios.post('http://localhost:4000/transactions', {

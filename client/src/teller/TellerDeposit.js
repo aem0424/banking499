@@ -40,7 +40,7 @@ function TellerDeposit() {
     const createAccountList = (e) => {
         let accountList = [];
         customerAccounts.map((account, index) => (
-            accountList.push(<option key={index} value={account.AccountID}>{account.AccountID}: {account.AccountName}</option>)
+            accountList.push(<option key={index} value={account.AccountID}>{account.AccountName}, {account.AccountType}, {account.Balance.toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</option>)
         ));
         return accountList;
     }    
@@ -63,6 +63,7 @@ function TellerDeposit() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         const {TransactionType, FromAccountID, ToAccountID, Amount} = formData;
         setError(null);
 
@@ -71,6 +72,10 @@ function TellerDeposit() {
         if(type === "Credit Card" || type === "Home Mortgage Loan") {
             setError("Can't deposit into " + type + " account.");
         }        
+        else if(Amount <= 0) {
+            setError("Can't deposit an amount less than or equal to $0.00.");
+            setLoading(false);            
+        }
         else {
          try {
             const response = await axios.post('http://localhost:4000/transactions', {
@@ -83,12 +88,16 @@ function TellerDeposit() {
          if(response.data) {
             console.log('success: ', response.data);
             setSuccess(true);
+            setLoading(false);
          } else {
-            console.log('error!', error);
-         }
-         } catch (error) {
             setError(error);
             console.log('error: ', error)
+            setLoading(false);
+         }
+         } catch (error) {
+            setError('An unexpected error has occurred.');
+            console.log('error: ', error)
+            setLoading(false);
          }
         }
     };    
