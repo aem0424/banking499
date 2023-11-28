@@ -921,6 +921,35 @@ async function getOverdueCreditCardPayments() {
     }
 }
 
+
+async function getOverdueMortgagePayments() {
+    try {
+      const currentDate = new Date();
+      const thirtyDaysAgo = new Date(currentDate);
+      thirtyDaysAgo.setDate(currentDate.getDate() - 30);
+      console.log('Current Date:', currentDate.toISOString().split('T')[0]);
+      console.log('Thirty Days Ago:', thirtyDaysAgo.toISOString().split('T')[0]);
+
+  
+      const { data, error } = await supabase
+        .from('BillPayment')
+        .select('*')
+        .eq('BillType', 'Home Mortgage Loan')
+        .lte('DueDate', currentDate.toISOString().split('T')[0]) // Assuming DueDate is in YYYY-MM-DD format
+        .gte('DueDate', thirtyDaysAgo.toISOString().split('T')[0]); // DueDate over 30 days
+  
+      if (error) {
+        console.error('Error fetching data:', error.message);
+        return null; // or throw an error if you prefer
+      }
+  
+      return [data, error ];
+    } catch (error) {
+      console.error('Error:', error);
+      throw error; // Throw the error for handling at a higher level if needed
+    }
+}
+
 async function updateDueDate(BillPayID) {
     try {
       const currentDate = new Date();
@@ -1022,6 +1051,7 @@ module.exports = {
     updateBillPaymentAmount,
     getOverdueCreditCardPayments,
     updateDueDate,
+    getOverdueMortgagePayments,
 
     getUserAccountsBillpayIncluded,
     

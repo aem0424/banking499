@@ -52,13 +52,14 @@ cron.schedule('0 6 28 * *', () => {
   console.log('Automated Interest Generation');
 });
 
-// Automated Credit Card Servicing -- Based in UTC ('Minute)
-
-// Automated Interest Geneartion -- Based in UTC time ('Hour Day')
+// Automated Credit Card / Mortgage Servicing-- Based in UTC time ('Hour Day')
 cron.schedule('0 6 * * *', () => {
   financialProcessorRoute.serviceCreditCard();
   console.log('Automated Credit Card Servicing');
+  financialProcessorRoute.serviceMortgageAccounts();
+  console.log('Automated Mortgage Servicing')
 });
+
 
 app.get('/', (req, res) => {
   res.send('Home Route');

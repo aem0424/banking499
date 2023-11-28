@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const router = express.Router();
 const database = require('./database.js');
+const finproc = require('./financialProcessor.js');
 
 // ------------------------ Teller -----------------------------------
 
@@ -232,6 +233,11 @@ router.put('/teller/customer/account/create', async (req, res) => {
     // Get Body Paremeter as an Account
     let account = req.body;
 
+    // if mortgage, flip amount to negative
+    if (account.AccountType === 'Home Mortgage Loan') {
+        account.Balance = -account.Balance
+    }
+
     // Insert the Account
     let [accountData, err_accountData] = await database.insertAccount(account);
     if (err_accountData) return res.status(500).json({ error: `Failed to Insert the Account Data`, message: err_accountData.message });
@@ -239,14 +245,23 @@ router.put('/teller/customer/account/create', async (req, res) => {
     accountData = accountData[0];
 
     // Create Billable Info if it applies
-    if (accountData.AccountType === 'Credit Card'|| accountData.AccountType === 'Home Mortgage Loan') {
-        
+    if (accountData.AccountType === 'Credit Card') {
         let creditAccount = await buildCreditAccount(accountData);
         console.log(creditAccount); //debug
         let [creditAccountData, err_creditAccountData] = await database.insertBillPay(creditAccount);
-        if (err_creditAccountData) return res.status(500).json({ error: `Failed to Insert the Account Data into BillPayment`, message: err_creditAccountData.message || 'Unknown error' });
-
+        if (err_creditAccountData) return res.status(500).json({ error: `Failed to Insert the CC Account Data into BillPayment`, message: err_creditAccountData.message || 'Unknown error' });
         console.log('Credit Account Data:', creditAccountData); // debug
+    }
+    if (accountData.AccountType === 'Home Mortgage Loan') {
+        let loanAmountMonthly = await finproc.calculateMortgagePayment(accountData.InterestRate, 30, accountData.Balance);
+        let creditAccount = await buildCreditAccount(accountData);
+        creditAccount.Amount = loanAmountMonthly;
+
+        console.log(creditAccount); //debug
+        let [creditAccountData, err_creditAccountData] = await database.insertBillPay(creditAccount);
+        if (err_creditAccountData) return res.status(500).json({ error: `Failed to Insert the Mortgage Account Data into BillPayment`, message: err_creditAccountData.message || 'Unknown error' });
+        console.log('Mortgage Account Data:', creditAccountData); // debug
+
     }
 
 
