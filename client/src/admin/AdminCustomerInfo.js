@@ -21,7 +21,9 @@ function AdminCustomerInfo() {
     }
   }, [user, navigate]);
 
-
+  const handleManageCustomersClick = () => {
+    navigate('/Admin/Customer', { state: { user } });
+  };
     
     const handleLogoutClick = () => {
         axios.post('/user/logout')
@@ -109,6 +111,7 @@ function AdminCustomerInfo() {
               </table>
               )}
             </div>
+            <button onClick={handleManageCustomersClick} className='form-button'>Manage Customers</button>
             <button onClick={handleAdminMainClick} className='form-button'>Admin Main</button>
             <button onClick={handleLogoutClick} className='logout-button'>Logout</button>
         </div>

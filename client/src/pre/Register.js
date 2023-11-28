@@ -397,7 +397,6 @@ function Register() {
       </form>
       <div className="form-links">
         <button onClick={handleLoginClick} className='form-button'>Login</button>
-        <br />
         <button onClick={handleForgotPassClick} className='form-button'>Forgot Password?</button>
       </div>
     </div>
