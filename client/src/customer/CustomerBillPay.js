@@ -30,7 +30,7 @@ function CustomerBillPay() {
     const createAccountList = (e) => {
         let accountList = [];
         userAccounts.map((account, index) => (
-            accountList.push(<option key={index} value={account.AccountID}>{account.AccountID}: {account.AccountName}</option>)
+            accountList.push(<option key={index} value={account.AccountID}>{account.AccountName}, {account.AccountType}, {account.Balance.toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</option>)
         ));
         return accountList;
     }    
@@ -47,6 +47,7 @@ function CustomerBillPay() {
             }
         }).catch((error) => {
             console.error('ERROR: ', error);
+            setError(error);
         });
     }, [])
 
@@ -60,18 +61,34 @@ function CustomerBillPay() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            console.log(formData);
+        setLoading(true);
+        const Amount = formData.Amount;        
+        if (isNaN(Number(Amount))) {
+            setError("Can't enter an amount that isn't a number.");
+            setLoading(false);
+        }          
+        else if(Amount <= 0) {
+            setError("Can't pay with an amount less than or equal to $0.00.");
+            setLoading(false);            
+        }  
+        else {      
+         try {
             const response = await axios.post('/billpay/post/account', formData, {withCredentials: true});
             if (response.status === 201) {
                 console.log('success', response.data);
                 setSuccess(true);
+                setLoading(false);
             } else {
                 console.error('error', response.status);
+                setError(error);
+                setLoading(false);                
             }
-        } catch (error) {
+         } catch (error) {
             console.error('ERROR', error);
+            setError('An unexpected error has occurred.');
+            setLoading(false);            
         }
+     }
     };
 
     return (
@@ -79,7 +96,7 @@ function CustomerBillPay() {
         {loading ? (
             <p>Loading...</p>
         ) : error ? (
-            <p>ERROR: {error.message}</p>
+            <p>ERROR: {error}</p>
         ) : success ? (
             <p>Success!</p>
         ) : userAccounts ? (

@@ -7,7 +7,6 @@ import Register from './/pre/Register'
 import ReactDemo from './ReactDemo'
 import DataDisplay from './DataDisplay'
 import CustomerBillPay from ".//customer/CustomerBillPay";
-import CustomerCreateAccount from ".//customer/CustomerCreateAccount";
 import CustomerDeposit from ".//customer/CustomerDeposit";
 import CustomerEditUserInformation from ".//customer/CustomerEditUserInformation";
 import CustomerMain from ".//customer/CustomerMain";
@@ -16,7 +15,6 @@ import CustomerTransfer from ".//customer/CustomerTransfer";
 import CustomerWithdraw from ".//customer/CustomerWithdraw";
 import CustomerViewAccountInformation from ".//customer/CustomerViewAccountInformation";
 import CustomerViewAccountList from ".//customer/CustomerViewAccountList";
-import CustomerDeleteRequest from "./customer/CustomerDeleteRequest";
 import CustomerViewUserInformation from ".//customer/CustomerViewUserInformation";
 import TellerCreateAccount from ".//teller/TellerCreateAccount";
 import TellerCustomerManage from ".//teller/TellerCustomerManage";
@@ -29,7 +27,6 @@ import TellerWithdraw from ".//teller/TellerWithdraw"
 import TellerViewAccount from ".//teller/TellerViewAccount";
 import TellerDeleteAccount from ".//teller/TellerDeleteAccount";
 import TellerCustomerEdit from ".//teller/TellerCustomerEdit"
-import Teller1099Form from ".//teller/Teller1099Form";
 import AdminCreateTeller from ".//admin/AdminCreateTeller";
 import AdminCustomerInfo from ".//admin/AdminCustomerInfo";
 import AdminCustomerList from ".//admin/AdminCustomerList";
@@ -66,12 +63,10 @@ function App() {
         <Route exact path="/Customer/Transaction/Deposit" element ={<CustomerDeposit user={user}/>}/>
         <Route exact path="/Customer/Transaction/Withdraw" element = {<CustomerWithdraw user={user}/>}/>
         <Route exact path="/Customer/PayBill" element ={<CustomerBillPay user={user}/>}/>
-        <Route exact path="/Customer/CreateAccount" element ={<CustomerCreateAccount user={user}/>}/>
         <Route exact path="/Customer/UserInfo" element ={<CustomerViewUserInformation user={user}/>}/>
         <Route exact path="/Customer/UserInfo/Edit" element ={<CustomerEditUserInformation user={user}/>}/>
         <Route exact path="/Customer/AccountInfo" element ={<CustomerViewAccountInformation user={user}/>}/>
         <Route exact path="/Customer/AccountList" element ={<CustomerViewAccountList user={user}/>}/>
-        <Route exact path="/Customer/AccountInfo/Delete" element={<CustomerDeleteRequest user={user}/>}/>
       </Route>
       <Route element = {<PrivateRouteTeller />}>
         <Route exact path="/Teller" element = {<TellerMain user={user}/>}/>
@@ -86,7 +81,6 @@ function App() {
         <Route exact path="/Teller/Customer/UserInfo" element = {<TellerViewCustomerInfo user={user}/>}/>
         <Route exact path="/Teller/Customer/Edit" element = {<TellerCustomerEdit user={user}/>}/>
         <Route exact path="/Teller/Account/Delete" element = {<TellerDeleteAccount user={user}/>}/>
-        <Route exact path="/Teller/Account/1099" element = {<Teller1099Form user={user}/>}/>
       </Route>
       <Route element = {<PrivateRouteAdmin />}>
         <Route exact path="/Admin" element = {<AdminMain user={user}/>}/>

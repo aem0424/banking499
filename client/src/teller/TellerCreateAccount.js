@@ -27,7 +27,7 @@ function TellerCreateAccount() {
     }, [user, navigate]);
 
     const handleBackButtonClick = () => {
-        navigate('/Teller/Customer', {state: {user, customer}})
+        navigate('/Teller/Customer/UserInfo', {state: {user, customer}})
     }
 
     const handleInputChange = (e) => {
@@ -59,6 +59,8 @@ function TellerCreateAccount() {
         <div className='container'>
           {success ? (
             <p>Successfully created account!</p>
+          ) : error ? (
+            <p>ERROR: {error}</p>
           ) : user ? ( 
             <form onSubmit={handleSubmit}>
             <div>

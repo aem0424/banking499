@@ -10,7 +10,6 @@ function TellerEditAccount() {
     const user = location.state && location.state.user;
     const customer = location.state.customer; 
     const account = location.state.account;
-    const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null); 
     const [formData, setFormData] = useState({
@@ -50,7 +49,7 @@ function TellerEditAccount() {
           axios.get('/user', {})
             .then((response) => {
               if (response.status === 200) {
-                setUserData(response.data);
+                console.log('success');
                 setLoading(false);
               }
             })

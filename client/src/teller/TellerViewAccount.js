@@ -9,7 +9,6 @@ function TellerViewAccount() {
     const user = location.state && location.state.user;
     const customer = location.state.customer;
     const account = location.state.account;
-    const [userData, setUserData] = useState(null);
     const [accountData, setAccountData] = useState(null);
     const [transactions, setTransactions] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -22,7 +21,7 @@ function TellerViewAccount() {
       }, [user, navigate]);
 
     const handleBackButtonClick = () => {
-        navigate('/Teller/Customer', {state: {user, customer}});
+        navigate('/Teller/Customer/UserInfo', {state: {user, customer}});
     }
 
     useEffect(() => {
@@ -30,7 +29,7 @@ function TellerViewAccount() {
             axios.get('/user', {})
             .then((response) => {
                 if (response.status === 200) {
-                    setUserData(response.data);
+                    console.log('success');
                 }
             }).catch((error) => {
                 setError(error);

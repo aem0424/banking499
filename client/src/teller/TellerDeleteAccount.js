@@ -10,8 +10,6 @@ function TellerDeleteAccount() {
     const customer = location.state.customer;
     const account = location.state.account;
     const [userData, setUserData] = useState(null);
-    const [customerData, setCustomerData] = useState(null);
-    const [accountData, setAccountData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
@@ -29,6 +27,7 @@ function TellerDeleteAccount() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
             const response = await axios.delete('/teller/customer/account/delete', 
             {data: {UserID: customer.UserID, AccountID: account.AccountID}},
@@ -36,11 +35,14 @@ function TellerDeleteAccount() {
             if(response.status === 200) {
                 console.log('success', response.data);
                 setSuccess(true);
+                setLoading(false);
             } else {
-                console.error('error: ', error);
+                setError(error);
+                setLoading(false);
             }
         } catch (error) {
-            console.log('error:', error);
+            setError('An unexpected error has occurred.');
+            setLoading(false);
         }
     }
 
@@ -50,6 +52,7 @@ function TellerDeleteAccount() {
             .then((response) => {
                 if (response.status === 200) {
                     setUserData(response.data);
+                    setLoading(false);
                 }
             }).catch((error) => {
                 setError(error);
@@ -65,6 +68,10 @@ function TellerDeleteAccount() {
                     <p>Successfully deleted.</p>
                     <button onClick={handleNoClick}>Back</button>
                 </div>
+            ) : loading ? (
+                <p>Loading...</p>
+            ) : error ? (
+                <p>ERROR: {error}</p>
             ) : userData ? (
                 <div>
                     <h1>Are you sure you want to delete this account?</h1>
