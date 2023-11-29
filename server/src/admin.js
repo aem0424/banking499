@@ -50,6 +50,22 @@ router.put('/admin/teller/register', async (req, res) => {
 
   let teller = req.body;
 
+  // Add a FullName value
+  teller.FullName = teller.FirstName + " " + teller.LastName;
+
+  // Encrypt Password
+  try {
+    teller.PasswordOriginal = teller.Password;
+    let salt = await bcrypt.genSalt(10);
+    let peper = process.env.PASSWORD_PEPPER;
+
+    let hashedPassword = await bcrypt.hash(teller.Password, salt) + peper;
+    teller.Password = hashedPassword;
+} catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to encrypt password" });
+}
+
   // Check if the email already exists in the database
   let [userData, err_userData] = await database.getUserNameFromEmail(teller.Email);
   if (err_userData) return res.status(500).json({ error: 'Failed to query User name', message: err_userData.message });
